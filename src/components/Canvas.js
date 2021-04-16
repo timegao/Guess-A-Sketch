@@ -53,8 +53,8 @@ const Canvas = () => {
     setDrawing(true);
     setPoint({
       ...point,
-      x: e.clientX || e.touches[0].clientX,
-      y: e.clientY || e.touches[0].clientY,
+      x: e.clientX || (e.touches && e.touches[0].clientX),
+      y: e.clientY || (e.touches && e.touches[0].clientY),
     });
   };
 
@@ -69,15 +69,15 @@ const Canvas = () => {
     addLine({
       x0: x,
       y0: y,
-      x1: e.clientX || e.touches[0].clientX,
-      y1: e.clientY || e.touches[0].clientY,
+      x1: e.clientX || (e.touches && e.touches[0].clientX),
+      y1: e.clientY || (e.touches && e.touches[0].clientY),
       color,
       lineWidth,
     });
     setPoint({
       ...point,
-      x: e.clientX || e.touches[0].clientX,
-      y: e.clientY || e.touches[0].clientY,
+      x: e.clientX || (e.touches && e.touches[0].clientX),
+      y: e.clientY || (e.touches && e.touches[0].clientY),
     });
   };
 
@@ -94,8 +94,8 @@ const Canvas = () => {
     addLine({
       x0: x,
       y0: y,
-      x1: e.clientX || e.touches[0].clientX,
-      y1: e.clientY || e.touches[0].clientY,
+      x1: e.clientX || (e.touches && e.touches[0].clientX),
+      y1: e.clientY || (e.touches && e.touches[0].clientY),
       color,
       lineWidth,
     });
