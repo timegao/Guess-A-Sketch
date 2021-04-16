@@ -29,21 +29,22 @@ export const updateLines = (lines) => ({
   },
 });
 
-const addPlayer = (username) => ({
+const addPlayer = (username, date) => ({
   type: ADD_PLAYER,
   payload: {
     username,
     score: 0,
     role: ROLES.GUESSER,
     onboarded: false,
-    joinedTimeStamp: new Date(),
+    joinedTimeStamp: date,
   },
 });
 
 export const newPlayer = (username) => {
   return (dispatch) => {
-    dispatch(addPlayer(username));
-    joinChat(username);
+    const date = new Date();
+    dispatch(addPlayer(username, date));
+    joinChat(username, date);
   };
 };
 
