@@ -26,8 +26,8 @@ socket.on("all lines", (lines) => {
   store.dispatch(updateLines(lines));
 });
 
-export const joinChat = (username) => {
-  socket.emit("join", username);
+export const joinChat = (username, date) => {
+  socket.emit("join", username, date);
 };
 
 export const addMessage = (message) => {

@@ -49,11 +49,20 @@ io.on("connection", (client) => {
   client.emit("hello", "Server says hello");
 
   client.on("disconnect", () => {
-    if (clients.hasOwnProperty(client.id))
-      processMessage(clients[client.id] + " has left the chat");
+    if (clients.hasOwnProperty(client.id)) {
+      processMessage(clients[client.id].username + " has left the chat");
+      delete clients[client.id];
+    }
   });
 
-  client.on("join", (username) => {
+  client.on("join", (username, date) => {
+    clients[client.id] = {
+      username,
+      score: 0,
+      role: "guesser",
+      onboarded: false,
+      joinedTimeStamp: date,
+    };
     messages.push(`${username} has joined the chat`);
     io.sockets.emit("all messages", messages);
   });
