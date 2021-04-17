@@ -1,6 +1,6 @@
 import { joinChat, addMessage, addLine } from "../client";
 import { ADD_LINE, UPDATE_MESSAGES, ADD_PLAYER } from "./actionConstants";
-import { ROLES } from "./stateConstans";
+import { ROLES } from "./stateConstants";
 
 // Action creator functions - use async actions to communicate with server
 

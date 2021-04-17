@@ -1,4 +1,4 @@
-import { INITIAL_MESSAGES } from "./stateConstans";
+import { INITIAL_MESSAGES } from "./stateConstants";
 import { UPDATE_MESSAGES } from "./actionConstants";
 
 const messagesReducer = (state = INITIAL_MESSAGES, action) => {

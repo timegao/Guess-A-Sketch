@@ -1,5 +1,5 @@
 import { ADD_PLAYER } from "./actionConstants";
-import { INITIAL_PLAYER } from "./stateConstans";
+import { INITIAL_PLAYER } from "./stateConstants";
 
 const playerReducer = (state = INITIAL_PLAYER, action) => {
   switch (action.type) {
