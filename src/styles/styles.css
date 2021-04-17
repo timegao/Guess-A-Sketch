@@ -1,0 +1,39 @@
+body {
+  background: rgb(213, 234, 248);
+  background-image: radial-gradient(black 1px, transparent 0);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+}
+
+/* Landing view */
+.add-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20vh;
+  border-radius: 1em;
+  background-color: rgb(255, 255, 255);
+  padding: 2em;
+  min-width: 60vw;
+  -moz-box-shadow: 0 0 10px #000000;
+  -webkit-box-shadow: 0 0 10px #000000;
+  box-shadow: 0 0 10px #000000;
+  overflow: hidden;
+  /* Center in middle of screen */
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+/* Logo in landing view */
+.logo {
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  top: 10%;
+  position: absolute;
+  transform: translate(-50%, -10%);
+}

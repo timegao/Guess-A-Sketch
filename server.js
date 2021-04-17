@@ -13,24 +13,23 @@ const io = require("socket.io")(server, {
     methods: ["GET", "POST"],
   },
 });
-const path = require("path");
+console.log("Websocket server created");
 
 // Choose a port, default is 4002 (could be almost anything)
 const PORT = process.env.PORT || 4002;
 
-// When on Heroku, serve the UI from the build folder
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "build")));
-  app.get("*", (res) => {
-    res.sendfile(path.join((__dirname = "build/index.html")));
-  });
-}
+app.use(express.static(__dirname + "/"));
 
-// When on local host, server from the public folder.
-// Rule will not be written if production conditional has executed
-app.get("*", () => {
-  app.sendFile(path.join(__dirname + "public/index.html"));
-});
+
+
+const MESSAGE_TYPE = {
+  JOIN: "join",
+  LEAVE: "leave",
+  ANSWER: "answer",
+  REGULAR: "regular",
+  GAME_OVER: "game over",
+  CORRECT: "correct guess"
+};
 
 let messages = [];
 let lines = [];
@@ -50,7 +49,7 @@ io.on("connection", (client) => {
 
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
-      processMessage(clients[client.id].username + " has left the chat");
+      processMessage({username: clients[client.id].username, text:`${clients[client.id].username} has left the chat`, type: MESSAGE_TYPE.LEAVE});
       delete clients[client.id];
     }
   });
@@ -63,7 +62,7 @@ io.on("connection", (client) => {
       onboarded: false,
       joinedTimeStamp: date,
     };
-    messages.push(`${username} has joined the chat`);
+    messages.push({username, text:`${username} has joined the chat!`, type: MESSAGE_TYPE.JOIN})
     io.sockets.emit("all messages", messages);
   });
 
