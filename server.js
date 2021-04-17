@@ -32,6 +32,17 @@ app.get("*", () => {
   app.sendFile(path.join(__dirname + "public/index.html"));
 });
 
+
+
+const MESSAGE_TYPE = {
+  JOIN: "join",
+  LEAVE: "leave",
+  ANSWER: "answer",
+  REGULAR: "regular",
+  GAME_OVER: "game over",
+  CORRECT: "correct guess"
+};
+
 let messages = [];
 let lines = [];
 
@@ -50,7 +61,7 @@ io.on("connection", (client) => {
 
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
-      processMessage(clients[client.id].username + " has left the chat");
+      processMessage({username: clients[client.id].username, text:`${clients[client.id].username} has left the chat`, type: MESSAGE_TYPE.LEAVE});
       delete clients[client.id];
     }
   });
@@ -63,7 +74,7 @@ io.on("connection", (client) => {
       onboarded: false,
       joinedTimeStamp: date,
     };
-    messages.push(`${username} has joined the chat`);
+    messages.push({username, text:`${username} has joined the chat!`, type: MESSAGE_TYPE.JOIN})
     io.sockets.emit("all messages", messages);
   });
 
