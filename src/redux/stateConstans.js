@@ -3,6 +3,15 @@ export const ROLES = {
   GUESSER: "guesser",
 };
 
+export const MESSAGE_TYPE = {
+  JOIN: "join",
+  LEAVE: "leave",
+  ANSWER: "answer",
+  REGULAR: "regular",
+  GAME_OVER: "game over",
+  CORRECT: "correct guess"
+};
+
 export const GAME_STATE = {
   PRE_GAME: "pre game",
   POST_GAME: "post game",
