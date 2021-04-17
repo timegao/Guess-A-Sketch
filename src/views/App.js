@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import PlayerList from "../components/PlayerList";
 
 import MessageForm from "../components/MessageForm";
 import Messages from "../components/Messages";

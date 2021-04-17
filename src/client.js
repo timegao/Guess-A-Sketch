@@ -1,4 +1,4 @@
-import { updateMessages, updateLines } from "./redux/actions";
+import { updateMessages, updateLines, updateUsers } from "./redux/actions";
 import store from "./redux/store";
 
 /** CLIENT CONFIGURATION - connect to the server */
@@ -24,6 +24,10 @@ socket.on("all messages", (messages) => {
 
 socket.on("all lines", (lines) => {
   store.dispatch(updateLines(lines));
+});
+
+socket.on("all users", (users) => {
+  store.dispatch(updateUsers(users));
 });
 
 export const joinChat = (username, date) => {

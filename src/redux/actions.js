@@ -1,5 +1,10 @@
 import { joinChat, addMessage, addLine } from "../client";
-import { ADD_LINE, UPDATE_MESSAGES, ADD_PLAYER } from "./actionConstants";
+import {
+  ADD_LINE,
+  UPDATE_MESSAGES,
+  ADD_PLAYER,
+  UPDATE_USERS,
+} from "./actionConstants";
 import { ROLES, MESSAGE_TYPE } from "./stateConstants";
 import store from "./store";
 
@@ -65,6 +70,11 @@ export const newLine = (line) => {
   return () => addLine(line);
 };
 
+export const updateUsers = (users) => ({
+  type: UPDATE_USERS,
+  payload: formatUsersData(users),
+});
+
 /*---------------------------------*/
 /* Helpers */
 /*---------------------------------*/
@@ -94,4 +104,12 @@ const createMessageText = (msg, type) => {
       return msg;
   }
   // other message cases are emitted by the server not client
+};
+
+const formatUsersData = (users) => {
+  const newUsers = {};
+  Object.keys(users).map(
+    (userId, i) => (newUsers[users[userId].username] = users[userId])
+  );
+  return newUsers;
 };
