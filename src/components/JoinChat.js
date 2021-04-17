@@ -32,6 +32,7 @@ const JoinChat = () => {
   };
 
   return (
+    <div className="container">
     <form className="my-4" onSubmit={(e) => e.preventDefault()}>
       <div className="row">
         <div className="col">
@@ -67,6 +68,7 @@ const JoinChat = () => {
         </div>
       </div>
     </form>
+    </div>
   );
 };
 
