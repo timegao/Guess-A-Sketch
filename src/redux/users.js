@@ -1,5 +1,5 @@
 import { ADD_PLAYER } from "./actionConstants";
-import { INITIAL_USERS } from "./stateConstans";
+import { INITIAL_USERS } from "./stateConstants";
 
 const usersReducer = (state = INITIAL_USERS, action) => {
   switch (action.type) {

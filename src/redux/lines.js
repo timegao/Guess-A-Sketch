@@ -1,4 +1,4 @@
-import { INITIAL_LINES } from "./stateConstans";
+import { INITIAL_LINES } from "./stateConstants";
 import { ADD_LINE } from "./actionConstants";
 
 const linesReducer = (state = INITIAL_LINES, action) => {

@@ -1,7 +1,7 @@
 import { joinChat, addMessage, addLine } from "../client";
 import { ADD_LINE, UPDATE_MESSAGES, ADD_PLAYER } from "./actionConstants";
-import { ROLES, MESSAGE_TYPE } from "./stateConstans";
-import store from './store';
+import { ROLES, MESSAGE_TYPE } from "./stateConstants";
+import store from "./store";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -57,14 +57,13 @@ export const newMessage = (msg) => {
     // Also need to send message to server to update score -- Immediatley or @ end of round?
     const text = createMessageText(msg, type);
     // TODO dispatch to updatemessages??
-    addMessage({username, text, type});
-  }
+    addMessage({ username, text, type });
+  };
 };
 
 export const newLine = (line) => {
   return () => addLine(line);
 };
-
 
 /*---------------------------------*/
 /* Helpers */
@@ -77,11 +76,10 @@ const findMessageType = (msg) => {
   // TO DO find relative difference between strings and display to all
   // users if the guess is not slightly misspelled
   if (msg.toLowerCase() === correctAnswer) {
-    return MESSAGE_TYPE.CORRECT
+    return MESSAGE_TYPE.CORRECT;
   }
-  return MESSAGE_TYPE.REGULAR // regular message
-
-}
+  return MESSAGE_TYPE.REGULAR; // regular message
+};
 
 const createMessageText = (msg, type) => {
   const username = store.getState().player.username;
@@ -90,10 +88,10 @@ const createMessageText = (msg, type) => {
   correctAnswer = "testing";
   switch (type) {
     case MESSAGE_TYPE.CORRECT:
-      return `${username} guessed the word!`
-    default: // All other cases
+      return `${username} guessed the word!`;
+    default:
+      // All other cases
       return msg;
   }
   // other message cases are emitted by the server not client
-}
-
+};
