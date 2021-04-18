@@ -6,28 +6,29 @@ import CanvasInputs from "./CanvasInputs";
 import Chat from "./Chat";
 import { INITIAL_STROKE } from "../redux/stateConstants";
 import PlayerList from "./PlayerList";
+import CanvasBoard from "./CanvasBoard";
 
 const GameView = () => {
-  const [message, setMessage] = useState("");
-  // Point state. Point represents an x and y coordinate
-  const [point, setPoint] = useState({
-    x: 0,
-    y: 0,
-  });
+  // const [message, setMessage] = useState("");
+  // // Point state. Point represents an x and y coordinate
+  // const [point, setPoint] = useState({
+  //   x: 0,
+  //   y: 0,
+  // });
 
-  // Stroke state. Stroke represents lineWidth and color
-  const [stroke, setStroke] = useState(INITIAL_STROKE);
+  // // Stroke state. Stroke represents lineWidth and color
+  // const [stroke, setStroke] = useState(INITIAL_STROKE);
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const handleSubmit = () => {
-    dispatch(newMessage(message));
-    setMessage("");
-  };
+  // const handleSubmit = () => {
+  //   dispatch(newMessage(message));
+  //   setMessage("");
+  // };
 
-  const onKeyUp = (e) => {
-    if (e.key === "Enter") handleSubmit();
-  };
+  // const onKeyUp = (e) => {
+  //   if (e.key === "Enter") handleSubmit();
+  // };
 
   return (
     <div className="card">
@@ -40,18 +41,7 @@ const GameView = () => {
             <PlayerList />
           </div>
           <div className="col-sm col-md-8 text-center p-0">
-            <CanvasInputs
-              stroke={stroke}
-              setStroke={setStroke}
-              point={point}
-              setPoint={setPoint}
-            />
-            <Canvas
-              stroke={stroke}
-              setStroke={setStroke}
-              point={point}
-              setPoint={setPoint}
-            />
+            <CanvasBoard />
           </div>
           <div className="col-sm col-md-2 p-0">
             <Chat />
