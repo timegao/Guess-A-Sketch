@@ -9,27 +9,6 @@ import PlayerList from "./PlayerList";
 import CanvasBoard from "./CanvasBoard";
 
 const GameView = () => {
-  // const [message, setMessage] = useState("");
-  // // Point state. Point represents an x and y coordinate
-  // const [point, setPoint] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
-
-  // // Stroke state. Stroke represents lineWidth and color
-  // const [stroke, setStroke] = useState(INITIAL_STROKE);
-
-  // const dispatch = useDispatch();
-
-  // const handleSubmit = () => {
-  //   dispatch(newMessage(message));
-  //   setMessage("");
-  // };
-
-  // const onKeyUp = (e) => {
-  //   if (e.key === "Enter") handleSubmit();
-  // };
-
   return (
     <div className="card">
       <div className="card-header text-center">
