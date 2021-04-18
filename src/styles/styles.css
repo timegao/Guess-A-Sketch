@@ -37,3 +37,20 @@ body {
   position: absolute;
   transform: translate(-50%, -10%);
 }
+
+.player {
+  /* position: relative; */
+  display: flex;
+  background: #f3f3f3;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  padding: 10px 5px;
+  cursor: pointer;
+  height: 80px;
+  min-width: 205px;
+  max-width: 250px;
+}
+
+/* Display username and score */
+.user-data {
+  color: rgb(2, 82, 134);
+}

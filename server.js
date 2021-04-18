@@ -20,15 +20,13 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
-
-
 const MESSAGE_TYPE = {
   JOIN: "join",
   LEAVE: "leave",
   ANSWER: "answer",
   REGULAR: "regular",
   GAME_OVER: "game over",
-  CORRECT: "correct guess"
+  CORRECT: "correct guess",
 };
 
 let messages = [];
@@ -49,8 +47,13 @@ io.on("connection", (client) => {
 
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
-      processMessage({username: clients[client.id].username, text:`${clients[client.id].username} has left the chat`, type: MESSAGE_TYPE.LEAVE});
+      processMessage({
+        username: clients[client.id].username,
+        text: `${clients[client.id].username} has left the chat`,
+        type: MESSAGE_TYPE.LEAVE,
+      });
       delete clients[client.id];
+      io.sockets.emit("all users", clients);
     }
   });
 
@@ -62,8 +65,13 @@ io.on("connection", (client) => {
       onboarded: false,
       joinedTimeStamp: date,
     };
-    messages.push({username, text:`${username} has joined the chat!`, type: MESSAGE_TYPE.JOIN})
+    messages.push({
+      username,
+      text: `${username} has joined the chat!`,
+      type: MESSAGE_TYPE.JOIN,
+    });
     io.sockets.emit("all messages", messages);
+    io.sockets.emit("all users", clients);
   });
 
   client.on("new message", (message) => {
