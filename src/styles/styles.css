@@ -54,3 +54,10 @@ body {
 .user-data {
   color: rgb(2, 82, 134);
 }
+
+.table {
+  /* overflow-wrap: break-word; */
+  word-wrap: break-word;
+  word-break: break-all;
+  margin: 0px;
+}
