@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { MESSAGE_TYPE } from "../redux/stateConstants";
 import { getMessages } from "../redux/messages";
+import ReactScrollableFeed from "react-scrollable-feed";
 
 const generateMessage = ({ username, text, type }) => {
   switch (type) {
@@ -28,7 +29,7 @@ const generateMessage = ({ username, text, type }) => {
       // MESSAGE_TYPE.REGULAR
       return (
         <td>
-          <strong>{username}:</strong>
+          <strong>{username}: </strong>
           {text}
         </td>
       );
@@ -38,13 +39,17 @@ const generateMessage = ({ username, text, type }) => {
 const Messages = () => {
   const messages = useSelector(getMessages);
   return (
-    <table className="table table-striped table-bordered my-4">
-      <tbody>
-        {messages.map((message, index) => (
-          <tr key={`msg-${index}`}>{generateMessage(message)}</tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="messages" style={{ overflowY: "scroll", height: "300px" }}>
+      <ReactScrollableFeed forceScroll>
+        <table className="table table-striped table-bordered">
+          <tbody>
+            {messages.map((message, index) => (
+              <tr key={`msg-${index}`}>{generateMessage(message)}</tr>
+            ))}
+          </tbody>
+        </table>
+      </ReactScrollableFeed>
+    </div>
   );
 };
 

@@ -18,30 +18,24 @@ const MessageForm = () => {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="row">
-        <div className="col">
-          <input
-            aria-label="Your message"
-            type="text"
-            className="form-control"
-            id="messageTxt"
-            placeholder="Enter your message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyUp={onKeyUp}
-          />
-        </div>
-        <div className="col-auto">
-          <button
-            type="button"
-            className="btn btn-primary float-right"
-            onClick={() => handleSubmit()}
-          >
-            Send
-          </button>
-        </div>
-      </div>
-      <div className="row my-2"></div>
+      <input
+        aria-label="Your message"
+        type="text"
+        className="form-control"
+        id="messageTxt"
+        placeholder="Enter message"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyUp={onKeyUp}
+      />
+      <button
+        type="button"
+        className="btn btn-primary float-right w-100 mt-2"
+        disabled={message.length === 0}
+        onClick={() => handleSubmit()}
+      >
+        Send
+      </button>
     </form>
   );
 };

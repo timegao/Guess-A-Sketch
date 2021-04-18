@@ -55,6 +55,14 @@ body {
   color: rgb(2, 82, 134);
 }
 
+.table {
+  /* overflow-wrap: break-word; */
+  word-wrap: break-word;
+  word-break: break-all;
+  margin: 0px;
+}
+
+/* Canvas style */
 canvas {
   width: 80%;
   height: 70%;
