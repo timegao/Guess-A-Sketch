@@ -8,14 +8,6 @@ import { INITIAL_STROKE } from "../redux/stateConstants";
 
 const App = () => {
   const player = useSelector(getPlayer);
-  // // Point state. Point represents an x and y coordinate
-  // const [point, setPoint] = useState({
-  //   x: 0,
-  //   y: 0,
-  // });
-
-  // // Stroke state. Stroke represents lineWidth and color
-  // const [stroke, setStroke] = useState(INITIAL_STROKE);
 
   return <>{player.hasOwnProperty("username") ? <GameView /> : <JoinChat />}</>;
 };
