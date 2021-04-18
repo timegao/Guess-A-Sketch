@@ -10,12 +10,6 @@ const INITIAL_STROKE = {
   color: "#000000", // black
 };
 
-// Used to erase by drawing against white background
-const ERASER_STROKE = {
-  lineWidth: 32,
-  color: "#ffffff", // white
-};
-
 const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.beginPath();
   context.moveTo(x0, y0);
@@ -101,16 +95,6 @@ const Canvas = () => {
     });
   };
 
-  const onHandleErase = () => {
-    document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
-    setStroke(ERASER_STROKE);
-  };
-
-  const onHandleDraw = () => {
-    document.body.style.cursor = "default";
-    setStroke(INITIAL_STROKE);
-  };
-
   /**
    * Draws all the lines from Redux state lines
    */
@@ -144,56 +128,6 @@ const Canvas = () => {
         // width={window.innerWidth}
         // height={window.innerHeight}
       />
-      <div className="container">
-        <form>
-          <div class="row">
-            <button
-              type="button"
-              class="btn btn-primary btn-lg m-3"
-              onClick={() => onHandleDraw()}
-            >
-              Draw
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary btn-lg m-3"
-              onClick={() => onHandleErase()}
-            >
-              Erase
-            </button>
-            <div class="col">
-              <label htmlFor="strokeColor" className="form-label mt-3">
-                Stroke color:
-              </label>
-              <input
-                class="form-control form-control-color"
-                type="color"
-                id="strokeColor"
-                name="color"
-                value={color}
-                onChange={(e) => setStroke({ ...point, color: e.target.value })}
-              />
-            </div>
-            <div class="col">
-              <label htmlFor="lineWidth" className="form-label mt-3">
-                Line width:
-              </label>
-              <input
-                class="form-control"
-                type="number"
-                id="lineWidth"
-                name="width"
-                min="1"
-                max="10"
-                value={lineWidth}
-                onChange={(e) =>
-                  setStroke({ ...stroke, lineWidth: e.target.value })
-                }
-              />
-            </div>
-          </div>
-        </form>
-      </div>
     </>
   );
 };

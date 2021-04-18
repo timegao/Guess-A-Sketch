@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { getUsers } from "../redux/users";
-import Player from "../components/Player";
+import PlayerInfo from "../components/PlayerInfo";
 
 const PlayerList = () => {
   const users = useSelector(getUsers);
@@ -8,7 +8,7 @@ const PlayerList = () => {
     <div className="row">
       <ul>
         {Object.keys(users).map((user, i) => (
-          <Player user={users[user]} key={i} />
+          <PlayerInfo user={users[user]} key={i} />
         ))}
       </ul>
     </div>

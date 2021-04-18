@@ -14,7 +14,7 @@ const getAvatar = () => {
   return avatars[Math.floor(Math.random() * AVATAR_SIZE)];
 };
 
-const Player = (props) => {
+const PlayerInfo = (props) => {
   return (
     <li className="player">
       <div className="d-inline-flex mx-1">
@@ -32,4 +32,4 @@ const Player = (props) => {
   );
 };
 
-export default Player;
+export default PlayerInfo;
