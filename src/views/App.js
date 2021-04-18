@@ -1,10 +1,7 @@
 import { useSelector } from "react-redux";
-
-import MessageForm from "../components/MessageForm";
-import Messages from "../components/Messages";
-import Canvas from "../components/Canvas";
 import JoinChat from "../components/JoinChat";
 import { getPlayer } from "../redux/player";
+import GameView from "../components/GameView";
 
 const App = () => {
   const player = useSelector(getPlayer);
@@ -13,9 +10,7 @@ const App = () => {
     <>
       {player.hasOwnProperty("username") ? (
         <>
-          <Canvas />
-          <Messages />
-          <MessageForm />
+          <GameView />
         </>
       ) : (
         <JoinChat />
