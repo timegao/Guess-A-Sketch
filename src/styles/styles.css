@@ -3,6 +3,10 @@ body {
   background-image: radial-gradient(black 1px, transparent 0);
   background-size: 40px 40px;
   background-position: -1px -1px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Landing view */
@@ -39,15 +43,16 @@ body {
 }
 
 .player {
-  /* position: relative; */
+  position: relative;
   display: flex;
   background: #f3f3f3;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  border-right: 2px solid rgba(0, 0, 0, 0.1);
   padding: 10px 5px;
   cursor: pointer;
-  height: 80px;
-  min-width: 205px;
-  max-width: 250px;
+  height: 100px;
+  /* min-width: 205px;
+  max-width: 250px; */
 }
 
 /* Display username and score */
@@ -55,16 +60,55 @@ body {
   color: rgb(2, 82, 134);
 }
 
+#playerListColumn {
+  background: #bdbbbb;
+}
+
+.scrollable {
+  overflow-y: auto;
+  max-height: 70vh;
+  padding: 0%;
+  margin: 0%;
+  max-width: 94%;
+}
+
 .table {
   /* overflow-wrap: break-word; */
   word-wrap: break-word;
   word-break: break-all;
   margin: 0px;
+  font-size: smaller;
 }
 
 /* Canvas style */
 canvas {
-  width: 80%;
-  height: 70%;
+  width: 99%;
+  /* height: 70%; */
   cursor: crosshair;
+  background: white;
+  outline: solid 5px rgba(0, 0, 0, 0.5);
+}
+
+.input-group {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Game view frame */
+.game-view {
+  border-bottom: solid 1px #cccccc;
+  border-radius: 1em;
+  background-color: white;
+  min-width: 70vw;
+  -moz-box-shadow: 0 0 10px #000000;
+  -webkit-box-shadow: 0 0 10px #000000;
+  box-shadow: 0 0 10px #000000;
+  overflow: hidden;
+}
+
+/* Header component row in Gameview*/
+.header {
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(246, 247, 199);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }

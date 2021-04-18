@@ -6,7 +6,7 @@ const PlayerList = () => {
   const users = useSelector(getUsers);
   return (
     <div className="row">
-      <ul>
+      <ul className="scrollable">
         {Object.keys(users).map((user, i) => (
           <PlayerInfo user={users[user]} key={i} />
         ))}
