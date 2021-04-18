@@ -30,11 +30,20 @@ const Canvas = ({ setPoint, setStroke, point }) => {
    * @param {Object} e event object with x/y coordinates
    */
   const onMouseDown = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
     setDrawing(true);
     setPoint({
       ...point,
-      x: e.clientX || (e.touches && e.touches[0].clientX),
-      y: e.clientY || (e.touches && e.touches[0].clientY),
+      x:
+        ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
+        (e.touches &&
+          e.touches[0].clientX -
+            (rect.left * canvasRef.current.width) / rect.width),
+      y:
+        ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
+        (e.touches &&
+          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+            rect.height),
     });
   };
 
@@ -45,19 +54,36 @@ const Canvas = ({ setPoint, setStroke, point }) => {
    * @param {Object} e event object with x/y coordinates
    */
   const onMouseMove = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
     if (!drawing) return;
     addLine({
       x0: x,
       y0: y,
-      x1: e.clientX || (e.touches && e.touches[0].clientX),
-      y1: e.clientY || (e.touches && e.touches[0].clientY),
+      x1:
+        ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
+        (e.touches &&
+          e.touches[0].clientX -
+            (rect.left * canvasRef.current.width) / rect.width),
+      y1:
+        ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
+        (e.touches &&
+          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+            rect.height),
       color,
       lineWidth,
     });
     setPoint({
       ...point,
-      x: e.clientX || (e.touches && e.touches[0].clientX),
-      y: e.clientY || (e.touches && e.touches[0].clientY),
+      x:
+        ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
+        (e.touches &&
+          e.touches[0].clientX -
+            (rect.left * canvasRef.current.width) / rect.width),
+      y:
+        ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
+        (e.touches &&
+          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+            rect.height),
     });
   };
 
@@ -69,13 +95,22 @@ const Canvas = ({ setPoint, setStroke, point }) => {
    * @returns
    */
   const onMouseUp = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
     if (!drawing) return;
     setDrawing(false);
     addLine({
       x0: x,
       y0: y,
-      x1: e.clientX || (e.touches && e.touches[0].clientX),
-      y1: e.clientY || (e.touches && e.touches[0].clientY),
+      x1:
+        ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
+        (e.touches &&
+          e.touches[0].clientX -
+            (rect.left * canvasRef.current.width) / rect.width),
+      y1:
+        ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
+        (e.touches &&
+          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+            rect.height),
       color,
       lineWidth,
     });
