@@ -1,4 +1,10 @@
-import { updateMessages, updateLines, updateUsers } from "./redux/actions";
+import {
+  updateMessages,
+  updateLines,
+  updateUsers,
+  updateUser,
+  addPlayer,
+} from "./redux/actions";
 import store from "./redux/store";
 
 /** CLIENT CONFIGURATION - connect to the server */
@@ -28,6 +34,15 @@ socket.on("all lines", (lines) => {
 
 socket.on("all users", (users) => {
   store.dispatch(updateUsers(users));
+});
+
+socket.on("add player", (user) => {
+  store.dispatch(addPlayer(user));
+});
+
+socket.on("wait for another player", (user) => {
+  console.log("waiting in client.js");
+  store.dispatch(updateUser(user));
 });
 
 export const joinChat = (username, date) => {
