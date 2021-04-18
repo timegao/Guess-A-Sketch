@@ -5,10 +5,6 @@ import { addLine } from "../client";
 import { getLine } from "../redux/lines";
 
 // Used to initialize stroke state and revert to initial state
-const INITIAL_STROKE = {
-  lineWidth: 8,
-  color: "#000000", // black
-};
 
 const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.beginPath();
@@ -20,23 +16,13 @@ const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.closePath();
 };
 
-const Canvas = () => {
+const Canvas = ({ setPoint, setStroke, point }) => {
   const [drawing, setDrawing] = useState(false);
   const lines = useSelector(getLine);
 
-  // Point state. Point represents an x and y coordinate
-  const [point, setPoint] = useState({
-    x: 0,
-    y: 0,
-  });
-
-  // Stroke state. Stroke represents lineWidth and color
-  const [stroke, setStroke] = useState(INITIAL_STROKE);
-
-  const { x, y } = point;
-  const { lineWidth, color } = stroke;
-
   const canvasRef = useRef(null);
+  const { x, y } = point;
+  const { color, lineWidth } = setStroke;
 
   /**
    * User either presses a left-click on mouse or touches a touchscreen
@@ -125,8 +111,8 @@ const Canvas = () => {
         onTouchEnd={onMouseUp}
         onTouchCancel={onMouseUp}
         onTouchMove={onMouseMove}
-        // width={window.innerWidth}
-        // height={window.innerHeight}
+        width={window.innerWidth}
+        height={window.innerHeight}
       />
     </>
   );
