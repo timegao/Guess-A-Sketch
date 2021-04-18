@@ -41,6 +41,6 @@ export const INITIAL_STROKE = {
 
 // Used to erase by drawing against white background
 export const ERASER_STROKE = {
-  lineWidth: 32,
+  lineWidth: 64,
   color: "#ffffff", // white
 };

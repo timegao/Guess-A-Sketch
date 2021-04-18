@@ -21,12 +21,7 @@ const CanvasBoard = () => {
         point={point}
         setPoint={setPoint}
       />
-      <Canvas
-        stroke={stroke}
-        setStroke={setStroke}
-        point={point}
-        setPoint={setPoint}
-      />
+      <Canvas stroke={stroke} point={point} setPoint={setPoint} />
     </>
   );
 };

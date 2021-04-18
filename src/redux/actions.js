@@ -6,7 +6,7 @@ import {
   UPDATE_USERS,
   UPDATE_USER,
 } from "./actionConstants";
-import { ROLES, MESSAGE_TYPE } from "./stateConstants";
+import { MESSAGE_TYPE } from "./stateConstants";
 import store from "./store";
 
 // Action creator functions - use async actions to communicate with server
@@ -69,7 +69,7 @@ export const newMessage = (msg) => {
   return (dispatch) => {
     const type = findMessageType(msg);
     // TODO if message type is correct need to update player score.
-    // Also need to send message to server to update score -- Immediatley or @ end of round?
+    // Also need to send message to server to update score -- Immediteley or @ end of round?
     const text = createMessageText(msg, type);
     // TODO dispatch to updatemessages??
     addMessage({ username, text, type });

@@ -16,13 +16,13 @@ const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.closePath();
 };
 
-const Canvas = ({ setPoint, setStroke, point }) => {
+const Canvas = ({ setPoint, point, stroke }) => {
   const [drawing, setDrawing] = useState(false);
   const lines = useSelector(getLine);
 
   const canvasRef = useRef(null);
   const { x, y } = point;
-  const { color, lineWidth } = setStroke;
+  const { color, lineWidth } = stroke;
 
   /**
    * User either presses a left-click on mouse or touches a touchscreen
