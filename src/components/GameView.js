@@ -1,10 +1,4 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { newMessage } from "../redux/actions";
-import Canvas from "./Canvas";
-import CanvasInputs from "./CanvasInputs";
 import Chat from "./Chat";
-import { INITIAL_STROKE } from "../redux/stateConstants";
 import PlayerList from "./PlayerList";
 import CanvasBoard from "./CanvasBoard";
 
