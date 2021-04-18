@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { newMessage } from "../redux/actions";
 import Messages from "./Messages";
 import MessageForm from "./MessageForm";
 

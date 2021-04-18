@@ -2,10 +2,21 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { newMessage } from "../redux/actions";
 import Canvas from "./Canvas";
+import CanvasInputs from "./CanvasInputs";
 import Chat from "./Chat";
+import { INITIAL_STROKE } from "../redux/stateConstants";
+import PlayerList from "./PlayerList";
 
 const GameView = () => {
   const [message, setMessage] = useState("");
+  // Point state. Point represents an x and y coordinate
+  const [point, setPoint] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  // Stroke state. Stroke represents lineWidth and color
+  const [stroke, setStroke] = useState(INITIAL_STROKE);
 
   const dispatch = useDispatch();
 
@@ -19,18 +30,28 @@ const GameView = () => {
   };
 
   return (
-    <div class="card">
-      <div class="card-header text-center">
+    <div className="card">
+      <div className="card-header text-center">
         TODO: Header Component Goes Here
       </div>
-      <div class="card-body p-0">
+      <div className="card-body p-0">
         <div className="row">
           <div className="col-sm col-md-2 text-center p-0">
-            PlayerList goes here...
+            <PlayerList />
           </div>
           <div className="col-sm col-md-8 text-center p-0">
-            {/* <Canvas /> */}
-            Canvas goes here
+            <CanvasInputs
+              stroke={stroke}
+              setStroke={setStroke}
+              point={point}
+              setPoint={setPoint}
+            />
+            <Canvas
+              stroke={stroke}
+              setStroke={setStroke}
+              point={point}
+              setPoint={setPoint}
+            />
           </div>
           <div className="col-sm col-md-2 p-0">
             <Chat />

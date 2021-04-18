@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { newPlayer } from "../redux/actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 const JoinChat = () => {
   const [username, setUsername] = useState("");
@@ -32,43 +34,51 @@ const JoinChat = () => {
   };
 
   return (
-    <div className="container">
-    <form className="my-4" onSubmit={(e) => e.preventDefault()}>
-      <div className="row">
-        <div className="col">
-          <input
-            aria-label="Your username"
-            type="text"
-            className="form-control has-validation"
-            id="username"
-            invalid={`${isValid === false}`}
-            valid={`${isValid === true}`}
-            placeholder="Username"
-            value={username}
-            onChange={handleChange}
-            onKeyUp={onKeyUp}
-          />
-          <div
-            className="invalid-feedback"
-            style={
-              isValid === false ? { display: "block" } : { display: "none" }
-            }
-          >
-            Username cannot be empty!
+    <>
+      <div className="my-4 logo">
+        <span>
+          <h1>Place Logo Here</h1>
+        </span>
+      </div>
+      <form className="row my-4 add-form" onSubmit={(e) => e.preventDefault()}>
+        <div className="row">
+          <div className="col">
+            <input
+              aria-label="Your username"
+              type="text"
+              className="form-control has-validation"
+              id="username"
+              invalid={`${isValid === false}`}
+              valid={`${isValid === true}`}
+              placeholder="Username"
+              value={username}
+              onChange={handleChange}
+              onKeyUp={onKeyUp}
+            />
+            <div
+              className="invalid-feedback"
+              style={
+                isValid === false ? { display: "block" } : { display: "none" }
+              }
+            >
+              Username cannot be empty!
+            </div>
+          </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-primary float-right btn-lg"
+              onClick={verifyUsername}
+            >
+              <span className="mx-2">
+                <FontAwesomeIcon icon={faPlayCircle} size="1x" />
+              </span>
+              Play!
+            </button>
           </div>
         </div>
-        <div className="col-auto">
-          <button
-            type="button"
-            className="btn btn-primary float-right"
-            onClick={verifyUsername}
-          >
-            Join Chat
-          </button>
-        </div>
-      </div>
-    </form>
-    </div>
+      </form>
+    </>
   );
 };
 

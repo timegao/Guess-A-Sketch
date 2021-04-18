@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { MESSAGE_TYPE } from "../redux/stateConstans";
+import { MESSAGE_TYPE } from "../redux/stateConstants";
 import { getMessages } from "../redux/messages";
 import ReactScrollableFeed from "react-scrollable-feed";
 

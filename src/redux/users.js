@@ -1,10 +1,10 @@
-import { ADD_PLAYER } from "./actionConstants";
-import { INITIAL_USERS } from "./stateConstans";
+import { UPDATE_USERS } from "./actionConstants";
+import { INITIAL_USERS } from "./stateConstants";
 
 const usersReducer = (state = INITIAL_USERS, action) => {
   switch (action.type) {
-    case ADD_PLAYER: {
-      return { ...state, [action.payload.username]: action.payload };
+    case UPDATE_USERS: {
+      return action.payload;
     }
     default:
       return state;

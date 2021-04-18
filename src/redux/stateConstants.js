@@ -9,7 +9,7 @@ export const MESSAGE_TYPE = {
   ANSWER: "answer",
   REGULAR: "regular",
   GAME_OVER: "game over",
-  CORRECT: "correct guess"
+  CORRECT: "correct guess",
 };
 
 export const GAME_STATE = {
@@ -31,4 +31,16 @@ export const INITIAL_PLAYER = {};
 export const INITIAL_GAME = {
   gameState: GAME_STATE.PRE_GAME,
   timer: 0,
+};
+
+// Used to start drawing against white background
+export const INITIAL_STROKE = {
+  lineWidth: 8,
+  color: "#000000", // black
+};
+
+// Used to erase by drawing against white background
+export const ERASER_STROKE = {
+  lineWidth: 32,
+  color: "#ffffff", // white
 };
