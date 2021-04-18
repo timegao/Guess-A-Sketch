@@ -4,6 +4,7 @@ import {
   UPDATE_MESSAGES,
   ADD_PLAYER,
   UPDATE_USERS,
+  UPDATE_USER,
 } from "./actionConstants";
 import { ROLES, MESSAGE_TYPE } from "./stateConstants";
 import store from "./store";
@@ -35,21 +36,30 @@ export const updateLines = (lines) => ({
   },
 });
 
-const addPlayer = (username, date) => ({
+// const addPlayer = (username, date) => ({
+//   type: ADD_PLAYER,
+//   payload: {
+//     username,
+//     score: 0,
+//     role: ROLES.GUESSER,
+//     onboarded: false,
+//     joinedTimeStamp: date,
+//     wait: true,
+//   },
+// });
+
+export const addPlayer = (user) => ({
   type: ADD_PLAYER,
   payload: {
-    username,
-    score: 0,
-    role: ROLES.GUESSER,
-    onboarded: false,
-    joinedTimeStamp: date,
+    username: user.username,
+    id: user.id,
   },
 });
 
 export const newPlayer = (username) => {
   return (dispatch) => {
     const date = new Date();
-    dispatch(addPlayer(username, date));
+    // dispatch(addPlayer(username, date));
     joinChat(username, date);
   };
 };
@@ -73,6 +83,11 @@ export const newLine = (line) => {
 export const updateUsers = (users) => ({
   type: UPDATE_USERS,
   payload: formatUsersData(users),
+});
+
+export const updateUser = (user) => ({
+  type: UPDATE_USER,
+  payload: user,
 });
 
 /*---------------------------------*/
