@@ -51,4 +51,6 @@ const gameReducer = (state = INITIAL_GAME, action) => {
 
 export const getGame = (state) => state.game;
 
+export const getGameState = (state) => state.game.gameState;
+
 export default gameReducer;

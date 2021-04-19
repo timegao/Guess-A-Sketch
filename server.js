@@ -109,7 +109,7 @@ const countdownTurnStartToTurnDuring = () => {
  * 6. Set GameState to TURN_START
  * 7. Start countdown
  */
-const prepareTurnStart = () => {
+const prepareRoundStart = () => {
   lines = []; // clears canvas lines
   Object.keys(clients).forEach((key) => {
     if (clients[key].wonRound) {
@@ -169,7 +169,7 @@ io.on("connection", (client) => {
     io.sockets.emit("all users", clients);
     // prepare to start game when exactly 2 players join
     if (Object.keys(clients).length === 2) {
-      prepareTurnStart();
+      prepareRoundStart();
     }
   });
 

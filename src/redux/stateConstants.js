@@ -14,9 +14,9 @@ const MESSAGE_TYPE = {
 
 const GAME_STATE = {
   GAME_WAITING: "game waiting", // Players are in loading screen
-  TURN_START: "round start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
-  TURN_DURING: "round during", // Drawer draws word, guesser tries to guess word
-  TURN_END: "round end", // Each player sees their updated score
+  TURN_START: "turn start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
+  TURN_DURING: "turn during", // Drawer draws word, guesser tries to guess word
+  TURN_END: "turn end", // Each player sees their updated score
   GAME_OVER: "game over", // Each player sees all standings
 };
 
