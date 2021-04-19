@@ -69,7 +69,7 @@ export const newMessage = (msg) => {
   return (dispatch) => {
     const type = findMessageType(msg);
     // TODO if message type is correct need to update player score.
-    // Also need to send message to server to update score -- Immediteley or @ end of round?
+    // Also need to send message to server to update score -- Immediateley or @ end of round?
     const text = createMessageText(msg, type);
     // TODO dispatch to updatemessages??
     addMessage({ username, text, type });

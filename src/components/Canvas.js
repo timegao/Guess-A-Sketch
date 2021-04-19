@@ -4,8 +4,6 @@ import { useSelector } from "react-redux";
 import { addLine } from "../client";
 import { getLine } from "../redux/lines";
 
-// Used to initialize stroke state and revert to initial state
-
 const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.beginPath();
   context.moveTo(x0, y0);
