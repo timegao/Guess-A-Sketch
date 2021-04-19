@@ -4,6 +4,12 @@ import {
   updateUsers,
   updateUser,
   addPlayer,
+  setGameWaiting,
+  setTurnStart,
+  setTurnDuring,
+  setTurnEnd,
+  setGameOver,
+  countdownTimer,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -43,6 +49,30 @@ socket.on("add player", (user) => {
 socket.on("wait for another player", (user) => {
   console.log("waiting in client.js");
   store.dispatch(updateUser(user));
+});
+
+socket.on("game waiting", () => {
+  store.dispatch(setGameWaiting);
+});
+
+socket.on("turn start", () => {
+  store.dispatch(setTurnStart);
+});
+
+socket.on("turn during", () => {
+  store.dispatch(setTurnDuring);
+});
+
+socket.on("turn end", () => {
+  store.dispatch(setTurnEnd);
+});
+
+socket.on("game over", () => {
+  store.dispatch(setGameOver);
+});
+
+socket.on("countdown timer", () => {
+  store.dispatch(countdownTimer);
 });
 
 export const joinChat = (username, date) => {

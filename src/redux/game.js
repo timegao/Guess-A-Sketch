@@ -2,9 +2,9 @@ import {
   COUNTDOWN_TIMER,
   SET_GAME_OVER,
   SET_GAME_WAITING,
-  SET_ROUND_DURING,
-  SET_ROUND_END,
-  SET_ROUND_START,
+  SET_TURN_DURING,
+  SET_TURN_END,
+  SET_TURN_START,
 } from "./actionConstants";
 import { GAME_STATE, INITIAL_GAME } from "./stateConstants";
 
@@ -12,22 +12,22 @@ const gameReducer = (state = INITIAL_GAME, action) => {
   switch (action.type) {
     case SET_GAME_WAITING:
       return INITIAL_GAME;
-    case SET_ROUND_START:
+    case SET_TURN_START:
       return {
         ...state,
-        gameState: GAME_STATE.ROUND_START,
+        gameState: GAME_STATE.TURN_START,
         timer: 15000,
       };
-    case SET_ROUND_DURING:
+    case SET_TURN_DURING:
       return {
         ...state,
-        gameState: GAME_STATE.ROUND_DURING,
+        gameState: GAME_STATE.TURN_DURING,
         timer: 90000,
       };
-    case SET_ROUND_END:
+    case SET_TURN_END:
       return {
         ...state,
-        gameState: GAME_STATE.ROUND_END,
+        gameState: GAME_STATE.TURN_END,
         timer: 5000,
       };
     case SET_GAME_OVER:
