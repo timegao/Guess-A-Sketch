@@ -5,8 +5,9 @@ import {
   SET_TURN_DURING,
   SET_TURN_END,
   SET_TURN_START,
+  UPDATE_GAME,
 } from "./actionConstants";
-import { GAME_STATE, INITIAL_GAME } from "./stateConstants";
+import { DURATION, GAME_STATE, INITIAL_GAME } from "./stateConstants";
 
 const gameReducer = (state = INITIAL_GAME, action) => {
   switch (action.type) {
@@ -16,31 +17,33 @@ const gameReducer = (state = INITIAL_GAME, action) => {
       return {
         ...state,
         gameState: GAME_STATE.TURN_START,
-        timer: 15000,
+        timer: DURATION.TURN_START,
       };
     case SET_TURN_DURING:
       return {
         ...state,
         gameState: GAME_STATE.TURN_DURING,
-        timer: 90000,
+        timer: DURATION.TURN_DURING,
       };
     case SET_TURN_END:
       return {
         ...state,
         gameState: GAME_STATE.TURN_END,
-        timer: 5000,
+        timer: DURATION.TURN_END,
       };
     case SET_GAME_OVER:
       return {
         ...state,
         gameState: GAME_STATE.GAME_OVER,
-        timer: 10000,
+        timer: DURATION.GAME_OVER,
       };
     case COUNTDOWN_TIMER:
       return {
         ...state,
         timer: state.timer - 1000,
       };
+    case UPDATE_GAME:
+      return action.payload.game;
     default:
       return state;
   }
