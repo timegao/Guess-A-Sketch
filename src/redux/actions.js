@@ -5,6 +5,12 @@ import {
   ADD_PLAYER,
   UPDATE_USERS,
   UPDATE_USER,
+  SET_GAME_WAITING,
+  SET_TURN_START,
+  SET_TURN_DURING,
+  SET_TURN_END,
+  SET_GAME_OVER,
+  COUNTDOWN_TIMER,
 } from "./actionConstants";
 import { MESSAGE_TYPE } from "./stateConstants";
 import store from "./store";
@@ -128,3 +134,27 @@ const formatUsersData = (users) => {
   );
   return newUsers;
 };
+
+export const setGameWaiting = () => ({
+  type: SET_GAME_WAITING,
+});
+
+export const setTurnStart = () => ({
+  type: SET_TURN_START,
+});
+
+export const setTurnDuring = () => ({
+  type: SET_TURN_DURING,
+});
+
+export const setTurnEnd = () => ({
+  type: SET_TURN_END,
+});
+
+export const setGameOver = () => ({
+  type: SET_GAME_OVER,
+});
+
+export const countdownTimer = () => ({
+  type: COUNTDOWN_TIMER,
+});

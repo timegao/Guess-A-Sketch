@@ -13,15 +13,17 @@ const MESSAGE_TYPE = {
 };
 
 const GAME_STATE = {
-  GAME_WAITING: "game waiting",
-  ROUND_START: "round start",
-  ROUND_DURING: "round during",
-  ROUND_END: "round end",
-  GAME_OVER: "game over",
+  GAME_WAITING: "game waiting", // Players are in loading screen
+  TURN_START: "round start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
+  TURN_DURING: "round during", // Drawer draws word, guesser tries to guess word
+  TURN_END: "round end", // Each player sees their updated score
+  GAME_OVER: "game over", // Each player sees all standings
 };
 
+// Represents all messages in the game
 const INITIAL_MESSAGES = [];
 
+// Represents all lines drawn on the canvas
 const INITIAL_LINES = [];
 
 // Represents all players in the game

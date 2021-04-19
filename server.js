@@ -28,7 +28,7 @@ app.use(express.static(__dirname + "/"));
 let messages = []; // Array of messages sent to users
 let lines = []; // Array of lines drawn on Canvas
 let word = ""; // Word for users to guess
-let game = INITIAL_GAME;
+let game = INITIAL_GAME; // Stores gameState, timer, and round
 
 const clients = {}; // Object to map client ids to their usernames
 
