@@ -1,5 +1,10 @@
 /** SERVER CONFIGURATION */
 const express = require("express");
+const {
+  INITIAL_GAME,
+  MESSAGE_TYPE,
+  ROLES,
+} = require("./src/redux/stateConstants");
 const app = express();
 const server = require("http").Server(app);
 // The origin is used by CORS
@@ -20,20 +25,13 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
-const MESSAGE_TYPE = {
-  JOIN: "join",
-  LEAVE: "leave",
-  ANSWER: "answer",
-  REGULAR: "regular",
-  GAME_OVER: "game over",
-  CORRECT: "correct guess",
-};
+let messages = []; // Array of messages sent to users
+let lines = []; // Array of lines drawn on Canvas
+let word = ""; // Word for users to guess
+let game = INITIAL_GAME;
 
-let messages = [];
-let lines = [];
+const clients = {}; // Object to map client ids to their usernames
 
-// Object to map client ids to their usernames
-const clients = {};
 // Listen for client connections
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
@@ -43,7 +41,8 @@ const processMessage = (message) => {
 };
 
 io.on("connection", (client) => {
-  client.emit("hello", "Server says hello");
+  // Syntax allows us to emit to specific client instead of all clients
+  io.to(client.id).emit("hello", `${client.id}`);
 
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
@@ -63,7 +62,7 @@ io.on("connection", (client) => {
       id: client.id,
       username,
       score: 0,
-      role: "guesser",
+      role: ROLES.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
       wait: false,
