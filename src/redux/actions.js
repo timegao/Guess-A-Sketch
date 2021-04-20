@@ -62,14 +62,14 @@ export const addPlayer = (user) => ({
 });
 
 export const newPlayer = (username) => {
-  return (dispatch) => {
+  return () => {
     const date = new Date();
     joinChat(username, date);
   };
 };
 
 export const newMessage = (msg) => {
-  return (dispatch) => {
+  return () => {
     addMessage(msg);
   };
 };

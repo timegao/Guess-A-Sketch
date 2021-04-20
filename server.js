@@ -27,9 +27,8 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
-let messages = []; // Array of messages sent to users
 let lines = []; // Array of lines drawn on Canvas
-let wordToGuess = ""; // Word for users to guess
+let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
 let game = INITIAL_GAME; // Stores gameState, timer, and round
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
@@ -233,13 +232,7 @@ io.on("connection", (client) => {
       drawn: false,
       wonTurn: false,
     };
-    // messages.push({
-    //   username,
-    //   text: `${username} has joined the chat!`,
-    //   type: MESSAGE_TYPE.JOIN,
-    // });
     client.emit("add player", clients[client.id]); // trigger adding of player in redux
-    // io.sockets.emit("all messages", messages); // TODO: users should only receive messages sent after they've joined
     processMessage(client.id, {
       username,
       text: `${username} has joined the chat!`,
@@ -253,10 +246,8 @@ io.on("connection", (client) => {
   });
 
   client.on("new message", (msgText) => {
-    // messages.push(message);
     const message = validateMessageText(client.id, msgText);
     processMessage(client.id, message);
-    // io.sockets.emit("all messages", messages);
   });
 
   client.on("new line", (line) => {
