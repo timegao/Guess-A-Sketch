@@ -2,7 +2,6 @@ import {
   updateMessages,
   updateLines,
   updateUsers,
-  updateUser,
   addPlayer,
   setGameWaiting,
   setTurnStart,
