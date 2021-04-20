@@ -1,6 +1,7 @@
 import Chat from "./Chat";
 import PlayerList from "./PlayerList";
 import CanvasBoard from "./CanvasBoard";
+import DynamicModal from "./DynamicModal";
 
 const GameView = () => {
   return (
@@ -40,6 +41,7 @@ const GameView = () => {
           <Chat />
         </div>
       </div>
+      <DynamicModal />
     </div>
   );
 };
