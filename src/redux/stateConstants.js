@@ -60,7 +60,7 @@ const ERASER_STROKE = {
 
 // Changes exports to CommonJS Syntax so that they can be imported to server.js
 module.exports = {
-  ROLES: ROLE,
+  ROLE,
   MESSAGE_TYPE,
   GAME_STATE,
   DURATION,
