@@ -3,7 +3,7 @@ const express = require("express");
 const {
   INITIAL_GAME,
   MESSAGE_TYPE,
-  ROLES,
+  ROLE,
   DURATION,
   GAME_STATE,
 } = require("./src/redux/stateConstants");
@@ -30,6 +30,7 @@ app.use(express.static(__dirname + "/"));
 let messages = []; // Array of messages sent to users
 let lines = []; // Array of lines drawn on Canvas
 let word = ""; // Word for users to guess
+let hint = ""; // Hint for guessers to see
 let game = INITIAL_GAME; // Stores gameState, timer, and round
 
 const clients = {}; // Object to map client ids to their usernames
@@ -57,12 +58,12 @@ const findDrawerClientId = () => {
 const usersToNotDrawnUsersArray = () =>
   Object.values(clients).filter((user) => user.drawn === false);
 
-const countdownTurnEndToGameOver = () => {
+const countdownTurnEnd = () => {
   if (game.gameState === GAME_STATE.TURN_END) {
     if (game.timer > 0) {
       io.sockets.emit("countdown timer");
       game.timer -= 1000;
-      setTimeout(countdownTurnEndToGameOver, 1000);
+      setTimeout(countdownTurnEnd, 1000);
     } else {
       game.gameState = GAME_STATE.GAME_OVER;
       io.sockets.emit("game over");
@@ -71,34 +72,53 @@ const countdownTurnEndToGameOver = () => {
   }
 };
 
-const countdownTurnDuringToTurnEnd = () => {
+const countdownTurnDuring = () => {
   if (game.gameState === GAME_STATE.TURN_DURING) {
     if (game.timer > 0) {
       io.sockets.emit("countdown timer");
       game.timer -= 1000;
-      setTimeout(countdownTurnDuringToTurnEnd, 1000);
+      setTimeout(countdownTurnDuring, 1000);
     } else {
       game.gameState = GAME_STATE.TURN_END;
       game.timer = DURATION.TURN_END;
       io.sockets.emit("turn end");
-      countdownTurnEndToGameOver();
+      countdownTurnEnd();
     }
   }
 };
 
-const countdownTurnStartToTurnDuring = () => {
+const countdownTurnStart = () => {
   if (game.gameState === GAME_STATE.TURN_START) {
     if (game.timer > 0) {
       io.sockets.emit("countdown timer");
       game.timer -= 1000;
-      setTimeout(countdownTurnStartToTurnDuring, 1000);
+      setTimeout(countdownTurnStart, 1000);
     } else {
       game.gameState = GAME_STATE.TURN_DURING;
       game.timer = DURATION.TURN_DURING;
       io.sockets.emit("turn during");
-      countdownTurnDuringToTurnEnd();
+      countdownTurnDuring();
     }
   }
+};
+
+/**
+ * prepareTurnStart is called by prepareRoundStart at the beginning of the game
+ */
+const prepareTurnStart = () => {
+  lines = []; // clears canvas lines
+  Object.keys(clients).forEach((key) => {
+    if (clients[key].wonRound) {
+      clients[key].score++; // Add 1 to score for players who won
+    }
+    clients[key].wonRound = false; // Clear wonRound for all players
+    clients[key].role = ROLE.GUESSER; // Set all players to guesser
+  });
+  const drawerId = findDrawerClientId(); // computer an id for drawer
+  clients[drawerId].drawn = true;
+  clients[drawerId].role = ROLE.DRAWER;
+  io.to(drawerId).emit("add player", clients[drawerId]);
+  countdownTurnStart();
 };
 
 /**
@@ -110,22 +130,13 @@ const countdownTurnStartToTurnDuring = () => {
  * 7. Start countdown
  */
 const prepareRoundStart = () => {
-  lines = []; // clears canvas lines
   Object.keys(clients).forEach((key) => {
-    if (clients[key].wonRound) {
-      // Add 1 to score for players who won
-      clients[key].score++;
-    }
-    clients[key].wonRound = false;
+    clients[key].drawn = false;
   });
-  const drawerId = findDrawerClientId();
-  io.sockets.emit("hello", drawerId);
-  clients[drawerId].drawn = true;
-  io.to(drawerId).emit("add player", clients[drawerId]);
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
   io.sockets.emit("turn start");
-  countdownTurnStartToTurnDuring();
+  prepareTurnStart();
 };
 
 io.on("connection", (client) => {
@@ -153,7 +164,7 @@ io.on("connection", (client) => {
       id: client.id,
       username,
       score: 0,
-      role: ROLES.GUESSER,
+      role: ROLE.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
       drawn: false,
