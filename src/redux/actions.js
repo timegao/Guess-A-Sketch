@@ -11,6 +11,7 @@ import {
   SET_TURN_END,
   SET_GAME_OVER,
   COUNTDOWN_TIMER,
+  UPDATE_GAME,
 } from "./actionConstants";
 import { MESSAGE_TYPE } from "./stateConstants";
 import store from "./store";
@@ -157,4 +158,11 @@ export const setGameOver = () => ({
 
 export const countdownTimer = () => ({
   type: COUNTDOWN_TIMER,
+});
+
+export const updateGame = (game) => ({
+  type: UPDATE_GAME,
+  payload: {
+    game,
+  },
 });

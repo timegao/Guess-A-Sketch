@@ -2,29 +2,22 @@ import { useSelector } from "react-redux";
 import JoinChat from "../components/JoinChat";
 import { getPlayer } from "../redux/player";
 import GameView from "../components/GameView";
-import { getUsers } from "../redux/users";
 import Loading from "../components/Loading";
+import { getGameState } from "../redux/game";
+import { GAME_STATE } from "../redux/stateConstants";
 
 const App = () => {
-  const MIN_PLAYERS = 2;
   const player = useSelector(getPlayer);
-  const users = useSelector(getUsers);
+  const gameState = useSelector(getGameState);
 
-  // return <>{player.hasOwnProperty("username") ? <GameView /> : <JoinChat />}</>;
-
-  if (!player.hasOwnProperty("username")) {
-    return <JoinChat />;
-  } else if (
-    player.hasOwnProperty("username") &&
-    Object.keys(users).length < MIN_PLAYERS
-  ) {
-    return <Loading msg={"Waiting for another player to Join..."} />;
-  } else if (
-    player.hasOwnProperty("username") &&
-    Object.keys(users).length >= MIN_PLAYERS
-  ) {
-    return <GameView />;
+  if (player.hasOwnProperty("username")) {
+    if (gameState === GAME_STATE.GAME_WAITING) {
+      return <Loading msg={"Waiting for another player to Join..."} />;
+    } else {
+      return <GameView />;
+    }
   }
+  return <JoinChat />;
 };
 
 export default App;

@@ -1,4 +1,4 @@
-const ROLES = {
+const ROLE = {
   DRAWER: "drawer",
   GUESSER: "guesser",
 };
@@ -14,10 +14,18 @@ const MESSAGE_TYPE = {
 
 const GAME_STATE = {
   GAME_WAITING: "game waiting", // Players are in loading screen
-  TURN_START: "round start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
-  TURN_DURING: "round during", // Drawer draws word, guesser tries to guess word
-  TURN_END: "round end", // Each player sees their updated score
+  TURN_START: "turn start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
+  TURN_DURING: "turn during", // Drawer draws word, guesser tries to guess word
+  TURN_END: "turn end", // Each player sees their updated score
   GAME_OVER: "game over", // Each player sees all standings
+};
+
+const DURATION = {
+  GAME_WAITING: Infinity,
+  TURN_START: 15000,
+  TURN_DURING: 90000,
+  TURN_END: 5000,
+  GAME_OVER: 10000,
 };
 
 // Represents all messages in the game
@@ -52,9 +60,10 @@ const ERASER_STROKE = {
 
 // Changes exports to CommonJS Syntax so that they can be imported to server.js
 module.exports = {
-  ROLES,
+  ROLES: ROLE,
   MESSAGE_TYPE,
   GAME_STATE,
+  DURATION,
   INITIAL_MESSAGES,
   INITIAL_LINES,
   INITIAL_USERS,

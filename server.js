@@ -4,6 +4,8 @@ const {
   INITIAL_GAME,
   MESSAGE_TYPE,
   ROLES,
+  DURATION,
+  GAME_STATE,
 } = require("./src/redux/stateConstants");
 const app = express();
 const server = require("http").Server(app);
@@ -40,10 +42,93 @@ const processMessage = (message) => {
   io.sockets.emit("all messages", messages);
 };
 
-io.on("connection", (client) => {
-  // Syntax allows us to emit to specific client instead of all clients
-  io.to(client.id).emit("hello", `${client.id}`);
+/**
+ * Finds user's id with drawn === false and lowest joinedTimeStamp
+ * @returns id of user with drawn === false and lowest joinedTimeStamp
+ */
+const findDrawerClientId = () => {
+  return usersToNotDrawnUsersArray().sort((a, b) => b.date - a.date)[0].id;
+};
 
+/**
+ * Filters clients Object for users who have not drawn
+ * @returns Array of users who have drawn === false
+ */
+const usersToNotDrawnUsersArray = () =>
+  Object.values(clients).filter((user) => user.drawn === false);
+
+const countdownTurnEndToGameOver = () => {
+  if (game.gameState === GAME_STATE.TURN_END) {
+    if (game.timer > 0) {
+      io.sockets.emit("countdown timer");
+      game.timer -= 1000;
+      setTimeout(countdownTurnEndToGameOver, 1000);
+    } else {
+      game.gameState = GAME_STATE.GAME_OVER;
+      io.sockets.emit("game over");
+      game.timer = DURATION.GAME_OVER;
+    }
+  }
+};
+
+const countdownTurnDuringToTurnEnd = () => {
+  if (game.gameState === GAME_STATE.TURN_DURING) {
+    if (game.timer > 0) {
+      io.sockets.emit("countdown timer");
+      game.timer -= 1000;
+      setTimeout(countdownTurnDuringToTurnEnd, 1000);
+    } else {
+      game.gameState = GAME_STATE.TURN_END;
+      game.timer = DURATION.TURN_END;
+      io.sockets.emit("turn end");
+      countdownTurnEndToGameOver();
+    }
+  }
+};
+
+const countdownTurnStartToTurnDuring = () => {
+  if (game.gameState === GAME_STATE.TURN_START) {
+    if (game.timer > 0) {
+      io.sockets.emit("countdown timer");
+      game.timer -= 1000;
+      setTimeout(countdownTurnStartToTurnDuring, 1000);
+    } else {
+      game.gameState = GAME_STATE.TURN_DURING;
+      game.timer = DURATION.TURN_DURING;
+      io.sockets.emit("turn during");
+      countdownTurnDuringToTurnEnd();
+    }
+  }
+};
+
+/**
+ * 1. Add one to score for players with wonTurn = true
+ * 2. Set wonTurn for all players to false
+ * 3-4. Pick player with lowest joinedTimeStamp and drawn = false and set their drawn to true and set their role to ROLES.DRAWER
+ * 5. Clear canvas/lines
+ * 6. Set GameState to TURN_START
+ * 7. Start countdown
+ */
+const prepareRoundStart = () => {
+  lines = []; // clears canvas lines
+  Object.keys(clients).forEach((key) => {
+    if (clients[key].wonRound) {
+      // Add 1 to score for players who won
+      clients[key].score++;
+    }
+    clients[key].wonRound = false;
+  });
+  const drawerId = findDrawerClientId();
+  io.sockets.emit("hello", drawerId);
+  clients[drawerId].drawn = true;
+  io.to(drawerId).emit("add player", clients[drawerId]);
+  game.gameState = GAME_STATE.TURN_START;
+  game.timer = DURATION.TURN_START;
+  io.sockets.emit("turn start");
+  countdownTurnStartToTurnDuring();
+};
+
+io.on("connection", (client) => {
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
       processMessage({
@@ -52,12 +137,18 @@ io.on("connection", (client) => {
         type: MESSAGE_TYPE.LEAVE,
       });
       delete clients[client.id];
+      if (Object.keys(clients).length <= 1) {
+        client.emit("wait for another player", clients[client.id]);
+        io.sockets.emit("game waiting");
+        game.gameState = GAME_STATE.GAME_WAITING;
+        game.timer = DURATION.GAME_WAITING;
+      }
       io.sockets.emit("all users", clients);
     }
   });
 
-  let waitingClientId = null;
   client.on("join", (username, date) => {
+    // Add new user to clients in server
     clients[client.id] = {
       id: client.id,
       username,
@@ -65,31 +156,21 @@ io.on("connection", (client) => {
       role: ROLES.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
-      wait: false,
+      drawn: false,
+      wonTurn: false,
     };
     messages.push({
       username,
       text: `${username} has joined the chat!`,
       type: MESSAGE_TYPE.JOIN,
     });
-    // only 1 player
-    if (Object.keys(clients).length === 1) {
-      clients[client.id] = {
-        ...clients[client.id],
-        role: "drawer",
-        wait: true, // needs to wait for other player
-      };
-      waitingClientId = client.id;
-      client.emit("wait for another player", clients[client.id]);
-      io.to(client.id).emit("add player", clients[client.id]); // trigger adding of player in redux
-      return; // Do not send all messages  or all user to all clients
-    }
-    if (waitingClientId) {
-      clients[waitingClientId] = { ...clients[waitingClientId], wait: false };
-    }
-    io.to(client.id).emit("add player", clients[client.id]); // trigger adding of player in redux
-    io.sockets.emit("all messages", messages);
+    client.emit("add player", clients[client.id]); // trigger adding of player in redux
+    io.sockets.emit("all messages", messages); // TODO: users should only receive messages sent after they've joined
     io.sockets.emit("all users", clients);
+    // prepare to start game when exactly 2 players join
+    if (Object.keys(clients).length === 2) {
+      prepareRoundStart();
+    }
   });
 
   client.on("new message", (message) => {
