@@ -1,4 +1,5 @@
 /** SERVER CONFIGURATION */
+const { count } = require("console");
 const express = require("express");
 const {
   INITIAL_GAME,
@@ -65,47 +66,62 @@ const findDrawerClientId = () => {
 const usersToNotDrawnUsersArray = () =>
   Object.values(clients).filter((user) => user.drawn === false);
 
+/**
+ * Countdown within game.timer in server and game.timer in Redux
+ */
+const countdown = () => {
+  game.timer -= 1000;
+  io.sockets.emit("countdown timer");
+};
+// global so clearInterval knows id to clear;
+let intervalGameOver;
+let intervalTurnEnd;
+let intervalTurnDuring;
+let intervalTurnStart;
+
+const countdownGameOver = () => {
+  countdown();
+  if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
+    game.gameState = GAME_STATE.TURN_START;
+    io.sockets.emit("turn start");
+    game.timer = DURATION.TURN_START;
+    clearInterval(intervalGameOver);
+    intervalTurnStart = setInterval(countdownTurnStart, 1000);
+  }
+};
+
 const countdownTurnEnd = () => {
-  if (game.gameState === GAME_STATE.TURN_END) {
-    if (game.timer > 0) {
-      io.sockets.emit("countdown timer");
-      game.timer -= 1000;
-      setTimeout(countdownTurnEnd, 1000);
-    } else {
-      game.gameState = GAME_STATE.GAME_OVER;
-      io.sockets.emit("game over");
-      game.timer = DURATION.GAME_OVER;
-    }
+  countdown();
+  if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_END) {
+    game.gameState = GAME_STATE.GAME_OVER;
+    io.sockets.emit("game over");
+    game.timer = DURATION.GAME_OVER;
+    clearInterval(intervalTurnEnd);
+    intervalGameOver = setInterval(countdownGameOver, 1000);
   }
 };
 
 const countdownTurnDuring = () => {
-  if (game.gameState === GAME_STATE.TURN_DURING) {
-    if (game.timer > 0) {
-      io.sockets.emit("countdown timer");
-      game.timer -= 1000;
-      setTimeout(countdownTurnDuring, 1000);
-    } else {
-      game.gameState = GAME_STATE.TURN_END;
-      game.timer = DURATION.TURN_END;
-      io.sockets.emit("turn end");
-      countdownTurnEnd();
-    }
+  countdown();
+  io.sockets.emit("hello", "countdown turnduring");
+  if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
+    game.gameState = GAME_STATE.TURN_END;
+    io.sockets.emit("turn end");
+    game.timer = DURATION.TURN_END;
+    clearInterval(intervalTurnDuring);
+    intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
 };
 
 const countdownTurnStart = () => {
-  if (game.gameState === GAME_STATE.TURN_START) {
-    if (game.timer > 0) {
-      io.sockets.emit("countdown timer");
-      game.timer -= 1000;
-      setTimeout(countdownTurnStart, 1000);
-    } else {
-      game.gameState = GAME_STATE.TURN_DURING;
-      game.timer = DURATION.TURN_DURING;
-      io.sockets.emit("turn during");
-      countdownTurnDuring();
-    }
+  countdown();
+  io.sockets.emit("hello", "countdown turnstart");
+  if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_START) {
+    game.gameState = GAME_STATE.TURN_DURING;
+    game.timer = DURATION.TURN_DURING;
+    io.sockets.emit("turn during");
+    clearInterval(intervalTurnStart);
+    intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
   }
 };
 
@@ -125,7 +141,7 @@ const prepareTurnStart = () => {
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
   io.to(drawerId).emit("add player", clients[drawerId]);
-  countdownTurnStart();
+  intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
 /**
