@@ -29,7 +29,7 @@ const conditionalRender = (gameState, duty) => {
     case GAME_STATE.GAME_OVER:
       return <GameStandingModal />;
     default:
-      return;
+      return null;
   }
 };
 
@@ -39,8 +39,12 @@ const DynamicModal = () => {
   const player = useSelector(getPlayer);
   // It takes time for addPlayer to hit server and come back
   // In the meantime, load the loading screen
-  if (Object.keys(users).length > 0 && Object.keys(player).length > 0) {
-    console.log(users[player.username].role);
+  if (
+    Object.keys(users).length > 0 &&
+    Object.keys(player).length > 0 &&
+    typeof users[player.username] !== "undefined"
+  ) {
+    console.log(users[player.username]);
     const role = users[player.username].role;
     return conditionalRender(gameState, role);
   } else {
