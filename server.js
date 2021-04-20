@@ -29,18 +29,26 @@ app.use(express.static(__dirname + "/"));
 
 let messages = []; // Array of messages sent to users
 let lines = []; // Array of lines drawn on Canvas
-let word = ""; // Word for users to guess
+let wordToGuess = ""; // Word for users to guess
 let hint = ""; // Hint for guessers to see
 let game = INITIAL_GAME; // Stores gameState, timer, and round
+let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
 
 const clients = {}; // Object to map client ids to their usernames
 
 // Listen for client connections
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-const processMessage = (message) => {
-  messages.push(message);
-  io.sockets.emit("all messages", messages);
+const processMessage = (clientId, message) => {
+  // messages.push(message);
+  const { type } = message;
+  if (type === MESSAGE_TYPE.CLOSE_GUESS) {
+    // push message to particular user
+    io.to(clientId).emit("all messages", message);
+  } else {
+    // push message to all users
+    io.sockets.emit("all messages", message);
+  }
 };
 
 /**
@@ -139,6 +147,61 @@ const prepareRoundStart = () => {
   prepareTurnStart();
 };
 
+/**
+ * Validate message text against word to guess.
+ */
+const validateMessageText = (clientId, msgText) => {
+  const username = clients[clientId].username;
+  const type = findMessageType(msgText);
+  const text = updateMessageText(username, msgText, type);
+  return { username: username, text: text, type: type };
+};
+
+/**
+ * Helper to find message type
+ */
+const findMessageType = (msgText) => {
+  const wordsRelativeDifference = guessRelativeDifference(msgText);
+  if (wordsRelativeDifference === 0) {
+    return MESSAGE_TYPE.CORRECT;
+  }
+  if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
+    return MESSAGE_TYPE.CLOSE_GUESS;
+  }
+  return MESSAGE_TYPE.REGULAR; // regular message
+};
+
+/** Helper to update custom message text*/
+const updateMessageText = (username, msgText, type) => {
+  switch (type) {
+    case MESSAGE_TYPE.CORRECT:
+      return `${username} guessed the word!`;
+    case MESSAGE_TYPE.CLOSE_GUESS:
+      return `${username} close guess!`;
+    default:
+      // All other cases
+      return msgText;
+  }
+};
+
+/**
+ * Helper to compare characters difference against word to guess.
+ */
+const guessRelativeDifference = (msgText) => {
+  const guessSize = msgText.length;
+  const answerSize = wordToGuess.length;
+
+  let i = 0;
+  let differenceCount = 0;
+  while (i < guessSize && i < answerSize) {
+    if (msgText.charAt(i).toLowerCase() !== wordToGuess.charAt(i)) {
+      differenceCount++;
+    }
+    i++;
+  }
+  return differenceCount + (answerSize - i);
+};
+
 io.on("connection", (client) => {
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
@@ -170,13 +233,18 @@ io.on("connection", (client) => {
       drawn: false,
       wonTurn: false,
     };
-    messages.push({
+    // messages.push({
+    //   username,
+    //   text: `${username} has joined the chat!`,
+    //   type: MESSAGE_TYPE.JOIN,
+    // });
+    client.emit("add player", clients[client.id]); // trigger adding of player in redux
+    // io.sockets.emit("all messages", messages); // TODO: users should only receive messages sent after they've joined
+    processMessage(client.id, {
       username,
       text: `${username} has joined the chat!`,
       type: MESSAGE_TYPE.JOIN,
-    });
-    client.emit("add player", clients[client.id]); // trigger adding of player in redux
-    io.sockets.emit("all messages", messages); // TODO: users should only receive messages sent after they've joined
+    }); // use processMessage to send all messages
     io.sockets.emit("all users", clients);
     // prepare to start game when exactly 2 players join
     if (Object.keys(clients).length === 2) {
@@ -184,9 +252,11 @@ io.on("connection", (client) => {
     }
   });
 
-  client.on("new message", (message) => {
-    messages.push(message);
-    io.sockets.emit("all messages", messages);
+  client.on("new message", (msgText) => {
+    // messages.push(message);
+    const message = validateMessageText(client.id, msgText);
+    processMessage(client.id, message);
+    // io.sockets.emit("all messages", messages);
   });
 
   client.on("new line", (line) => {

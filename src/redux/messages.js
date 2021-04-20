@@ -4,7 +4,7 @@ import { UPDATE_MESSAGES } from "./actionConstants";
 const messagesReducer = (state = INITIAL_MESSAGES, action) => {
   switch (action.type) {
     case UPDATE_MESSAGES:
-      return action.payload.messages;
+      return [...state, action.payload.message];
     default:
       return state;
   }

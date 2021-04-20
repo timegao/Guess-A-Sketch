@@ -10,6 +10,7 @@ const MESSAGE_TYPE = {
   REGULAR: "regular",
   GAME_OVER: "game over",
   CORRECT: "correct guess",
+  CLOSE_GUESS: "close guess",
 };
 
 const GAME_STATE = {
