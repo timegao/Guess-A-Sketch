@@ -13,8 +13,6 @@ import {
   COUNTDOWN_TIMER,
   UPDATE_GAME,
 } from "./actionConstants";
-import { MESSAGE_TYPE } from "./stateConstants";
-import store from "./store";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -29,10 +27,10 @@ import store from "./store";
  *    }
  * }
  */
-export const updateMessages = (messages) => ({
+export const updateMessages = (message) => ({
   type: UPDATE_MESSAGES,
   payload: {
-    messages,
+    message,
   },
 });
 
@@ -64,22 +62,15 @@ export const addPlayer = (user) => ({
 });
 
 export const newPlayer = (username) => {
-  return (dispatch) => {
+  return () => {
     const date = new Date();
-    // dispatch(addPlayer(username, date));
     joinChat(username, date);
   };
 };
 
 export const newMessage = (msg) => {
-  let username = store.getState().player.username;
-  return (dispatch) => {
-    const type = findMessageType(msg);
-    // TODO if message type is correct need to update player score.
-    // Also need to send message to server to update score -- Immediateley or @ end of round?
-    const text = createMessageText(msg, type);
-    // TODO dispatch to updatemessages??
-    addMessage({ username, text, type });
+  return () => {
+    addMessage(msg);
   };
 };
 
@@ -100,33 +91,6 @@ export const updateUser = (user) => ({
 /*---------------------------------*/
 /* Helpers */
 /*---------------------------------*/
-
-const findMessageType = (msg) => {
-  // TODO need game state to hold answer for current drawing
-  let correctAnswer = store.getState().answer;
-  correctAnswer = "testing";
-  // TO DO find relative difference between strings and display to all
-  // users if the guess is not slightly misspelled
-  if (msg.toLowerCase() === correctAnswer) {
-    return MESSAGE_TYPE.CORRECT;
-  }
-  return MESSAGE_TYPE.REGULAR; // regular message
-};
-
-const createMessageText = (msg, type) => {
-  const username = store.getState().player.username;
-  //TO DO need game state to hold answer for current drawing
-  let correctAnswer = store.getState().answer;
-  correctAnswer = "testing";
-  switch (type) {
-    case MESSAGE_TYPE.CORRECT:
-      return `${username} guessed the word!`;
-    default:
-      // All other cases
-      return msg;
-  }
-  // other message cases are emitted by the server not client
-};
 
 const formatUsersData = (users) => {
   const newUsers = {};

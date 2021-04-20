@@ -25,8 +25,13 @@ const generateMessage = ({ username, text, type }) => {
           <strong>{text}</strong>
         </td>
       );
+    case MESSAGE_TYPE.CLOSE_GUESS:
+      return (
+        <td className="text-info">
+          <strong>{text}</strong>
+        </td>
+      );
     default:
-      // MESSAGE_TYPE.REGULAR
       return (
         <td>
           <strong>{username}: </strong>

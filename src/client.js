@@ -30,8 +30,8 @@ socket.on("hello", (message) => {
   console.log(message);
 });
 
-socket.on("all messages", (messages) => {
-  store.dispatch(updateMessages(messages));
+socket.on("all messages", (message) => {
+  store.dispatch(updateMessages(message));
 });
 
 socket.on("all lines", (lines) => {
