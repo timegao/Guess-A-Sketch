@@ -44,7 +44,6 @@ const DynamicModal = () => {
     Object.keys(player).length > 0 &&
     typeof users[player.username] !== "undefined"
   ) {
-    console.log(users[player.username]);
     const role = users[player.username].role;
     return conditionalRender(gameState, role);
   } else {
