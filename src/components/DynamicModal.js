@@ -33,8 +33,7 @@ const conditionalRender = (gameState, duty) => {
     case GAME_STATE.GAME_OVER:
       return <GameStandingModal />;
     default:
-      console.log("NULL MODAL");
-      return null;
+      return "";
   }
 };
 
@@ -65,21 +64,18 @@ const DynamicModal = () => {
   useEffect(() => {
     const myModalEl = document.getElementById("dynamicModal");
     const modal = returnModal(myModalEl);
-    console.log("STATE FROM EFFECT:" + gameState);
     if (gameState === GAME_STATE.TURN_DURING) {
       // close modal
-      console.log("STATE FROM MODAL HIDE:" + gameState);
       modal.hide();
     } else {
       // open modal
-      console.log("STATE FROM MODAL SHOW:" + gameState);
       modal.show();
     }
   }, [gameState]);
 
   return (
     <div
-      className="modal fade"
+      className="modal"
       id="dynamicModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
@@ -89,30 +85,7 @@ const DynamicModal = () => {
     >
       <div className="modal-dialog">
         <div className="modal-content">
-          {/* <div className="modal-header">
-            <h5 className="modal-title" id="staticBackdropLabel">
-              Modal title
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div> */}
           <div className="modal-body">{conditionalRender(gameState, role)}</div>
-          {/* <div class="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button type="button" className="btn btn-primary">
-              Understood
-            </button>
-          </div> */}
         </div>
       </div>
     </div>
