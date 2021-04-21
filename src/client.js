@@ -85,3 +85,7 @@ export const addMessage = (message) => {
 export const addLine = (line) => {
   socket.emit("new line", line);
 };
+
+export const drawerChoseWord = (word) => {
+  socket.emit("new word", word);
+};
