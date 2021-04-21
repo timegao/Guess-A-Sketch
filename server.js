@@ -220,7 +220,7 @@ const guessRelativeDifference = (msgText) => {
 io.on("connection", (client) => {
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
-      processMessage({
+      processMessage(client.id, {
         username: clients[client.id].username,
         text: `${clients[client.id].username} has left the chat`,
         type: MESSAGE_TYPE.LEAVE,
@@ -255,6 +255,8 @@ io.on("connection", (client) => {
       type: MESSAGE_TYPE.JOIN,
     }); // use processMessage to send all messages
     io.sockets.emit("all users", clients);
+    io.sockets.emit("all lines", lines);
+    io.sockets.emit("update game", game);
     // prepare to start game when exactly 2 players join
     if (Object.keys(clients).length === 2) {
       prepareRoundStart();
