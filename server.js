@@ -1,5 +1,4 @@
 /** SERVER CONFIGURATION */
-const { count } = require("console");
 const express = require("express");
 const {
   INITIAL_GAME,
@@ -140,7 +139,7 @@ const prepareTurnStart = () => {
   const drawerId = findDrawerClientId(); // computer an id for drawer
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
-  io.to(drawerId).emit("add player", clients[drawerId]);
+  io.sockets.emit("all users", clients);
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
@@ -220,7 +219,7 @@ const guessRelativeDifference = (msgText) => {
 io.on("connection", (client) => {
   client.on("disconnect", () => {
     if (clients.hasOwnProperty(client.id)) {
-      processMessage({
+      processMessage(client.id, {
         username: clients[client.id].username,
         text: `${clients[client.id].username} has left the chat`,
         type: MESSAGE_TYPE.LEAVE,
@@ -255,6 +254,8 @@ io.on("connection", (client) => {
       type: MESSAGE_TYPE.JOIN,
     }); // use processMessage to send all messages
     io.sockets.emit("all users", clients);
+    client.emit("all lines", lines);
+    client.emit("update game", game);
     // prepare to start game when exactly 2 players join
     if (Object.keys(clients).length === 2) {
       prepareRoundStart();
