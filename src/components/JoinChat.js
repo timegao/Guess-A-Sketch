@@ -1,31 +1,40 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { newPlayer } from "../redux/actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { getUsers } from "../redux/users";
 
 const JoinChat = () => {
   const [username, setUsername] = useState("");
-  const [isValid, setIsValid] = useState(true);
+  const [validLength, setValidLength] = useState(true);
+  const [validName, setValidName] = useState(true);
+  const users = useSelector(getUsers);
 
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
-    if (e.target.value.length > 0) {
-      setIsValid(true);
+  const validateUsername = (username) => {
+    if (username.length === 0) {
+      setValidLength(false);
     } else {
-      setIsValid(false);
+      setValidLength(true);
     }
+    if (users.hasOwnProperty(username)) {
+      setValidName(false);
+    } else {
+      setValidName(true);
+    }
+  };
+
+  const handleChange = (e) => {
+    validateUsername(e.target.value);
     setUsername(e.target.value);
   };
 
   const verifyUsername = () => {
-    if (username.length > 0) {
-      setIsValid(true);
+    if (validLength && validName) {
       dispatch(newPlayer(username));
-    } else {
-      setIsValid(false);
     }
   };
 
@@ -48,8 +57,8 @@ const JoinChat = () => {
               type="text"
               className="form-control has-validation"
               id="username"
-              invalid={`${isValid === false}`}
-              valid={`${isValid === true}`}
+              invalid={`${validLength === false || validName === false}`}
+              valid={`${validLength === true && validName === true}`}
               placeholder="Username"
               value={username}
               onChange={handleChange}
@@ -58,10 +67,20 @@ const JoinChat = () => {
             <div
               className="invalid-feedback"
               style={
-                isValid === false ? { display: "block" } : { display: "none" }
+                validLength === false
+                  ? { display: "block" }
+                  : { display: "none" }
               }
             >
               Username cannot be empty!
+            </div>
+            <div
+              className="invalid-feedback"
+              style={
+                validName === false ? { display: "block" } : { display: "none" }
+              }
+            >
+              Username already in use!
             </div>
           </div>
           <div className="col-auto">
@@ -69,6 +88,7 @@ const JoinChat = () => {
               type="button"
               className="btn btn-primary float-right btn-lg"
               onClick={verifyUsername}
+              disabled={!validName || !validLength}
             >
               <span className="mx-2">
                 <FontAwesomeIcon icon={faPlayCircle} size="1x" />
