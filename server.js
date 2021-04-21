@@ -78,6 +78,14 @@ let intervalTurnEnd;
 let intervalTurnDuring;
 let intervalTurnStart;
 
+// reset all intervals when state is back to waiting.
+const clearAllTimerIntervals = () => {
+  clearInterval(intervalGameOver);
+  clearInterval(intervalTurnEnd);
+  clearInterval(intervalTurnDuring);
+  clearInterval(intervalTurnStart);
+};
+
 const countdownGameOver = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
@@ -230,6 +238,7 @@ io.on("connection", (client) => {
         io.sockets.emit("game waiting");
         game.gameState = GAME_STATE.GAME_WAITING;
         game.timer = DURATION.GAME_WAITING;
+        clearAllTimerIntervals();
       }
       io.sockets.emit("all users", clients);
     }
