@@ -1,5 +1,4 @@
 /** SERVER CONFIGURATION */
-const { count } = require("console");
 const express = require("express");
 const {
   INITIAL_GAME,
@@ -140,7 +139,7 @@ const prepareTurnStart = () => {
   const drawerId = findDrawerClientId(); // computer an id for drawer
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
-  io.to(drawerId).emit("add player", clients[drawerId]);
+  io.sockets.emit("all users", clients);
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
