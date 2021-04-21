@@ -271,4 +271,9 @@ io.on("connection", (client) => {
     lines.push(line);
     io.sockets.emit("all lines", lines);
   });
+
+  client.on("new word", (word) => {
+    game.wordToGuess = word;
+    game.timer = 0; // Skips rest of GAME_STATE.TURN_START
+  });
 });

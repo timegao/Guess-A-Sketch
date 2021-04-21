@@ -1,4 +1,4 @@
-export const EASY_WORDS = [
+const EASY_WORDS = [
   "ace",
   "acorn",
   "add",
@@ -432,7 +432,7 @@ export const EASY_WORDS = [
   "zoo",
 ];
 
-export const MEDIUM_WORDS = [
+const MEDIUM_WORDS = [
   "africa",
   "airbag",
   "airplane",
@@ -1371,7 +1371,7 @@ export const MEDIUM_WORDS = [
   "zoom",
 ];
 
-export const HARD_WORDS = [
+const HARD_WORDS = [
   "abba",
   "acdc",
   "adele",
@@ -1886,3 +1886,12 @@ export const HARD_WORDS = [
   "zumba",
   "zygote",
 ];
+
+const chooseRandomWord = (array) =>
+  array[Math.floor(Math.random() * array.length)];
+
+export const getWordChoices = () => ({
+  easy: chooseRandomWord(EASY_WORDS),
+  medium: chooseRandomWord(MEDIUM_WORDS),
+  hard: chooseRandomWord(HARD_WORDS),
+});
