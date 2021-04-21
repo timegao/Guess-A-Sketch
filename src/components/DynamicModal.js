@@ -11,6 +11,9 @@ import { getUsers } from "../redux/users";
 import { getPlayer } from "../redux/player";
 import { Modal } from "bootstrap";
 
+// singleton modal instance
+let modalInstance = null;
+
 const conditionalRender = (gameState, duty) => {
   switch (gameState) {
     case GAME_STATE.GAME_WAITING:
@@ -22,7 +25,7 @@ const conditionalRender = (gameState, duty) => {
         return <DrawerChoosingModal />;
       } else {
         console.log("User does not have role of drawer or guesser!");
-        return <Loading />;
+        return <Loading msg="Waiting for a player to join." />;
       }
     }
     case GAME_STATE.TURN_END:
@@ -30,8 +33,20 @@ const conditionalRender = (gameState, duty) => {
     case GAME_STATE.GAME_OVER:
       return <GameStandingModal />;
     default:
+      console.log("NULL MODAL");
       return null;
   }
+};
+
+const returnModal = (myModalEl) => {
+  if (modalInstance === null) {
+    modalInstance = new Modal(myModalEl, {
+      backdrop: "static",
+      keyboard: false,
+      dismiss: "modal-backdrop",
+    });
+  }
+  return modalInstance;
 };
 
 const DynamicModal = () => {
@@ -49,17 +64,15 @@ const DynamicModal = () => {
 
   useEffect(() => {
     const myModalEl = document.getElementById("dynamicModal");
+    const modal = returnModal(myModalEl);
+    console.log("STATE FROM EFFECT:" + gameState);
     if (gameState === GAME_STATE.TURN_DURING) {
       // close modal
-      const modal = Modal.getInstance(myModalEl, { backdrop: "false" });
+      console.log("STATE FROM MODAL HIDE:" + gameState);
       modal.hide();
     } else {
       // open modal
-      const modal = new Modal(myModalEl, {
-        backdrop: "static",
-        keyboard: false,
-        dismiss: "modal",
-      });
+      console.log("STATE FROM MODAL SHOW:" + gameState);
       modal.show();
     }
   }, [gameState]);
@@ -70,7 +83,7 @@ const DynamicModal = () => {
       id="dynamicModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
-      tabindex="-1"
+      tabIndex="-1"
       aria-labelledby="dynamicModal"
       aria-hidden="true"
     >
@@ -87,7 +100,7 @@ const DynamicModal = () => {
               aria-label="Close"
             ></button>
           </div> */}
-          <div class="modal-body">{conditionalRender(gameState, role)}</div>
+          <div className="modal-body">{conditionalRender(gameState, role)}</div>
           {/* <div class="modal-footer">
             <button
               type="button"
