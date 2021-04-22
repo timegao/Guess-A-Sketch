@@ -46,7 +46,7 @@ const INITIAL_GAME = {
   timer: Infinity,
   round: 1,
   wordChoices: {},
-  wordToGuess: "correct", // should initially be empty string
+  wordToGuess: "",
 };
 
 // Used to start drawing against white background
