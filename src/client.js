@@ -10,6 +10,7 @@ import {
   setGameOver,
   countdownTimer,
   updateGame,
+  setWordChoices,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -74,6 +75,10 @@ socket.on("update game", (game) => {
   store.dispatch(updateGame(game));
 });
 
+socket.on("choose word", (wordChoices) => {
+  store.dispatch(setWordChoices(wordChoices));
+});
+
 export const joinChat = (username, date) => {
   socket.emit("join", username, date);
 };
@@ -84,6 +89,10 @@ export const addMessage = (message) => {
 
 export const addLine = (line) => {
   socket.emit("new line", line);
+};
+
+export const getWordsToChooseFrom = () => {
+  socket.emit("get words to choose from");
 };
 
 export const drawerChoseWord = (word) => {
