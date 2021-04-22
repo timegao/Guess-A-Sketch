@@ -8,7 +8,7 @@ const Chat = () => {
       <div className="card-body p-0">
         <Messages />
       </div>
-      <div class="card-footer">
+      <div className="card-footer">
         <MessageForm />
       </div>
     </div>
