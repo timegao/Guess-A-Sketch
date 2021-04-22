@@ -11,6 +11,7 @@ import {
   countdownTimer,
   updateGame,
   setWordChoices,
+  setWordToGuess,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -77,6 +78,10 @@ socket.on("update game", (game) => {
 
 socket.on("choose word", (wordChoices) => {
   store.dispatch(setWordChoices(wordChoices));
+});
+
+socket.on("auto choose word", (word) => {
+  store.dispatch(setWordToGuess(word));
 });
 
 export const joinChat = (username, date) => {

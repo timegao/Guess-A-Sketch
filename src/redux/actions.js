@@ -157,7 +157,7 @@ export const setWordChoices = (wordChoices) => ({
   },
 });
 
-const setWordToGuess = (wordToGuess) => ({
+export const setWordToGuess = (wordToGuess) => ({
   type: SET_WORD_TO_GUESS,
   payload: {
     wordToGuess,

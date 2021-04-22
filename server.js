@@ -32,6 +32,7 @@ let lines = []; // Array of lines drawn on Canvas
 // let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
 let game = INITIAL_GAME; // Stores gameState, timer, round, wordChoices, and wordToGuess
+let drawer = null; // store client id of current drawer
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
 
 const clients = {}; // Object to map client ids to their usernames
@@ -114,6 +115,7 @@ const countdownTurnDuring = () => {
   io.sockets.emit("hello", "countdown turnduring");
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
+    game.wordToGuess = ""; // clear word to guess
     io.sockets.emit("turn end");
     game.timer = DURATION.TURN_END;
     clearInterval(intervalTurnDuring);
@@ -123,6 +125,7 @@ const countdownTurnDuring = () => {
 
 const countdownTurnStart = () => {
   countdown();
+  checkAutoChooseEasyWord();
   io.sockets.emit("hello", "countdown turnstart");
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_START) {
     game.gameState = GAME_STATE.TURN_DURING;
@@ -130,6 +133,13 @@ const countdownTurnStart = () => {
     io.sockets.emit("turn during");
     clearInterval(intervalTurnStart);
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
+  }
+};
+
+const checkAutoChooseEasyWord = () => {
+  if (game.timer <= 0 && game.wordToGuess === "") {
+    game.wordToGuess = game.wordChoices.easy;
+    io.to(drawer).emit("auto choose word", game.wordToGuess);
   }
 };
 
@@ -146,6 +156,7 @@ const prepareTurnStart = () => {
     clients[key].role = ROLE.GUESSER; // Set all players to guesser
   });
   const drawerId = findDrawerClientId(); // computer an id for drawer
+  drawer = drawerId; // save reference current client id  of drawer
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
   io.sockets.emit("all users", clients);
