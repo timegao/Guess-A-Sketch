@@ -137,7 +137,7 @@ const countdownTurnStart = () => {
 };
 
 const checkAutoChooseEasyWord = () => {
-  if (game.wordToGuess === "" && game.timer === 0) {
+  if (game.timer <= 0 && game.wordToGuess === "") {
     game.wordToGuess = game.wordChoices.easy;
     io.to(drawer).emit("auto choose word", game.wordToGuess);
   }
