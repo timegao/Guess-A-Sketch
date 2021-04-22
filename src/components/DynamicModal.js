@@ -85,7 +85,7 @@ const DynamicModal = () => {
     >
       <div className="modal-dialog">
         <div className="modal-content">
-          <div className="modal-body">{conditionalRender(gameState, role)}</div>
+          {conditionalRender(gameState, role)}
         </div>
       </div>
     </div>
