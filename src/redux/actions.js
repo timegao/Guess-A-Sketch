@@ -1,4 +1,10 @@
-import { joinChat, addMessage, addLine } from "../client";
+import {
+  joinChat,
+  addMessage,
+  addLine,
+  getWordsToChooseFrom,
+  drawerChoseWord,
+} from "../client";
 import {
   ADD_LINE,
   UPDATE_MESSAGES,
@@ -12,6 +18,8 @@ import {
   SET_GAME_OVER,
   COUNTDOWN_TIMER,
   UPDATE_GAME,
+  SET_WORD_CHOICES,
+  SET_WORD_TO_GUESS,
 } from "./actionConstants";
 
 // Action creator functions - use async actions to communicate with server
@@ -88,6 +96,17 @@ export const updateUser = (user) => ({
   payload: user,
 });
 
+export const getWordChoices = () => {
+  return () => getWordsToChooseFrom();
+};
+
+export const sendChosenWord = (word) => {
+  return (dispatch) => {
+    drawerChoseWord(word);
+    dispatch(setWordToGuess(word));
+  };
+};
+
 /*---------------------------------*/
 /* Helpers */
 /*---------------------------------*/
@@ -128,5 +147,19 @@ export const updateGame = (game) => ({
   type: UPDATE_GAME,
   payload: {
     game,
+  },
+});
+
+export const setWordChoices = (wordChoices) => ({
+  type: SET_WORD_CHOICES,
+  payload: {
+    wordChoices,
+  },
+});
+
+const setWordToGuess = (wordToGuess) => ({
+  type: SET_WORD_TO_GUESS,
+  payload: {
+    wordToGuess,
   },
 });

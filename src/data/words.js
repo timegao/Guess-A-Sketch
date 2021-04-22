@@ -1890,8 +1890,12 @@ const HARD_WORDS = [
 const chooseRandomWord = (array) =>
   array[Math.floor(Math.random() * array.length)];
 
-export const getWordChoices = () => ({
+const getWordChoicesData = () => ({
   easy: chooseRandomWord(EASY_WORDS),
   medium: chooseRandomWord(MEDIUM_WORDS),
   hard: chooseRandomWord(HARD_WORDS),
 });
+
+module.exports = {
+  getWordChoicesData,
+};

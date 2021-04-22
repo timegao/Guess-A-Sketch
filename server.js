@@ -1,5 +1,6 @@
 /** SERVER CONFIGURATION */
 const express = require("express");
+const { getWordChoicesData } = require("./src/data/words");
 const {
   INITIAL_GAME,
   MESSAGE_TYPE,
@@ -28,9 +29,9 @@ const PORT = process.env.PORT || 4002;
 app.use(express.static(__dirname + "/"));
 
 let lines = []; // Array of lines drawn on Canvas
-let wordToGuess = "correct"; // Word for users to guess
+// let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
-let game = INITIAL_GAME; // Stores gameState, timer, and round
+let game = INITIAL_GAME; // Stores gameState, timer, round, wordChoices, and wordToGuess
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
 
 const clients = {}; // Object to map client ids to their usernames
@@ -211,12 +212,12 @@ const updateMessageText = (username, msgText, type) => {
  */
 const guessRelativeDifference = (msgText) => {
   const guessSize = msgText.length;
-  const answerSize = wordToGuess.length;
+  const answerSize = game.wordToGuess.length;
 
   let i = 0;
   let differenceCount = 0;
   while (i < guessSize && i < answerSize) {
-    if (msgText.charAt(i).toLowerCase() !== wordToGuess.charAt(i)) {
+    if (msgText.charAt(i).toLowerCase() !== game.wordToGuess.charAt(i)) {
       differenceCount++;
     }
     i++;
@@ -283,6 +284,12 @@ io.on("connection", (client) => {
 
   client.on("new word", (word) => {
     game.wordToGuess = word;
-    game.timer = 0; // Skips rest of GAME_STATE.TURN_START
+    game.timer = 0;
+    countdownTurnStart(); // force transition to turn during because time is <=0 and game state equals turn during
+  });
+
+  client.on("get words to choose from", () => {
+    game.wordChoices = getWordChoicesData();
+    client.emit("choose word", game.wordChoices);
   });
 });
