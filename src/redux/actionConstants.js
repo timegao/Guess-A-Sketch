@@ -10,3 +10,4 @@ export const SET_TURN_END = "game/setTurnEnd";
 export const SET_GAME_OVER = "game/setGameOver";
 export const COUNTDOWN_TIMER = "game/countdownTimer";
 export const UPDATE_GAME = "game/updateGame";
+export const SET_WORD_CHOICES = "game/setWordChoices";
