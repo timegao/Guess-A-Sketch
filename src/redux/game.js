@@ -7,6 +7,7 @@ import {
   SET_TURN_START,
   UPDATE_GAME,
   SET_WORD_CHOICES,
+  SET_WORD_TO_GUESS,
 } from "./actionConstants";
 import { DURATION, GAME_STATE, INITIAL_GAME } from "./stateConstants";
 
@@ -49,6 +50,11 @@ const gameReducer = (state = INITIAL_GAME, action) => {
       return {
         ...state,
         wordChoices: action.payload.wordChoices,
+      };
+    case SET_WORD_TO_GUESS:
+      return {
+        ...state,
+        wordToGuess: action.payload.wordToGuess,
       };
     case UPDATE_GAME:
       return action.payload.game;

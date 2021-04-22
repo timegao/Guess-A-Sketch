@@ -103,6 +103,7 @@ export const getWordChoices = () => {
 export const sendChosenWord = (word) => {
   return (dispatch) => {
     drawerChoseWord(word);
+    dispatch(setWordToGuess(word));
   };
 };
 
@@ -153,5 +154,12 @@ export const setWordChoices = (wordChoices) => ({
   type: SET_WORD_CHOICES,
   payload: {
     wordChoices,
+  },
+});
+
+const setWordToGuess = (wordToGuess) => ({
+  type: SET_WORD_TO_GUESS,
+  payload: {
+    wordToGuess,
   },
 });

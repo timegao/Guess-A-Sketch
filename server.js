@@ -276,12 +276,6 @@ io.on("connection", (client) => {
   client.on("new word", (word) => {
     game.wordToGuess = word;
     game.timer = 0;
-    client.emit("update game", game); // set word for current drawing client
-    client.broadcast.emit("update game", {
-      ...game,
-      wordChoices: {},
-      wordToGuess: "",
-    }); // all other users just reset timer
     countdownTurnStart(); // force transition to turn during because time is <=0 and game state equals turn during
   });
 
