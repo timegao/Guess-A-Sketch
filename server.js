@@ -40,6 +40,12 @@ const clients = {}; // Object to map client ids to their usernames
 // Listen for client connections
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+/** Clear the lines and send back to clients */
+const clearLines = () => {
+  lines = []; // clears canvas lines
+  io.sockets.emit("all lines", lines);
+};
+
 const processMessage = (clientId, message) => {
   // messages.push(message);
   const { type } = message;
@@ -80,7 +86,9 @@ let intervalTurnEnd;
 let intervalTurnDuring;
 let intervalTurnStart;
 
-// reset all intervals when state is back to waiting.
+/**
+ * Reset all intervals.
+ */
 const clearAllTimerIntervals = () => {
   clearInterval(intervalGameOver);
   clearInterval(intervalTurnEnd);
@@ -91,22 +99,28 @@ const clearAllTimerIntervals = () => {
 const countdownGameOver = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
-    game.gameState = GAME_STATE.TURN_START;
-    io.sockets.emit("turn start");
-    game.timer = DURATION.TURN_START;
-    clearInterval(intervalGameOver);
-    intervalTurnStart = setInterval(countdownTurnStart, 1000);
+    // TODO: Update final scores for the Round.
+    prepareRoundStart();
   }
 };
 
 const countdownTurnEnd = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_END) {
-    game.gameState = GAME_STATE.GAME_OVER;
-    io.sockets.emit("game over");
-    game.timer = DURATION.GAME_OVER;
-    clearInterval(intervalTurnEnd);
-    intervalGameOver = setInterval(countdownGameOver, 1000);
+    clearAllTimerIntervals();
+    if (usersToNotDrawnUsersArray().length === 0) {
+      // game over
+      game.gameState = GAME_STATE.GAME_OVER;
+      io.sockets.emit("game over");
+      game.timer = DURATION.GAME_OVER;
+      intervalGameOver = setInterval(countdownGameOver, 1000);
+    } else {
+      // next turn
+      game.gameState = GAME_STATE.TURN_START;
+      game.timer = DURATION.TURN_START;
+      io.sockets.emit("turn start");
+      prepareTurnStart();
+    }
   }
 };
 
@@ -118,7 +132,7 @@ const countdownTurnDuring = () => {
     game.wordToGuess = ""; // clear word to guess
     io.sockets.emit("turn end");
     game.timer = DURATION.TURN_END;
-    clearInterval(intervalTurnDuring);
+    clearAllTimerIntervals();
     intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
 };
@@ -131,7 +145,7 @@ const countdownTurnStart = () => {
     game.gameState = GAME_STATE.TURN_DURING;
     game.timer = DURATION.TURN_DURING;
     io.sockets.emit("turn during");
-    clearInterval(intervalTurnStart);
+    clearAllTimerIntervals();
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
   }
 };
@@ -145,14 +159,21 @@ const checkAutoChooseEasyWord = () => {
 
 /**
  * prepareTurnStart is called by prepareRoundStart at the beginning of the game
+ * 1. Add one to score for players with wonTurn = true
+ * 2. Set wonTurn for all players to false
+ * 3-4. Pick player with lowest joinedTimeStamp and drawn = false and set their drawn to true and set their role to ROLES.DRAWER
+ * 5. Clear canvas/lines
+ * 6. Set GameState to TURN_START
+ * 7. Start countdown
  */
 const prepareTurnStart = () => {
-  lines = []; // clears canvas lines
+  clearAllTimerIntervals();
+  clearLines(); // clear the lines
   Object.keys(clients).forEach((key) => {
-    if (clients[key].wonRound) {
-      clients[key].score++; // Add 1 to score for players who won
+    if (clients[key].wonTurn) {
+      clients[key].score++; // Add 1 to score for players who guessed word in the turn
     }
-    clients[key].wonRound = false; // Clear wonRound for all players
+    clients[key].wonTurn = false; // Clear wonTurn for all players
     clients[key].role = ROLE.GUESSER; // Set all players to guesser
   });
   const drawerId = findDrawerClientId(); // computer an id for drawer
@@ -164,16 +185,18 @@ const prepareTurnStart = () => {
 };
 
 /**
- * 1. Add one to score for players with wonTurn = true
- * 2. Set wonTurn for all players to false
- * 3-4. Pick player with lowest joinedTimeStamp and drawn = false and set their drawn to true and set their role to ROLES.DRAWER
- * 5. Clear canvas/lines
- * 6. Set GameState to TURN_START
- * 7. Start countdown
+ * Called at the beginning of each Round
+ * 1. Clear all players 'drawn' flag
+ * 2. Clear all players 'wonTurn' flag
+ * 3. Clear all players score
+ * 4. Set game state to 'turn start'
+ * 5. Call prepareTurnStart to start the first turn.
  */
 const prepareRoundStart = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
+    clients[key].wonTurn = false; //  Needs to be false so prepareTurnStart won't add points after a round is over (game over).
+    clients[key].score = 0;
   });
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
@@ -186,17 +209,19 @@ const prepareRoundStart = () => {
  */
 const validateMessageText = (clientId, msgText) => {
   const username = clients[clientId].username;
-  const type = findMessageType(msgText);
+  const type = findMessageType(clientId, msgText);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
 };
 
 /**
- * Helper to find message type
+ * Validate message received against wordToGuess and adjust wonTurn.
+ * @returns Message type
  */
-const findMessageType = (msgText) => {
+const findMessageType = (clientId, msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
+    clients[clientId].wonTurn = true;
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
