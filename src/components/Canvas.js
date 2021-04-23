@@ -119,17 +119,27 @@ const Canvas = ({ setPoint, point, stroke }) => {
    */
   useEffect(() => {
     const context = canvasRef.current.getContext("2d");
-    lines.forEach((line) =>
-      draw(
-        context,
-        line.x0,
-        line.y0,
-        line.x1,
-        line.y1,
-        line.color,
-        line.lineWidth
-      )
-    );
+    if (lines.length === 0) {
+      context.clearRect(
+        0,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
+      context.beginPath();
+    } else {
+      lines.forEach((line) =>
+        draw(
+          context,
+          line.x0,
+          line.y0,
+          line.x1,
+          line.y1,
+          line.color,
+          line.lineWidth
+        )
+      );
+    }
   }, [lines]);
 
   return (
