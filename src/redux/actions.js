@@ -20,6 +20,7 @@ import {
   UPDATE_GAME,
   SET_WORD_CHOICES,
   SET_WORD_TO_GUESS,
+  INVALID_USERNAME,
 } from "./actionConstants";
 
 // Action creator functions - use async actions to communicate with server
@@ -106,6 +107,10 @@ export const sendChosenWord = (word) => {
     dispatch(setWordToGuess(word));
   };
 };
+
+export const invalidUsername = () => ({
+  type: INVALID_USERNAME,
+});
 
 /*---------------------------------*/
 /* Helpers */

@@ -29,6 +29,11 @@ const DURATION = {
   GAME_OVER: 10000,
 };
 
+const LOGIN = {
+  VALID: "valid username",
+  INVALID: "invalid username",
+};
+
 // Represents all messages in the game
 const INITIAL_MESSAGES = [];
 
@@ -39,7 +44,10 @@ const INITIAL_LINES = [];
 const INITIAL_USERS = {};
 
 // Represents the single player playing
-const INITIAL_PLAYER = {};
+const INITIAL_PLAYER = {
+  player: {},
+  login: LOGIN.VALID,
+};
 
 const INITIAL_GAME = {
   gameState: GAME_STATE.GAME_WAITING,
@@ -74,4 +82,5 @@ module.exports = {
   INITIAL_GAME,
   INITIAL_STROKE,
   ERASER_STROKE,
+  LOGIN,
 };
