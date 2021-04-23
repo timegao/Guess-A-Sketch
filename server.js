@@ -93,7 +93,6 @@ const clearAllTimerIntervals = () => {
 const countdownGameOver = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
-    clearAllTimerIntervals();
     // TODO: Update final scores for the Round.
     prepareRoundStart();
   }
