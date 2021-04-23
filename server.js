@@ -40,6 +40,12 @@ const clients = {}; // Object to map client ids to their usernames
 // Listen for client connections
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
+/** Clear the lines and send back to clients */
+const clearLines = () => {
+  lines = []; // clears canvas lines
+  io.sockets.emit("all lines", lines);
+};
+
 const processMessage = (clientId, message) => {
   // messages.push(message);
   const { type } = message;
@@ -255,10 +261,26 @@ const guessRelativeDifference = (msgText) => {
   return differenceCount + (answerSize - i);
 };
 
-/** Clear the lines and send back to clients */
-const clearLines = () => {
-  lines = []; // clears canvas lines
-  io.sockets.emit("all lines", lines);
+/** Helper to validate username already exists in clients */
+const validUsername = (newUserName) => {
+  for (const key in clients) {
+    if (clients[key].username === newUserName) return false;
+  }
+  return true;
+};
+
+/** Add new user to clients collection */
+const addClient = (clientId, username, date) => {
+  clients[clientId] = {
+    id: clientId,
+    username,
+    score: 0,
+    role: ROLE.GUESSER,
+    onboarded: false,
+    joinedTimeStamp: date,
+    drawn: false,
+    wonTurn: false,
+  };
 };
 
 io.on("connection", (client) => {
@@ -282,29 +304,24 @@ io.on("connection", (client) => {
   });
 
   client.on("join", (username, date) => {
-    // Add new user to clients in server
-    clients[client.id] = {
-      id: client.id,
-      username,
-      score: 0,
-      role: ROLE.GUESSER,
-      onboarded: false,
-      joinedTimeStamp: date,
-      drawn: false,
-      wonTurn: false,
-    };
-    client.emit("add player", clients[client.id]); // trigger adding of player in redux
-    processMessage(client.id, {
-      username,
-      text: `${username} has joined the chat!`,
-      type: MESSAGE_TYPE.JOIN,
-    }); // use processMessage to send all messages
-    io.sockets.emit("all users", clients);
-    client.emit("all lines", lines);
-    client.emit("update game", game);
-    // prepare to start game when exactly 2 players join
-    if (Object.keys(clients).length === 2) {
-      prepareRoundStart();
+    if (validUsername(username)) {
+      // Add new user to clients in server
+      addClient(client.id, username, date);
+      client.emit("add player", clients[client.id]); // trigger adding of player in redux
+      processMessage(client.id, {
+        username,
+        text: `${username} has joined the chat!`,
+        type: MESSAGE_TYPE.JOIN,
+      }); // use processMessage to send all messages
+      io.sockets.emit("all users", clients);
+      client.emit("all lines", lines);
+      client.emit("update game", game);
+      // prepare to start game when exactly 2 players join
+      if (Object.keys(clients).length === 2) {
+        prepareRoundStart();
+      }
+    } else {
+      client.emit("invalid username");
     }
   });
 
