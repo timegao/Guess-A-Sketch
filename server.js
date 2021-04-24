@@ -182,7 +182,6 @@ const sendHint = () => {
  */
 const generateHint = () => {
   let letterIdx = Math.floor(Math.random() * game.wordToGuess.length);
-  console.log("random idx", letterIdx);
   while (hint[letterIdx] !== "_") {
     // make sure non-repeating hints are given
     letterIdx = [Math.floor(Math.random() * game.wordToGuess.length)];
