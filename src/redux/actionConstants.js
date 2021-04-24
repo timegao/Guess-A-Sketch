@@ -13,3 +13,5 @@ export const UPDATE_GAME = "game/updateGame";
 export const SET_WORD_CHOICES = "game/setWordChoices";
 export const SET_WORD_TO_GUESS = "game/setWordToGuess";
 export const INVALID_USERNAME = "player/setInvalidUsername";
+export const UPDATE_WORD_CHOICES = "word/updateWordChoies";
+export const UPDATE_WORD_PICKED = "word/updateWordPicked";
