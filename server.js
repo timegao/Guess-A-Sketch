@@ -126,6 +126,7 @@ const countdownTurnEnd = () => {
 
 const countdownTurnDuring = () => {
   countdown();
+  sendHint();
   io.sockets.emit("hello", "countdown turnduring");
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
@@ -153,8 +154,48 @@ const countdownTurnStart = () => {
 const checkAutoChooseEasyWord = () => {
   if (game.timer <= 0 && game.wordToGuess === "") {
     game.wordToGuess = game.wordChoices.easy;
+    sendHint();
     io.to(drawer).emit("auto choose word", game.wordToGuess);
   }
+};
+
+// reveal 0 letters @ 0 seconds (start of turn) = all '_'
+// reveal only 1 letter for words of length 4 or less @ 45 seconds
+// reveal 3 letters for words of length 5 or more @ 60 seconds, 30 seconds & 15 seconds
+const sendHint = () => {
+  if (game.timer === 0) {
+    console.log("sending hint -- server.js");
+    hint = "_".repeat(game.wordToGuess.length);
+    io.sockets.emit("hint", hint);
+    // io.sockets.emit("hint", "myword");
+  } else if (game.timer === 80000 && game.wordToGuess.length <= 4) {
+    io.sockets.emit("hint", generateHint());
+  } else if (
+    (game.timer === 60000 || game.timer === 30000 || game.timer === 15000) &&
+    game.wordToGuess.length >= 5
+  ) {
+    io.sockets.emit("hint", generateHint());
+  }
+};
+
+/**
+ * generates hint string, and sets it the hint in server.js
+ * @returns {string} hint string
+ */
+const generateHint = () => {
+  let letterIdx = Math.floor(Math.random() * game.wordToGuess.length);
+  console.log("random idx", letterIdx);
+  while (hint[letterIdx] !== "_") {
+    // make sure non-repeating hints are given
+    letterIdx = [Math.floor(Math.random() * game.wordToGuess.length)];
+  }
+  let newHint = hint.slice(); // create a copy of the existing hint
+  hint =
+    newHint.substring(0, letterIdx) +
+    game.wordToGuess[letterIdx] +
+    newHint.substring(letterIdx + 1, game.wordToGuess.length);
+  console.log(hint);
+  return hint;
 };
 
 /**
@@ -338,6 +379,7 @@ io.on("connection", (client) => {
   client.on("new word", (word) => {
     game.wordToGuess = word;
     game.timer = 0;
+    sendHint();
     countdownTurnStart(); // force transition to turn during because time is <=0 and game state equals turn during
   });
 
