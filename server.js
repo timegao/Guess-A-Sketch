@@ -164,10 +164,8 @@ const checkAutoChooseEasyWord = () => {
 // reveal 3 letters for words of length 5 or more @ 60 seconds, 30 seconds & 15 seconds
 const sendHint = () => {
   if (game.timer === 0) {
-    console.log("sending hint -- server.js");
     hint = "_".repeat(game.wordToGuess.length);
     io.sockets.emit("hint", hint);
-    // io.sockets.emit("hint", "myword");
   } else if (game.timer === 80000 && game.wordToGuess.length <= 4) {
     io.sockets.emit("hint", generateHint());
   } else if (
