@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { newMessage } from "../redux/actions";
+import { getPlayer } from "../redux/player";
+import { ROLE } from "../redux/stateConstants";
+import { getUsers } from "../redux/users";
+
+const isValid = (message, users, player) =>
+  message.length > 0 && users[player.username].role !== ROLE.DRAWER;
 
 const MessageForm = () => {
+  console.log("apple");
   const [message, setMessage] = useState("");
+  const users = useSelector(getUsers);
+  const player = useSelector(getPlayer);
 
   const dispatch = useDispatch();
 
@@ -13,7 +22,7 @@ const MessageForm = () => {
   };
 
   const onKeyUp = (e) => {
-    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Enter" && isValid(message, users, player)) handleSubmit();
   };
 
   return (
@@ -31,7 +40,7 @@ const MessageForm = () => {
       <button
         type="button"
         className="btn btn-primary float-right w-100 mt-2"
-        disabled={message.length === 0}
+        disabled={!isValid(message, users, player)}
         onClick={() => handleSubmit()}
       >
         Send
