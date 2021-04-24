@@ -21,7 +21,9 @@ import {
   SET_WORD_CHOICES,
   SET_WORD_TO_GUESS,
   INVALID_USERNAME,
+  SET_HINT,
 } from "./actionConstants";
+import { ROLE } from "./stateConstants";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -71,8 +73,19 @@ export const addPlayer = (user) => ({
 });
 
 export const newPlayer = (username) => {
-  return () => {
+  return (dispatch) => {
     const date = new Date();
+    const user = {
+      id: "", // set later by server
+      username,
+      score: 0,
+      role: ROLE.GUESSER,
+      onboarded: false,
+      joinedTimeStamp: date,
+      drawn: false,
+      wonTurn: false,
+    };
+    dispatch(updateUser(user));
     joinChat(username, date);
   };
 };
@@ -166,5 +179,12 @@ export const setWordToGuess = (wordToGuess) => ({
   type: SET_WORD_TO_GUESS,
   payload: {
     wordToGuess,
+  },
+});
+
+export const setHint = (hint) => ({
+  type: SET_HINT,
+  payload: {
+    hint,
   },
 });
