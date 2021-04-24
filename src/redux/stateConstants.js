@@ -53,9 +53,14 @@ const INITIAL_GAME = {
   gameState: GAME_STATE.GAME_WAITING,
   timer: Infinity,
   round: 1,
-  wordChoices: {},
-  wordToGuess: "",
   hint: "",
+};
+
+// Represents choices given to drawer
+// And the word that they picked to draw
+const INITIAL_WORD = {
+  choices: {},
+  picked: "",
 };
 
 // Used to start drawing against white background
@@ -82,6 +87,7 @@ module.exports = {
   INITIAL_PLAYER,
   INITIAL_GAME,
   INITIAL_STROKE,
+  INITIAL_WORD,
   ERASER_STROKE,
   LOGIN,
 };

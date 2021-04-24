@@ -18,10 +18,10 @@ import {
   SET_GAME_OVER,
   COUNTDOWN_TIMER,
   UPDATE_GAME,
-  SET_WORD_CHOICES,
-  SET_WORD_TO_GUESS,
   INVALID_USERNAME,
   SET_HINT,
+  UPDATE_WORD_CHOICES,
+  UPDATE_WORD_PICKED,
 } from "./actionConstants";
 import { ROLE } from "./stateConstants";
 
@@ -125,10 +125,6 @@ export const invalidUsername = () => ({
   type: INVALID_USERNAME,
 });
 
-/*---------------------------------*/
-/* Helpers */
-/*---------------------------------*/
-
 const formatUsersData = (users) => {
   const newUsers = {};
   Object.keys(users).map(
@@ -168,17 +164,17 @@ export const updateGame = (game) => ({
   },
 });
 
-export const setWordChoices = (wordChoices) => ({
-  type: SET_WORD_CHOICES,
+export const setWordChoices = (choices) => ({
+  type: UPDATE_WORD_CHOICES,
   payload: {
-    wordChoices,
+    choices,
   },
 });
 
-export const setWordToGuess = (wordToGuess) => ({
-  type: SET_WORD_TO_GUESS,
+export const setWordToGuess = (picked) => ({
+  type: UPDATE_WORD_PICKED,
   payload: {
-    wordToGuess,
+    picked,
   },
 });
 

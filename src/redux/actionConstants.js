@@ -14,3 +14,5 @@ export const UPDATE_GAME = "game/updateGame";
 export const SET_WORD_CHOICES = "game/setWordChoices";
 export const SET_WORD_TO_GUESS = "game/setWordToGuess";
 export const SET_HINT = "game/setHint";
+export const UPDATE_WORD_CHOICES = "word/updateWordChoies";
+export const UPDATE_WORD_PICKED = "word/updateWordPicked";

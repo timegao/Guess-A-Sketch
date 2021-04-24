@@ -6,8 +6,6 @@ import {
   SET_TURN_END,
   SET_TURN_START,
   UPDATE_GAME,
-  SET_WORD_CHOICES,
-  SET_WORD_TO_GUESS,
   SET_HINT,
 } from "./actionConstants";
 import { DURATION, GAME_STATE, INITIAL_GAME } from "./stateConstants";
@@ -47,16 +45,6 @@ const gameReducer = (state = INITIAL_GAME, action) => {
         ...state,
         timer: state.timer - 1000,
       };
-    case SET_WORD_CHOICES:
-      return {
-        ...state,
-        wordChoices: action.payload.wordChoices,
-      };
-    case SET_WORD_TO_GUESS:
-      return {
-        ...state,
-        wordToGuess: action.payload.wordToGuess,
-      };
     case SET_HINT:
       return {
         ...state,
@@ -73,14 +61,10 @@ export const getGame = (state) => state.game;
 
 export const getGameState = (state) => state.game.gameState;
 
-export const getWords = (state) => state.game.wordChoices;
-
 export const getGameClock = (state) => state.game.timer;
 
 export const getGameRound = (state) => state.game.round;
 
 export const getHint = (state) => state.game.hint;
-
-export const getWordToGuess = (state) => state.game.wordToGuess;
 
 export default gameReducer;

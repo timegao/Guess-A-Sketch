@@ -8,6 +8,7 @@ import linesReducer from "./lines";
 import usersReducer from "./users";
 import playerReducer from "./player";
 import gameReducer from "./game";
+import wordReducer from "./word";
 
 const rootReducer = combineReducers({
   game: gameReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   messages: messagesReducer,
   player: playerReducer,
   users: usersReducer,
+  word: wordReducer,
 });
 
 // Adds middleware and redux-devtools
