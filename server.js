@@ -149,12 +149,19 @@ const countdownTurnStart = () => {
     game.gameState = GAME_STATE.TURN_DURING;
     game.timer = DURATION.TURN_DURING;
     io.sockets.emit("turn during");
-    io.to(drawer).emit("auto picked word", word.picked); // syncs state with drawer
+    io.to(drawer).emit("auto choose word", word.picked); // syncs state with drawer
     clearAllTimerIntervals();
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
   }
 };
 
+/**
+ * Called at the beginning of each round
+ * Clear all timers
+ * Clear the canvas
+ * Update player scores, wonTurn
+ * Pick new drawer
+ */
 const prepareTurnStart = () => {
   clearAllTimerIntervals();
   clearLines(); // clear the lines
@@ -174,6 +181,12 @@ const prepareTurnStart = () => {
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
+/**
+ * Called at the beginning of each turn
+ * Reset player's drawn and wonTurn
+ * Starts countdown for TURN_START
+ * Calls prepareTurnStart
+ */
 const prepareRoundStart = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
@@ -319,7 +332,7 @@ io.on("connection", (client) => {
 
   client.on("new word", (picked) => {
     word.picked = picked;
-    game.timer = 0;
+    game.timer = 0; // Moves game from TURN_START to end of TURN_START
   });
 
   client.on("get words to choose from", () => {
