@@ -55,6 +55,7 @@ const INITIAL_GAME = {
   round: 1,
   wordChoices: {},
   wordToGuess: "",
+  hint: "",
 };
 
 // Used to start drawing against white background
