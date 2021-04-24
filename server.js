@@ -28,6 +28,13 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
+const BLANK_HINT_TIME = 0;
+const FIRST_HINT_TIME_SHORT_WORD = 45000;
+const FIRST_HINT_TIME_LONG_WORD = 60000;
+const SECOND_HINT_TIME_LONG_WORD = 30000;
+const THIRD_HINT_TIME_LONG_WORD = 15000;
+const SHORT_WORD_LENGTH = 4;
+
 let lines = []; // Array of lines drawn on Canvas
 // let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
@@ -163,16 +170,26 @@ const checkAutoChooseEasyWord = () => {
 // reveal only 1 letter for words of length 4 or less @ 45 seconds
 // reveal 3 letters for words of length 5 or more @ 60 seconds, 30 seconds & 15 seconds
 const sendHint = () => {
-  if (game.timer === 0) {
-    hint = "_".repeat(game.wordToGuess.length);
-    io.sockets.emit("hint", hint);
-  } else if (game.timer === 80000 && game.wordToGuess.length <= 4) {
-    io.sockets.emit("hint", generateHint());
-  } else if (
-    (game.timer === 60000 || game.timer === 30000 || game.timer === 15000) &&
-    game.wordToGuess.length >= 5
-  ) {
-    io.sockets.emit("hint", generateHint());
+  switch (game.timer) {
+    case BLANK_HINT_TIME:
+      hint = "_".repeat(game.wordToGuess.length);
+      io.sockets.emit("hint", hint);
+      break;
+    case FIRST_HINT_TIME_SHORT_WORD:
+      if (game.wordToGuess.length <= SHORT_WORD_LENGTH) {
+        io.sockets.emit("hint", generateHint());
+      }
+      break;
+    case FIRST_HINT_TIME_LONG_WORD:
+    case SECOND_HINT_TIME_LONG_WORD:
+    case THIRD_HINT_TIME_LONG_WORD:
+      if (game.wordToGuess.length > SHORT_WORD_LENGTH) {
+        io.sockets.emit("hint", generateHint());
+      }
+      break;
+    default:
+      // No hint sent
+      return;
   }
 };
 
