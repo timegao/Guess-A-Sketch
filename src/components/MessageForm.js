@@ -1,9 +1,15 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { newMessage } from "../redux/actions";
+import { getPlayer } from "../redux/player";
+import { ROLE } from "../redux/stateConstants";
+import { getUsers } from "../redux/users";
 
 const MessageForm = () => {
   const [message, setMessage] = useState("");
+  const [valid, setValid] = useState(false);
+  const users = useSelector(getUsers);
+  const player = useSelector(getPlayer);
 
   const dispatch = useDispatch();
 
@@ -12,8 +18,12 @@ const MessageForm = () => {
     setMessage("");
   };
 
+  useEffect(() => {
+    setValid(message.length > 0 && users[player.username].role !== ROLE.DRAWER);
+  }, [users, player, message]);
+
   const onKeyUp = (e) => {
-    if (e.key === "Enter" && message.length > 0) handleSubmit();
+    if (e.key === "Enter" && valid) handleSubmit();
   };
 
   return (
@@ -31,7 +41,7 @@ const MessageForm = () => {
       <button
         type="button"
         className="btn btn-primary float-right w-100 mt-2"
-        disabled={message.length === 0}
+        disabled={!valid}
         onClick={() => handleSubmit()}
       >
         Send
