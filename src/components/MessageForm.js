@@ -13,7 +13,7 @@ const MessageForm = () => {
   };
 
   const onKeyUp = (e) => {
-    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Enter" && message.length > 0) handleSubmit();
   };
 
   return (
