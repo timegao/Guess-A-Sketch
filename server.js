@@ -29,6 +29,13 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
+const BLANK_HINT_TIME = 0;
+const FIRST_HINT_TIME_SHORT_WORD = 45000;
+const FIRST_HINT_TIME_LONG_WORD = 60000;
+const SECOND_HINT_TIME_LONG_WORD = 30000;
+const THIRD_HINT_TIME_LONG_WORD = 15000;
+const SHORT_WORD_LENGTH = 4;
+
 let lines = []; // Array of lines drawn on Canvas
 // let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
@@ -134,11 +141,11 @@ const countdownTurnEnd = () => {
 
 const countdownTurnDuring = () => {
   countdown();
+  sendHint();
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
     io.sockets.emit("turn end");
     game.timer = DURATION.TURN_END;
-    clearAllTimerIntervals();
     intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
 };
@@ -151,8 +158,56 @@ const countdownTurnStart = () => {
     io.sockets.emit("turn during");
     io.to(drawer).emit("auto choose word", word.picked); // syncs state with drawer
     clearAllTimerIntervals();
+    countdownTurnDuring();
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
   }
+};
+
+// reveal 0 letters @ 0 seconds (start of turn) = all '_'
+// reveal only 1 letter for words of length 4 or less @ 45 seconds
+// reveal 3 letters for words of length 5 or more @ 60 seconds, 30 seconds & 15 seconds
+const sendHint = () => {
+  console.log("send hint", game.timer);
+  switch (game.timer) {
+    case BLANK_HINT_TIME:
+      hint = "_".repeat(word.picked.length);
+      io.sockets.emit("hint", hint);
+      break;
+    case FIRST_HINT_TIME_SHORT_WORD:
+      if (word.picked.length <= SHORT_WORD_LENGTH) {
+        io.sockets.emit("hint", generateHint());
+      }
+      break;
+    case FIRST_HINT_TIME_LONG_WORD:
+    case SECOND_HINT_TIME_LONG_WORD:
+    case THIRD_HINT_TIME_LONG_WORD:
+      if (word.picked.length > SHORT_WORD_LENGTH) {
+        io.sockets.emit("hint", generateHint());
+      }
+      break;
+    default:
+      // No hint sent
+      return;
+  }
+};
+
+/**
+ * generates hint string, and sets it the hint in server.js
+ * @returns {string} hint string
+ */
+const generateHint = () => {
+  let letterIdx = Math.floor(Math.random() * word.picked.length);
+  while (hint[letterIdx] !== "_") {
+    // make sure non-repeating hints are given
+    letterIdx = [Math.floor(Math.random() * word.picked.length)];
+  }
+  let newHint = hint.slice(); // create a copy of the existing hint
+  hint =
+    newHint.substring(0, letterIdx) +
+    word.picked[letterIdx] +
+    newHint.substring(letterIdx + 1, word.picked.length);
+  console.log(hint);
+  return hint;
 };
 
 /**
@@ -333,6 +388,7 @@ io.on("connection", (client) => {
   client.on("new word", (picked) => {
     word.picked = picked;
     game.timer = 0; // Moves game from TURN_START to end of TURN_START
+    sendHint(); // sends initial blank hint after word is picked before turn during begins
   });
 
   client.on("get words to choose from", () => {

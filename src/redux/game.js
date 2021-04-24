@@ -6,6 +6,7 @@ import {
   SET_TURN_END,
   SET_TURN_START,
   UPDATE_GAME,
+  SET_HINT,
 } from "./actionConstants";
 import { DURATION, GAME_STATE, INITIAL_GAME } from "./stateConstants";
 
@@ -44,6 +45,11 @@ const gameReducer = (state = INITIAL_GAME, action) => {
         ...state,
         timer: state.timer - 1000,
       };
+    case SET_HINT:
+      return {
+        ...state,
+        hint: action.payload.hint,
+      };
     case UPDATE_GAME:
       return action.payload.game;
     default:
@@ -54,5 +60,11 @@ const gameReducer = (state = INITIAL_GAME, action) => {
 export const getGame = (state) => state.game;
 
 export const getGameState = (state) => state.game.gameState;
+
+export const getGameClock = (state) => state.game.timer;
+
+export const getGameRound = (state) => state.game.round;
+
+export const getHint = (state) => state.game.hint;
 
 export default gameReducer;

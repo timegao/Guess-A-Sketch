@@ -53,6 +53,7 @@ const INITIAL_GAME = {
   gameState: GAME_STATE.GAME_WAITING,
   timer: Infinity,
   round: 1,
+  hint: "",
 };
 
 // Represents choices given to drawer
