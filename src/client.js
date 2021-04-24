@@ -77,8 +77,8 @@ socket.on("update game", (game) => {
   store.dispatch(updateGame(game));
 });
 
-socket.on("choose word", (wordChoices) => {
-  store.dispatch(setWordChoices(wordChoices));
+socket.on("choose word", (choices) => {
+  store.dispatch(setWordChoices(choices));
 });
 
 socket.on("auto choose word", (word) => {

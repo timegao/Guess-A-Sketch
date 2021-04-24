@@ -7,6 +7,7 @@ const {
   ROLE,
   DURATION,
   GAME_STATE,
+  INITIAL_WORD,
 } = require("./src/redux/stateConstants");
 const app = express();
 const server = require("http").Server(app);
@@ -31,7 +32,8 @@ app.use(express.static(__dirname + "/"));
 let lines = []; // Array of lines drawn on Canvas
 // let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
-let game = INITIAL_GAME; // Stores gameState, timer, round, wordChoices, and wordToGuess
+let game = INITIAL_GAME; // Stores gameState, timer, and round
+let word = INITIAL_WORD; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
 
@@ -96,6 +98,12 @@ const clearAllTimerIntervals = () => {
   clearInterval(intervalTurnStart);
 };
 
+const clearWord = () => {
+  word = INITIAL_WORD;
+  io.sockets.emit("choose word", word.choices);
+  io.sockets.emit("auto choose word", word.picked);
+};
+
 const countdownGameOver = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
@@ -126,10 +134,8 @@ const countdownTurnEnd = () => {
 
 const countdownTurnDuring = () => {
   countdown();
-  io.sockets.emit("hello", "countdown turnduring");
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
-    game.wordToGuess = ""; // clear word to guess
     io.sockets.emit("turn end");
     game.timer = DURATION.TURN_END;
     clearAllTimerIntervals();
@@ -139,36 +145,27 @@ const countdownTurnDuring = () => {
 
 const countdownTurnStart = () => {
   countdown();
-  checkAutoChooseEasyWord();
-  io.sockets.emit("hello", "countdown turnstart");
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_START) {
     game.gameState = GAME_STATE.TURN_DURING;
     game.timer = DURATION.TURN_DURING;
     io.sockets.emit("turn during");
+    io.to(drawer).emit("auto choose word", word.picked); // syncs state with drawer
     clearAllTimerIntervals();
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
   }
 };
 
-const checkAutoChooseEasyWord = () => {
-  if (game.timer <= 0 && game.wordToGuess === "") {
-    game.wordToGuess = game.wordChoices.easy;
-    io.to(drawer).emit("auto choose word", game.wordToGuess);
-  }
-};
-
 /**
- * prepareTurnStart is called by prepareRoundStart at the beginning of the game
- * 1. Add one to score for players with wonTurn = true
- * 2. Set wonTurn for all players to false
- * 3-4. Pick player with lowest joinedTimeStamp and drawn = false and set their drawn to true and set their role to ROLES.DRAWER
- * 5. Clear canvas/lines
- * 6. Set GameState to TURN_START
- * 7. Start countdown
+ * Called at the beginning of each round
+ * Clear all timers
+ * Clear the canvas
+ * Update player scores, wonTurn
+ * Pick new drawer
  */
 const prepareTurnStart = () => {
   clearAllTimerIntervals();
   clearLines(); // clear the lines
+  clearWord(); // clear picked word and choices
   Object.keys(clients).forEach((key) => {
     if (clients[key].wonTurn) {
       clients[key].score++; // Add 1 to score for players who guessed word in the turn
@@ -185,12 +182,10 @@ const prepareTurnStart = () => {
 };
 
 /**
- * Called at the beginning of each Round
- * 1. Clear all players 'drawn' flag
- * 2. Clear all players 'wonTurn' flag
- * 3. Clear all players score
- * 4. Set game state to 'turn start'
- * 5. Call prepareTurnStart to start the first turn.
+ * Called at the beginning of each turn
+ * Reset player's drawn and wonTurn
+ * Starts countdown for TURN_START
+ * Calls prepareTurnStart
  */
 const prepareRoundStart = () => {
   Object.keys(clients).forEach((key) => {
@@ -248,12 +243,12 @@ const updateMessageText = (username, msgText, type) => {
  */
 const guessRelativeDifference = (msgText) => {
   const guessSize = msgText.length;
-  const answerSize = game.wordToGuess.length;
+  const answerSize = word.picked.length;
 
   let i = 0;
   let differenceCount = 0;
   while (i < guessSize && i < answerSize) {
-    if (msgText.charAt(i).toLowerCase() !== game.wordToGuess.charAt(i)) {
+    if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
       differenceCount++;
     }
     i++;
@@ -335,14 +330,14 @@ io.on("connection", (client) => {
     io.sockets.emit("all lines", lines);
   });
 
-  client.on("new word", (word) => {
-    game.wordToGuess = word;
-    game.timer = 0;
-    countdownTurnStart(); // force transition to turn during because time is <=0 and game state equals turn during
+  client.on("new word", (picked) => {
+    word.picked = picked;
+    game.timer = 0; // Moves game from TURN_START to end of TURN_START
   });
 
   client.on("get words to choose from", () => {
-    game.wordChoices = getWordChoicesData();
-    client.emit("choose word", game.wordChoices);
+    word.choices = getWordChoicesData();
+    word.picked = word.choices.easy; // default is the easy word unless changed
+    client.emit("choose word", word.choices);
   });
 });
