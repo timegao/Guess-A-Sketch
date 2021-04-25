@@ -22,7 +22,7 @@ body {
   -moz-box-shadow: 0 0 10px #000000;
   -webkit-box-shadow: 0 0 10px #000000;
   box-shadow: 0 0 10px #000000;
-  overflow: hidden;
+  overflow: visible;
   /* Center in middle of screen */
   left: 50%;
   top: 50%;

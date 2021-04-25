@@ -1,31 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserNinja,
-  faUserAstronaut,
-  faUserTie,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { AVATAR_MAP } from "../redux/stateConstants";
 
-const AVATAR_SIZE = 4;
-
-/** Helper to assign a random avatar to the player display. */
-const getAvatar = () => {
-  const avatars = [faUserNinja, faUserAstronaut, faUserTie, faUser];
-  return avatars[Math.floor(Math.random() * AVATAR_SIZE)];
-};
-
-const PlayerInfo = (props) => {
+const PlayerInfo = ({ user }) => {
   return (
     <li className="player">
       <div className="d-inline-flex mx-1">
         <div className="mx-2 mt-3">
-          <FontAwesomeIcon icon={getAvatar()} size="2x" />
+          <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
         </div>
         <div className="user-data">
           <p>
-            <strong>{props.user.username}</strong>
+            <strong>{user.username}</strong>
           </p>
-          <p>{"points: " + props.user.score} </p>
+          <p>{"points: " + user.score} </p>
         </div>
       </div>
     </li>

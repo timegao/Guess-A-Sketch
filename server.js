@@ -8,6 +8,7 @@ const {
   DURATION,
   GAME_STATE,
   INITIAL_WORD,
+  LOGIN,
 } = require("./src/redux/stateConstants");
 const app = express();
 const server = require("http").Server(app);
@@ -168,7 +169,6 @@ const countdownTurnStart = () => {
 // reveal only 1 letter for words of length 4 or less @ 45 seconds
 // reveal 3 letters for words of length 5 or more @ 60 seconds, 30 seconds & 15 seconds
 const sendHint = () => {
-  console.log("send hint", game.timer);
   switch (game.timer) {
     case BLANK_HINT_TIME:
       hint = "_".repeat(word.picked.length);
@@ -328,16 +328,18 @@ const validUsername = (newUserName) => {
 };
 
 /** Add new user to clients collection */
-const addClient = (clientId, username, date) => {
+const addClient = (clientId, username, avatar, date) => {
   clients[clientId] = {
     id: clientId,
     username,
+    avatar,
     score: 0,
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
     drawn: false,
     wonTurn: false,
+    login: LOGIN.VALID,
   };
 };
 
@@ -361,10 +363,10 @@ io.on("connection", (client) => {
     }
   });
 
-  client.on("join", (username, date) => {
+  client.on("join", (username, avatar, date) => {
     if (validUsername(username)) {
       // Add new user to clients in server
-      addClient(client.id, username, date);
+      addClient(client.id, username, avatar, date);
       client.emit("add player", clients[client.id]); // trigger adding of player in redux
       processMessage(client.id, {
         username,

@@ -23,7 +23,7 @@ import {
   UPDATE_WORD_CHOICES,
   UPDATE_WORD_PICKED,
 } from "./actionConstants";
-import { ROLE } from "./stateConstants";
+import { ROLE, LOGIN } from "./stateConstants";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -69,24 +69,27 @@ export const addPlayer = (user) => ({
   payload: {
     username: user.username,
     id: user.id,
+    login: LOGIN.VALID,
   },
 });
 
-export const newPlayer = (username) => {
+export const newPlayer = (username, avatar) => {
   return (dispatch) => {
     const date = new Date();
     const user = {
       id: "", // set later by server
       username,
+      avatar,
       score: 0,
       role: ROLE.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
       drawn: false,
       wonTurn: false,
+      login: LOGIN.VALID,
     };
     dispatch(updateUser(user));
-    joinChat(username, date);
+    joinChat(username, avatar, date);
   };
 };
 
