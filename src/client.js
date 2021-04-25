@@ -116,3 +116,7 @@ export const getWordsToChooseFrom = () => {
 export const drawerChoseWord = (word) => {
   socket.emit("new word", word);
 };
+
+export const leaveChat = (clientId) => {
+  socket.emit("leave game", clientId);
+};
