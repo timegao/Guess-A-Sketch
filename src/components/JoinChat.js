@@ -81,10 +81,7 @@ const JoinChat = () => {
               className="selectAvatar"
               placeholder="Choose Avatar"
               options={createAvatarOptions(AVATAR_MAP)}
-              onChange={(e) => {
-                setAvatar(e);
-                console.log(e);
-              }}
+              onChange={(e) => setAvatar(e)}
             />
           </div>
           <div className="col-auto">
