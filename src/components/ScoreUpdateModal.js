@@ -6,11 +6,7 @@ import { getPickedWord } from "../redux/word";
 const sortUsersWonTurn = (users) => {
   let sortedUsers = Object.values(users);
   return sortedUsers.sort((a, b) =>
-    a.wonTurn === b.wonTurn
-      ? 0
-      : a.wonTurn === true && b.wonTurn === false
-      ? -1
-      : 1
+    a.wonTurn === b.wonTurn ? 0 : a.wonTurn === true ? -1 : 1
   );
 };
 

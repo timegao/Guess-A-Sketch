@@ -145,7 +145,7 @@ const countdownTurnDuring = () => {
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
     io.sockets.emit("turn end", clients, word.picked); // send users who wonTurn before updating scores
-    increaseScore(); // Increase score and reset all players to guessers
+    incrementAndResetScores(); // Increase score and reset all players to guessers
     game.timer = DURATION.TURN_END;
     intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
@@ -212,7 +212,7 @@ const generateHint = () => {
 };
 
 /** Helper to update scores after a turn ended for those users who wonTurn */
-const increaseScore = () => {
+const incrementAndResetScores = () => {
   Object.keys(clients).forEach((key) => {
     if (clients[key].wonTurn) {
       clients[key].score++; // Add 1 to score for players who guessed word in the turn
