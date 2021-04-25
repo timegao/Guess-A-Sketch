@@ -94,8 +94,8 @@ socket.on("hint", (hint) => {
   store.dispatch(setHint(hint));
 });
 
-export const joinChat = (username, date) => {
-  socket.emit("join", username, date);
+export const joinChat = (username, avatar, date) => {
+  socket.emit("join", username, avatar, date);
 };
 
 export const addMessage = (message) => {
