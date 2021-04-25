@@ -126,7 +126,7 @@ const countdownTurnEnd = () => {
     if (usersToNotDrawnUsersArray().length === 0) {
       // game over
       game.gameState = GAME_STATE.GAME_OVER;
-      io.sockets.emit("game over");
+      io.sockets.emit("game over", clients); // send users with updated score
       game.timer = DURATION.GAME_OVER;
       intervalGameOver = setInterval(countdownGameOver, 1000);
     } else {
@@ -144,7 +144,8 @@ const countdownTurnDuring = () => {
   sendHint();
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
-    io.sockets.emit("turn end");
+    io.sockets.emit("turn end", clients, word.picked); // send users who wonTurn before updating scores
+    increaseScore(); // Increase score and reset all players to guessers
     game.timer = DURATION.TURN_END;
     intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
@@ -210,17 +211,8 @@ const generateHint = () => {
   return hint;
 };
 
-/**
- * Called at the beginning of each round
- * Clear all timers
- * Clear the canvas
- * Update player scores, wonTurn
- * Pick new drawer
- */
-const prepareTurnStart = () => {
-  clearAllTimerIntervals();
-  clearLines(); // clear the lines
-  clearWord(); // clear picked word and choices
+/** Helper to update scores after a turn ended for those users who wonTurn */
+const increaseScore = () => {
   Object.keys(clients).forEach((key) => {
     if (clients[key].wonTurn) {
       clients[key].score++; // Add 1 to score for players who guessed word in the turn
@@ -228,11 +220,31 @@ const prepareTurnStart = () => {
     clients[key].wonTurn = false; // Clear wonTurn for all players
     clients[key].role = ROLE.GUESSER; // Set all players to guesser
   });
+};
+
+/** Helper to clear players score called at the beginning of a Round */
+const resetPlayers = () => {
+  Object.keys(clients).forEach((key) => {
+    clients[key].drawn = false;
+    clients[key].score = 0;
+  });
+};
+
+/**
+ * Called at the beginning of each round
+ * Clear all timers
+ * Clear the canvas
+ * Pick new drawer
+ */
+const prepareTurnStart = () => {
+  clearAllTimerIntervals();
+  clearLines(); // clear the lines
+  clearWord(); // clear picked word and choices
   const drawerId = findDrawerClientId(); // computer an id for drawer
   drawer = drawerId; // save reference current client id  of drawer
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
-  io.sockets.emit("all users", clients);
+  io.sockets.emit("all users", clients); // users with updated (turn end) or cleared (RoundStart) score
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
@@ -243,11 +255,7 @@ const prepareTurnStart = () => {
  * Calls prepareTurnStart
  */
 const prepareRoundStart = () => {
-  Object.keys(clients).forEach((key) => {
-    clients[key].drawn = false;
-    clients[key].wonTurn = false; //  Needs to be false so prepareTurnStart won't add points after a round is over (game over).
-    clients[key].score = 0;
-  });
+  resetPlayers(); // clear scores
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
   io.sockets.emit("turn start");

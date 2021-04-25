@@ -21,3 +21,5 @@ const wordReducer = (state = INITIAL_WORD, action) => {
 export default wordReducer;
 
 export const getWord = (state) => state.word;
+
+export const getPickedWord = (state) => state.word.picked;
