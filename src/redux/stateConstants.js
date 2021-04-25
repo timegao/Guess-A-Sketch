@@ -31,6 +31,7 @@ const MESSAGE_TYPE = {
 
 const GAME_STATE = {
   GAME_WAITING: "game waiting", // Players are in loading screen
+  EXIT: "exit request", // Player requesting to leave game
   TURN_START: "turn start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
   TURN_DURING: "turn during", // Drawer draws word, guesser tries to guess word
   TURN_END: "turn end", // Each player sees their updated score
@@ -46,6 +47,7 @@ const DURATION = {
 };
 
 const LOGIN = {
+  LOGGED_OUT: "logged out",
   VALID: "valid username",
   INVALID: "invalid username",
 };
@@ -62,7 +64,7 @@ const INITIAL_USERS = {};
 // Represents the single player playing
 const INITIAL_PLAYER = {
   player: {},
-  login: LOGIN.VALID,
+  login: LOGIN.LOGGED_OUT,
 };
 
 const INITIAL_GAME = {
