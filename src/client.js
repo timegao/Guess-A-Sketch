@@ -62,11 +62,14 @@ socket.on("turn during", () => {
   store.dispatch(setTurnDuring());
 });
 
-socket.on("turn end", () => {
+socket.on("turn end", (users, word) => {
+  store.dispatch(updateUsers(users)); // includes users who wonTurn
+  store.dispatch(setWordToGuess(word)); // reveal the word
   store.dispatch(setTurnEnd());
 });
 
-socket.on("game over", () => {
+socket.on("game over", (users) => {
+  store.dispatch(updateUsers(users)); // updated score
   store.dispatch(setGameOver());
 });
 
