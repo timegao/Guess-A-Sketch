@@ -1,14 +1,24 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { newPlayer } from "../redux/actions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { getLogin } from "../redux/player";
-import { LOGIN } from "../redux/stateConstants";
+import { LOGIN, AVATAR_MAP } from "../redux/stateConstants";
+import Select from "react-select";
+
+const createAvatarOptions = (avatarMap) => {
+  const options = Object.entries(avatarMap).map(([key, value]) => {
+    return { value: key, label: <FontAwesomeIcon icon={value} size="2x" /> };
+  });
+  return options;
+};
 
 const JoinChat = () => {
   const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const [validLength, setValidLength] = useState(false);
   const login = useSelector(getLogin);
   const [editingBegun, setEditingBegun] = useState(false);
@@ -32,12 +42,8 @@ const JoinChat = () => {
   const verifyUsername = () => {
     if (validLength) {
       setEditingBegun(false);
-      dispatch(newPlayer(username));
+      dispatch(newPlayer(username, avatar.value));
     }
-  };
-
-  const onKeyUp = (e) => {
-    if (e.key === "Enter") verifyUsername();
   };
 
   return (
@@ -49,32 +55,16 @@ const JoinChat = () => {
       </div>
       <form className="row my-4 add-form" onSubmit={(e) => e.preventDefault()}>
         <div className="row">
-          <div className="col">
+          <div className="col-6">
             <input
               aria-label="Your username"
               type="text"
               className="form-control has-validation"
               id="username"
-              invalid={`${
-                validLength === false ||
-                (!editingBegun && login === LOGIN.INVALID)
-              }`}
-              valid={`${validLength === true && login === LOGIN.VALID}`}
               placeholder="Username"
               value={username}
               onChange={handleChange}
-              onKeyUp={onKeyUp}
             />
-            <div
-              className="invalid-feedback"
-              style={
-                validLength === false
-                  ? { display: "block" }
-                  : { display: "none" }
-              }
-            >
-              Username cannot be empty!
-            </div>
             <div
               className="invalid-feedback"
               style={
@@ -86,13 +76,26 @@ const JoinChat = () => {
               Username already in use!
             </div>
           </div>
+          <div className="col-6">
+            <Select
+              className="selectAvatar"
+              placeholder="Choose Avatar"
+              options={createAvatarOptions(AVATAR_MAP)}
+              onChange={(e) => {
+                setAvatar(e);
+                console.log(e);
+              }}
+            />
+          </div>
           <div className="col-auto">
             <button
               type="button"
-              className="btn btn-primary float-right btn-lg"
+              className="btn btn-primary float-right btn-lg mt-2"
               onClick={verifyUsername}
               disabled={
-                (!editingBegun && login === LOGIN.INVALID) || !validLength
+                (!editingBegun && login === LOGIN.INVALID) ||
+                !validLength ||
+                !avatar
               }
             >
               <span className="mx-2">
