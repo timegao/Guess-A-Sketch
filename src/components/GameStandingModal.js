@@ -4,7 +4,7 @@ import { getUsers } from "../redux/users";
 /** Helper to sort users in descending order based on score*/
 const sortUsersScore = (users) => {
   let sortedUsers = Object.values(users);
-  return sortedUsers.sort((a, b) => b.score - a.score);
+  return sortedUsers.sort((a, b) => a.score - b.score);
 };
 
 const GameStandingModal = () => {
@@ -20,7 +20,7 @@ const GameStandingModal = () => {
           <li className="player-score" key={i}>
             <div className="row">
               <div className="col">{i + 1 + ". " + user.username}</div>
-              <div className="col">{user.score + " points"}</div>
+              <div className="col">{user.scoring.score + " points"}</div>
             </div>
           </li>
         ))}

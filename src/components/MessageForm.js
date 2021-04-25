@@ -9,7 +9,6 @@ const isValid = (message, users, player) =>
   message.length > 0 && users[player.username].role !== ROLE.DRAWER;
 
 const MessageForm = () => {
-  console.log("apple");
   const [message, setMessage] = useState("");
   const users = useSelector(getUsers);
   const player = useSelector(getPlayer);

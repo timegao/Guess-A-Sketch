@@ -2,11 +2,10 @@ import { useSelector } from "react-redux";
 import { getUsers } from "../redux/users";
 import { getPickedWord } from "../redux/word";
 
-/** Helper to sort users in descending order based on those who wonTurn first*/
+/** Helper to sort users in descending order based on earned*/
 const sortUsersWonTurn = (users) => {
-  let sortedUsers = Object.values(users);
-  return sortedUsers.sort((a, b) =>
-    a.wonTurn === b.wonTurn ? 0 : a.wonTurn === true ? -1 : 1
+  return Object.values(users).sort(
+    (a, b) => a.scoring.earned - b.scoring.earned
   );
 };
 
@@ -23,7 +22,7 @@ const ScoreUpdateModal = () => {
           <li className="player-score" key={i}>
             <div className="row">
               <div className="col">{user.username}</div>
-              <div className="col">{user.wonTurn === true ? "+1" : "0"}</div>
+              <div className="col">{user.scoring.earned}</div>
             </div>
           </li>
         ))}

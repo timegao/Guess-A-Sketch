@@ -3,6 +3,7 @@ const express = require("express");
 const { getWordChoicesData } = require("./src/data/words");
 const {
   INITIAL_GAME,
+  INITIAL_SCORING,
   MESSAGE_TYPE,
   ROLE,
   DURATION,
@@ -36,13 +37,20 @@ const FIRST_HINT_TIME_LONG_WORD = 60000;
 const SECOND_HINT_TIME_LONG_WORD = 30000;
 const THIRD_HINT_TIME_LONG_WORD = 15000;
 const SHORT_WORD_LENGTH = 4;
+const MAXIMUM_POINTS = 100;
+const DRAWER_SCORING = {
+  // factor is based on the difficulty of the word, the higher than better
+  EASY: 0.8,
+  MEDIUM: 0.9,
+  HARD: 1,
+};
 
 let lines = []; // Array of lines drawn on Canvas
-// let wordToGuess = "correct"; // Word for users to guess
 let hint = ""; // Hint for guessers to see
 let game = INITIAL_GAME; // Stores gameState, timer, and round
 let word = INITIAL_WORD; // Word choices and picked
 let drawer = null; // store client id of current drawer
+let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
 
 const clients = {}; // Object to map client ids to their usernames
@@ -145,8 +153,8 @@ const countdownTurnDuring = () => {
   sendHint();
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
     game.gameState = GAME_STATE.TURN_END;
-    io.sockets.emit("turn end", clients, word.picked); // send users who wonTurn before updating scores
-    incrementAndResetScores(); // Increase score and reset all players to guessers
+    incrementScoring(); // Increment scores for all users and then send the updated scores
+    io.sockets.emit("turn end", clients, word.picked);
     game.timer = DURATION.TURN_END;
     intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
   }
@@ -208,17 +216,71 @@ const generateHint = () => {
     newHint.substring(0, letterIdx) +
     word.picked[letterIdx] +
     newHint.substring(letterIdx + 1, word.picked.length);
-  console.log(hint);
   return hint;
 };
 
-/** Helper to update scores after a turn ended for those users who wonTurn */
-const incrementAndResetScores = () => {
-  Object.keys(clients).forEach((key) => {
-    if (clients[key].wonTurn) {
-      clients[key].score++; // Add 1 to score for players who guessed word in the turn
+const wordDifficultyFactor = () => {
+  // checks if at least one person guessed correctly
+  if (guessedCorrectOrder > 1) {
+    if (word.picked === word.choices.easy) {
+      return DRAWER_SCORING.EASY;
+    } else if (word.picked === word.choices.medium) {
+      return DRAWER_SCORING.MEDIUM;
+    } else if (word.picked === word.choices.hard) {
+      return DRAWER_SCORING.HARD;
+    } else {
+      // Likely when word.choices or word.picked is null or undefined
+      console.log("word.picked is not the easy, medium, or hard word.choices.");
+      return 0;
     }
-    clients[key].wonTurn = false; // Clear wonTurn for all players
+  } else {
+    return 0; // no one guessed the word correctly;
+  }
+};
+
+const calculateDrawerFactor = (user) =>
+  timeFactor(user.scoring.timer) * wordDifficultyFactor();
+
+// e^(-x/32) is exponential decay to ensure it starts from 100 and is never <= 0
+// 1: .969
+// 2: .939
+// 3: .911
+// 4: .882
+// 5: .855
+// 10: .732
+const guesserOrderFactor = (order) => Math.exp(order / -32);
+
+// (1 - 1 / e ^(timer))
+// Maximum when timer = 90 is 1
+// Minimum when timer = 0 is 0
+const timeFactor = (timer) => 1 - 1 / Math.exp(timer);
+
+const calculateGuesserFactor = (user) =>
+  guesserOrderFactor(user.scoring.order) * timeFactor(user.scoring.timer);
+
+const scorePoints = (user) => {
+  let points = MAXIMUM_POINTS;
+  if (user.role === ROLE.DRAWER) {
+    points *= calculateDrawerFactor(user);
+  } else if (user.role === ROLE.GUESSER) {
+    points *= calculateGuesserFactor(user);
+  } else {
+    // Likely when user.role is null or undefined
+    console.log("User is neither a drawer or a guesser");
+    points *= 0;
+  }
+  return Math.ceil(points); // round points since it's a decimal number
+};
+
+/** Helper to update scores after a turn ended for those users who wonTurn */
+const incrementScoring = () => {
+  Object.keys(clients).forEach((key) => {
+    if (clients[key].scoring.order > 0) {
+      // player guessed correctly or drawer had someone guess their word
+      clients[key].scoring.earned = scorePoints(clients[key]); // track how many points user earned for turn
+      clients[key].scoring.score += scorePoints(clients[key]); // accumulate player points for the turn
+    }
+    // clients[key].wonTurn = false; // Clear wonTurn for all players
     clients[key].role = ROLE.GUESSER; // Set all players to guesser
   });
 };
@@ -227,7 +289,18 @@ const incrementAndResetScores = () => {
 const resetPlayers = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
-    clients[key].score = 0;
+    clients[key].scoring = INITIAL_SCORING;
+  });
+};
+
+const resetScoringForTurn = () => {
+  Object.keys(clients).forEach((key) => {
+    clients[key].scoring = {
+      ...clients[key].scoring,
+      earned: 0,
+      order: 0,
+      timer: 0,
+    };
   });
 };
 
@@ -241,6 +314,7 @@ const prepareTurnStart = () => {
   clearAllTimerIntervals();
   clearLines(); // clear the lines
   clearWord(); // clear picked word and choices
+  resetScoringForTurn();
   const drawerId = findDrawerClientId(); // computer an id for drawer
   drawer = drawerId; // save reference current client id  of drawer
   clients[drawerId].drawn = true;
@@ -251,7 +325,7 @@ const prepareTurnStart = () => {
 
 /**
  * Called at the beginning of each turn
- * Reset player's drawn and wonTurn
+ * Reset player's drawn and scoring
  * Starts countdown for TURN_START
  * Calls prepareTurnStart
  */
@@ -274,13 +348,23 @@ const validateMessageText = (clientId, msgText) => {
 };
 
 /**
- * Validate message received against wordToGuess and adjust wonTurn.
+ * Validate message received against wordToGuess and adjust scoring of order and timer.
  * @returns Message type
  */
 const findMessageType = (clientId, msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
-    clients[clientId].wonTurn = true;
+    // Record player's order for guessed correctly and the timer
+    clients[drawer].scoring.order = guessedCorrectOrder; // so drawer can earn points
+    clients[drawer].scoring.timer = Math.max(
+      // set timer for drawer.scoring
+      clients[drawer].scoring.timer,
+      game.timer
+    );
+    clients[clientId].scoring.order = guessedCorrectOrder++;
+    clients[clientId].scoring.timer = game.timer;
+    // all players can see that a player guessed the word correctly
+    io.sockets.emit("all users", clients);
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
@@ -334,12 +418,11 @@ const addClient = (clientId, username, avatar, date) => {
     id: clientId,
     username,
     avatar,
-    score: 0,
+    scoring: INITIAL_SCORING,
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
     drawn: false,
-    wonTurn: false,
     login: LOGIN.VALID,
   };
 };
