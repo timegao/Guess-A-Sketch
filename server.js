@@ -362,10 +362,12 @@ const findMessageType = (clientId, msgText) => {
       clients[drawer].scoring.timer,
       game.timer
     );
-    clients[clientId].scoring.order = guessedCorrectOrder++;
-    clients[clientId].scoring.timer = game.timer;
-    // all players can see that a player guessed the word correctly
-    io.sockets.emit("all users", clients);
+    // checks that player hasn't guessed correctly already
+    if (clients[clientId].scoring.order === 0) {
+      clients[clientId].scoring.order = guessedCorrectOrder++;
+      clients[clientId].scoring.timer = game.timer;
+    }
+    io.sockets.emit("all users", clients); // all players can see that a player guessed the word correctly
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
