@@ -344,46 +344,28 @@ const addClient = (clientId, username, avatar, date) => {
   };
 };
 
-// const disconnectOrLeaveGame = (client) => {
-//   if (clients.hasOwnProperty(client.id)) {
-//     processMessage(client.id, {
-//       username: clients[client.id].username,
-//       text: `${clients[client.id].username} has left the chat`,
-//       type: MESSAGE_TYPE.LEAVE,
-//     });
-//     delete clients[client.id];
-//     if (Object.keys(clients).length <= 1) {
-//       client.emit("wait for another player", clients[client.id]);
-//       io.sockets.emit("game waiting");
-//       game.gameState = GAME_STATE.GAME_WAITING;
-//       game.timer = DURATION.GAME_WAITING;
-//       clearAllTimerIntervals();
-//     }
-//     io.sockets.emit("all users", clients);
-//   }
-// };
+const disconnectOrLeaveGame = (client) => {
+  if (clients.hasOwnProperty(client.id)) {
+    processMessage(client.id, {
+      username: clients[client.id].username,
+      text: `${clients[client.id].username} has left the chat`,
+      type: MESSAGE_TYPE.LEAVE,
+    });
+    delete clients[client.id];
+    if (Object.keys(clients).length <= 1) {
+      client.emit("wait for another player", clients[client.id]);
+      io.sockets.emit("game waiting");
+      game.gameState = GAME_STATE.GAME_WAITING;
+      game.timer = DURATION.GAME_WAITING;
+      clearAllTimerIntervals();
+    }
+    io.sockets.emit("all users", clients);
+  }
+};
 
 io.on("connection", (client) => {
-  client.on("disconnect", () => {
-    if (clients.hasOwnProperty(client.id)) {
-      processMessage(client.id, {
-        username: clients[client.id].username,
-        text: `${clients[client.id].username} has left the chat`,
-        type: MESSAGE_TYPE.LEAVE,
-      });
-      delete clients[client.id];
-      if (Object.keys(clients).length <= 1) {
-        client.emit("wait for another player", clients[client.id]);
-        io.sockets.emit("game waiting");
-        game.gameState = GAME_STATE.GAME_WAITING;
-        game.timer = DURATION.GAME_WAITING;
-        clearAllTimerIntervals();
-      }
-      io.sockets.emit("all users", clients);
-    }
-  });
-
-  // client.on("leave game", () => disconnectOrLeaveGame(client));
+  client.on("disconnect", () => disconnectOrLeaveGame(client));
+  client.on("leave game", () => disconnectOrLeaveGame(client));
 
   client.on("join", (username, avatar, date) => {
     if (validUsername(username)) {
