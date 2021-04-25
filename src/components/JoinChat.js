@@ -75,6 +75,16 @@ const JoinChat = () => {
             >
               Username already in use!
             </div>
+            <div
+              className="invalid-feedback"
+              style={
+                editingBegun && validLength === false
+                  ? { display: "block" }
+                  : { display: "none" }
+              }
+            >
+              Username cannot be empty!
+            </div>
           </div>
           <div className="col-6">
             <Select
