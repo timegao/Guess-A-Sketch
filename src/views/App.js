@@ -1,12 +1,13 @@
 import { useSelector } from "react-redux";
 import JoinChat from "../components/JoinChat";
-import { getPlayer } from "../redux/player";
+import { getLogin } from "../redux/player";
 import GameView from "../components/GameView";
+import { LOGIN } from "../redux/stateConstants";
 
 const App = () => {
-  const player = useSelector(getPlayer);
+  const loginStatus = useSelector(getLogin);
 
-  return <>{player.hasOwnProperty("username") ? <GameView /> : <JoinChat />}</>;
+  return <>{loginStatus === LOGIN.VALID ? <GameView /> : <JoinChat />}</>;
 };
 
 export default App;
