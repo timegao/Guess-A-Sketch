@@ -1,3 +1,19 @@
+const {
+  faUserNinja,
+  faUserAstronaut,
+  faUserTie,
+  faUser,
+  faUserSecret,
+} = require("@fortawesome/free-solid-svg-icons");
+
+const AVATAR_MAP = {
+  faUserNinja: faUserNinja,
+  faUserAstronaut: faUserAstronaut,
+  faUserTie: faUserTie,
+  faUser: faUser,
+  faUserSecret: faUserSecret,
+};
+
 const ROLE = {
   DRAWER: "drawer",
   GUESSER: "guesser",
@@ -90,4 +106,5 @@ module.exports = {
   INITIAL_WORD,
   ERASER_STROKE,
   LOGIN,
+  AVATAR_MAP,
 };
