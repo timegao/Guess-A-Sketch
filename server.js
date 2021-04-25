@@ -302,6 +302,7 @@ const resetScoringForTurn = () => {
       timer: 0,
     };
   });
+  guessedCorrectOrder = 1;
 };
 
 /**
