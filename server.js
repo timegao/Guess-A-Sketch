@@ -29,7 +29,7 @@ const PORT = process.env.PORT || 4002;
 
 app.use(express.static(__dirname + "/"));
 
-const BLANK_HINT_TIME = 0;
+const BLANK_HINT_TIME = DURATION.TURN_DURING; // @ 90sec left in turn
 const FIRST_HINT_TIME_SHORT_WORD = 45000;
 const FIRST_HINT_TIME_LONG_WORD = 60000;
 const SECOND_HINT_TIME_LONG_WORD = 30000;
@@ -158,6 +158,7 @@ const countdownTurnStart = () => {
     game.timer = DURATION.TURN_DURING;
     io.sockets.emit("turn during");
     io.to(drawer).emit("auto choose word", word.picked); // syncs state with drawer
+    sendHint(); // sends initial blank hint after word is picked before turn during begins
     clearAllTimerIntervals();
     countdownTurnDuring();
     intervalTurnDuring = setInterval(countdownTurnDuring, 1000);
@@ -396,7 +397,6 @@ io.on("connection", (client) => {
   client.on("new word", (picked) => {
     word.picked = picked;
     game.timer = 0; // Moves game from TURN_START to end of TURN_START
-    sendHint(); // sends initial blank hint after word is picked before turn during begins
   });
 
   client.on("get words to choose from", () => {
