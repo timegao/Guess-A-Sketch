@@ -278,8 +278,9 @@ const incrementScoring = () => {
   Object.keys(clients).forEach((key) => {
     if (clients[key].scoring.order > 0) {
       // player guessed correctly or drawer had someone guess their word
-      clients[key].scoring.earned = scorePoints(clients[key]); // track how many points user earned for turn
-      clients[key].scoring.score += scorePoints(clients[key]); // accumulate player points for the turn
+      const scoredPoints = scorePoints(clients[key]);
+      clients[key].scoring.earned = scoredPoints; // track how many points user earned for turn
+      clients[key].scoring.score += scoredPoints; // accumulate player points for the turn
     }
     // clients[key].wonTurn = false; // Clear wonTurn for all players
     clients[key].role = ROLE.GUESSER; // Set all players to guesser
@@ -287,7 +288,7 @@ const incrementScoring = () => {
 };
 
 /** Helper to clear players score called at the beginning of a Round */
-const resetPlayers = () => {
+const resetPlayerForRound = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
     clients[key].scoring = INITIAL_SCORING;
@@ -332,7 +333,7 @@ const prepareTurnStart = () => {
  * Calls prepareTurnStart
  */
 const prepareRoundStart = () => {
-  resetPlayers(); // clear scores
+  resetPlayerForRound(); // clear scores
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
   io.sockets.emit("turn start");
@@ -368,7 +369,7 @@ const findMessageType = (clientId, msgText) => {
       clients[clientId].scoring.order = guessedCorrectOrder++;
       clients[clientId].scoring.timer = game.timer;
     }
-    io.sockets.emit("all users", clients); // all players can see that a player guessed the word correctly
+    io.sockets.emit("all users", clients); // updates scoring for all players
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
