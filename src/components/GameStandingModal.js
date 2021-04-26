@@ -3,13 +3,11 @@ import { getUsers } from "../redux/users";
 
 /** Helper to sort users in descending order based on score*/
 const sortUsersScore = (users) => {
-  let sortedUsers = Object.values(users);
-  return sortedUsers.sort((a, b) => a.score - b.score);
+  return Object.values(users).sort((a, b) => b.scoring.score - a.scoring.score);
 };
 
 const GameStandingModal = () => {
   const users = useSelector(getUsers);
-
   const sortedUsers = sortUsersScore(users);
 
   return (

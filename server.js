@@ -38,6 +38,7 @@ const SECOND_HINT_TIME_LONG_WORD = 30000;
 const THIRD_HINT_TIME_LONG_WORD = 15000;
 const SHORT_WORD_LENGTH = 4;
 const MAXIMUM_POINTS = 100;
+const GUESSER_ORDER_FACTOR = -32;
 const DRAWER_SCORING = {
   // factor is based on the difficulty of the word, the higher than better
   EASY: 0.8,
@@ -248,7 +249,7 @@ const calculateDrawerFactor = (user) =>
 // 4: .882
 // 5: .855
 // 10: .732
-const guesserOrderFactor = (order) => Math.exp(order / -32);
+const guesserOrderFactor = (order) => Math.exp(order / GUESSER_ORDER_FACTOR);
 
 // (1 - 1 / e ^(timer))
 // Maximum when timer = 90 is 1

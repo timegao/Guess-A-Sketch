@@ -31,8 +31,6 @@ const gameReducer = (state = INITIAL_GAME, action) => {
         ...state,
         gameState: GAME_STATE.TURN_END,
         timer: DURATION.TURN_END,
-        wordToGuess: "",
-        wordChoices: {},
       };
     case SET_GAME_OVER:
       return {

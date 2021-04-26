@@ -5,7 +5,7 @@ import { getPickedWord } from "../redux/word";
 /** Helper to sort users in descending order based on earned*/
 const sortUsersWonTurn = (users) => {
   return Object.values(users).sort(
-    (a, b) => a.scoring.earned - b.scoring.earned
+    (a, b) => b.scoring.earned - a.scoring.earned
   );
 };
 
@@ -22,7 +22,7 @@ const ScoreUpdateModal = () => {
           <li className="player-score" key={i}>
             <div className="row">
               <div className="col">{user.username}</div>
-              <div className="col">{user.scoring.earned}</div>
+              <div className="col">+{user.scoring.earned}</div>
             </div>
           </li>
         ))}
