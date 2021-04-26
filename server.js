@@ -326,14 +326,14 @@ const prepareTurnStart = () => {
   clearLines(); // clear the lines
   clearWord(); // clear picked word and choices
   resetScoringForTurn();
-  game.gameState = GAME_STATE.TURN_START;
-  game.timer = DURATION.TURN_START;
-  io.sockets.emit("turn start");
   const drawerId = findDrawerClientId(); // computer an id for drawer
   drawer = drawerId; // save reference current client id  of drawer
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
   io.sockets.emit("all users", clients); // users with updated (turn end) or cleared (RoundStart) score
+  game.gameState = GAME_STATE.TURN_START;
+  game.timer = DURATION.TURN_START;
+  io.sockets.emit("turn start");
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
