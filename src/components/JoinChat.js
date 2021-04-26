@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { newPlayer } from "../redux/actions";
 import { getLogin } from "../redux/player";
 import { LOGIN, AVATAR_MAP } from "../redux/stateConstants";
 import Select from "react-select";
+import TutorialModal from "./TutorialModal";
 
 const createAvatarOptions = (avatarMap) => {
   const options = Object.entries(avatarMap).map(([key, value]) => {
@@ -25,6 +26,7 @@ const JoinChat = () => {
   const [isNotLong, setIsNotLong] = useState(false);
   const login = useSelector(getLogin);
   const [editingBegun, setEditingBegun] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -115,23 +117,54 @@ const JoinChat = () => {
           <div className="col-auto">
             <button
               type="button"
-              className="btn btn-primary float-right btn-lg mt-2"
+              className="btn btn-primary float-right mt-2"
               onClick={verifyUsername}
               disabled={
                 (!editingBegun && login === LOGIN.INVALID) ||
                 !isNotEmpty ||
                 !isNotLong ||
-                !avatar
+                !avatar ||
+                !checked
               }
             >
-              <span className="mx-2">
+              <span className="me-2">
                 <FontAwesomeIcon icon={faPlayCircle} size="1x" />
               </span>
               Play!
             </button>
           </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-warning float-right mt-2"
+              onClick={verifyUsername}
+              data-bs-toggle="modal"
+              data-bs-target="#tutorialGameModal"
+            >
+              <span className="me-2">
+                <FontAwesomeIcon icon={faInfoCircle} size="1x" />
+              </span>
+              Tutorial
+            </button>
+          </div>
+          <div class="col-12">
+            <div class="form-check mt-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value={checked}
+                id="invalidCheck"
+                required
+                onChange={(e) => setChecked(!checked)}
+              />
+              <label class="form-check-label" for="invalidCheck">
+                You have viewed the tutorial.
+              </label>
+            </div>
+          </div>
         </div>
       </form>
+      <TutorialModal />
     </>
   );
 };
