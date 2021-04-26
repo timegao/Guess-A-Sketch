@@ -27,6 +27,7 @@ const MESSAGE_TYPE = {
   GAME_OVER: "game over",
   CORRECT: "correct guess",
   CLOSE_GUESS: "close guess",
+  ALREADY_GUESSED: "already guessed",
 };
 
 const GAME_STATE = {

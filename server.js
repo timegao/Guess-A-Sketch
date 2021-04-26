@@ -351,7 +351,7 @@ const prepareRoundStart = () => {
  */
 const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
-  const type = findMessageType(clientId, msgText);
+  const type = findMessageType(msgText);
   if (type === MESSAGE_TYPE.CORRECT) correctMessageUpdate(clientId);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
@@ -381,7 +381,7 @@ const correctMessageUpdate = (clientId) => {
  * Validate message received against wordToGuess and adjust scoring of order and timer.
  * @returns Message type
  */
-const findMessageType = (clientId, msgText) => {
+const findMessageType = (msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
     return MESSAGE_TYPE.CORRECT;
