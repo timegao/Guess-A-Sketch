@@ -11,6 +11,8 @@ const GameHeader = () => {
             type="button"
             className="btn-close"
             aria-label="Close"
+            data-bs-toggle="modal"
+            data-bs-target="#leaveGameModal"
           ></button>
         </div>
         <div className="col-sm">

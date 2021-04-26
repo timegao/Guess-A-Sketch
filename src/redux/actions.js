@@ -4,6 +4,7 @@ import {
   addLine,
   getWordsToChooseFrom,
   drawerChoseWord,
+  leaveChat,
 } from "../client";
 import {
   ADD_LINE,
@@ -22,6 +23,7 @@ import {
   SET_HINT,
   UPDATE_WORD_CHOICES,
   UPDATE_WORD_PICKED,
+  LOGOUT,
 } from "./actionConstants";
 import { ROLE, LOGIN } from "./stateConstants";
 
@@ -52,18 +54,6 @@ export const updateLines = (lines) => ({
   },
 });
 
-// const addPlayer = (username, date) => ({
-//   type: ADD_PLAYER,
-//   payload: {
-//     username,
-//     score: 0,
-//     role: ROLES.GUESSER,
-//     onboarded: false,
-//     joinedTimeStamp: date,
-//     wait: true,
-//   },
-// });
-
 export const addPlayer = (user) => ({
   type: ADD_PLAYER,
   payload: {
@@ -90,6 +80,13 @@ export const newPlayer = (username, avatar) => {
     };
     dispatch(updateUser(user));
     joinChat(username, avatar, date);
+  };
+};
+
+export const exitGame = () => {
+  return (dispatch) => {
+    dispatch(logoutOfGame());
+    leaveChat();
   };
 };
 
@@ -186,4 +183,8 @@ export const setHint = (hint) => ({
   payload: {
     hint,
   },
+});
+
+export const logoutOfGame = () => ({
+  type: LOGOUT,
 });

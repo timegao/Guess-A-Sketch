@@ -46,6 +46,7 @@ const DURATION = {
 };
 
 const LOGIN = {
+  LOGGED_OUT: "logged out",
   VALID: "valid username",
   INVALID: "invalid username",
 };
@@ -62,7 +63,7 @@ const INITIAL_USERS = {};
 // Represents the single player playing
 const INITIAL_PLAYER = {
   player: {},
-  login: LOGIN.VALID,
+  login: LOGIN.LOGGED_OUT,
 };
 
 const INITIAL_GAME = {

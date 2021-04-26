@@ -3,6 +3,7 @@ import PlayerList from "./PlayerList";
 import CanvasBoard from "./CanvasBoard";
 import DynamicModal from "./DynamicModal";
 import GameHeader from "./GameHeader";
+import ExitModal from "./ExitModal";
 
 const GameView = () => {
   return (
@@ -21,6 +22,7 @@ const GameView = () => {
           <Chat />
         </div>
       </div>
+      <ExitModal />
       <DynamicModal />
     </div>
   );

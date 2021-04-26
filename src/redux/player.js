@@ -1,4 +1,4 @@
-import { ADD_PLAYER, INVALID_USERNAME } from "./actionConstants";
+import { ADD_PLAYER, INVALID_USERNAME, LOGOUT } from "./actionConstants";
 import { INITIAL_PLAYER, LOGIN } from "./stateConstants";
 
 const playerReducer = (state = INITIAL_PLAYER, action) => {
@@ -7,6 +7,8 @@ const playerReducer = (state = INITIAL_PLAYER, action) => {
       return action.payload;
     case INVALID_USERNAME:
       return { ...state, login: LOGIN.INVALID };
+    case LOGOUT:
+      return INITIAL_PLAYER;
     default:
       return state;
   }
