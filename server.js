@@ -38,7 +38,8 @@ const SECOND_HINT_TIME_LONG_WORD = 30000;
 const THIRD_HINT_TIME_LONG_WORD = 15000;
 const SHORT_WORD_LENGTH = 4;
 const MAXIMUM_POINTS = 100;
-const GUESSER_ORDER_FACTOR = -32;
+const GUESSER_ORDER_FACTOR = -16;
+const TIMER_FACTOR = 1.03;
 const DRAWER_SCORING = {
   // factor is based on the difficulty of the word, the higher than better
   EASY: 0.8,
@@ -149,15 +150,19 @@ const countdownTurnEnd = () => {
   }
 };
 
+const moveGameStateToTurnEnd = () => {
+  game.gameState = GAME_STATE.TURN_END;
+  incrementScoring(); // Increment scores for all users and then send the updated scores
+  io.sockets.emit("turn end", clients, word.picked);
+  game.timer = DURATION.TURN_END;
+  intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
+};
+
 const countdownTurnDuring = () => {
   countdown();
   sendHint();
   if (game.timer <= 0 && game.gameState === GAME_STATE.TURN_DURING) {
-    game.gameState = GAME_STATE.TURN_END;
-    incrementScoring(); // Increment scores for all users and then send the updated scores
-    io.sockets.emit("turn end", clients, word.picked);
-    game.timer = DURATION.TURN_END;
-    intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
+    moveGameStateToTurnEnd();
   }
 };
 
@@ -242,19 +247,21 @@ const wordDifficultyFactor = () => {
 const calculateDrawerFactor = (user) =>
   timeFactor(user.scoring.timer) * wordDifficultyFactor();
 
-// e^(-x/32) is exponential decay to ensure it starts from 100 and is never <= 0
-// 1: .969
-// 2: .939
-// 3: .911
-// 4: .882
-// 5: .855
-// 10: .732
+// e^(-x/16) is exponential decay to ensure it starts from 100 and is never <= 0
+// 1: .939
+// 2: .882
+// 3: .829
+// 4: .779
+// 5: .732
+// 10: .535
 const guesserOrderFactor = (order) => Math.exp(order / GUESSER_ORDER_FACTOR);
 
-// (1 - 1 / e ^(timer))
-// Maximum when timer = 90 is 1
+// (1 - 1 / 1.03 ^ timer)
+// Maximum when timer = 90 is .930
+// Value when timer = 45 is .736
+// Value when timer = 5 is .137
 // Minimum when timer = 0 is 0
-const timeFactor = (timer) => 1 - 1 / Math.exp(timer);
+const timeFactor = (timer) => 1 - 1 / Math.pow(TIMER_FACTOR, timer);
 
 const calculateGuesserFactor = (user) =>
   guesserOrderFactor(user.scoring.order) * timeFactor(user.scoring.timer);
@@ -311,6 +318,7 @@ const resetScoringForTurn = () => {
  * Called at the beginning of each round
  * Clear all timers
  * Clear the canvas
+ * Starts countdown for TURN_START
  * Pick new drawer
  */
 const prepareTurnStart = () => {
@@ -323,31 +331,52 @@ const prepareTurnStart = () => {
   clients[drawerId].drawn = true;
   clients[drawerId].role = ROLE.DRAWER;
   io.sockets.emit("all users", clients); // users with updated (turn end) or cleared (RoundStart) score
+  game.gameState = GAME_STATE.TURN_START;
+  game.timer = DURATION.TURN_START;
+  io.sockets.emit("turn start");
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
 /**
  * Called at the beginning of each turn
  * Reset player's drawn and scoring
- * Starts countdown for TURN_START
  * Calls prepareTurnStart
  */
 const prepareRoundStart = () => {
   resetPlayerForRound(); // clear scores
-  game.gameState = GAME_STATE.TURN_START;
-  game.timer = DURATION.TURN_START;
-  io.sockets.emit("turn start");
   prepareTurnStart();
 };
 
 /**
- * Validate message text against word to guess.
+ * Validate message text against word to guess
+ * Scores the guess if the MESSAGE_TYPE is CORRECT
  */
-const validateMessageText = (clientId, msgText) => {
+const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
   const type = findMessageType(clientId, msgText);
+  if (type === MESSAGE_TYPE.CORRECT) correctMessageUpdate(clientId);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
+};
+
+/**
+ * If the message was the correct guess:
+ * Update the user's scoring details like order and timer
+ * Along with that of the drawer if they're not updated
+ */
+const correctMessageUpdate = (clientId) => {
+  // Record player's order for guessed correctly and the timer
+  if (clients[drawer].scoring.order === 0) {
+    clients[drawer].scoring.order = guessedCorrectOrder; // so drawer can earn points
+    clients[drawer].scoring.timer = game.timer;
+    io.sockets.emit("one user", clients[drawer]); // update scoring for drawer
+  }
+  // checks that player hasn't guessed correctly already
+  if (clients[clientId].scoring.order === 0) {
+    clients[clientId].scoring.order = guessedCorrectOrder++;
+    clients[clientId].scoring.timer = game.timer;
+    io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
+  }
 };
 
 /**
@@ -357,18 +386,6 @@ const validateMessageText = (clientId, msgText) => {
 const findMessageType = (clientId, msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
-    // Record player's order for guessed correctly and the timer
-    if (clients[drawer].scoring.order === 0) {
-      clients[drawer].scoring.order = guessedCorrectOrder; // so drawer can earn points
-      clients[drawer].scoring.timer = game.timer;
-      io.sockets.emit("one user", clients[drawer]); // update scoring for drawer
-    }
-    // checks that player hasn't guessed correctly already
-    if (clients[clientId].scoring.order === 0) {
-      clients[clientId].scoring.order = guessedCorrectOrder++;
-      clients[clientId].scoring.timer = game.timer;
-      io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
-    }
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
@@ -439,12 +456,15 @@ const disconnectOrLeaveGame = (client) => {
       type: MESSAGE_TYPE.LEAVE,
     });
     delete clients[client.id];
-    if (Object.keys(clients).length <= 1) {
+    if (Object.keys(clients).length === 1) {
       client.emit("wait for another player", clients[client.id]);
       io.sockets.emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
       clearAllTimerIntervals();
+    } else if (client.id === drawer) {
+      // if drawer leaves, start a new turn
+      moveGameStateToTurnEnd();
     }
     io.sockets.emit("all users", clients);
   }
@@ -477,7 +497,7 @@ io.on("connection", (client) => {
   });
 
   client.on("new message", (msgText) => {
-    const message = validateMessageText(client.id, msgText);
+    const message = validateAndScoreMessage(client.id, msgText);
     processMessage(client.id, message);
   });
 
