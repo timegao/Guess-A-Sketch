@@ -16,10 +16,13 @@ const createAvatarOptions = (avatarMap) => {
   return options;
 };
 
+const MAXIMUM_LENGTH = 16;
+
 const JoinChat = () => {
   const [username, setUsername] = useState("");
   const [avatar, setAvatar] = useState(null);
-  const [validLength, setValidLength] = useState(false);
+  const [isNotEmpty, setIsNotEmpty] = useState(false);
+  const [isNotLong, setIsNotLong] = useState(false);
   const login = useSelector(getLogin);
   const [editingBegun, setEditingBegun] = useState(false);
 
@@ -27,9 +30,14 @@ const JoinChat = () => {
 
   const validateUsername = (username) => {
     if (username.length === 0) {
-      setValidLength(false);
+      setIsNotEmpty(false);
     } else {
-      setValidLength(true);
+      setIsNotEmpty(true);
+    }
+    if (username.length > MAXIMUM_LENGTH) {
+      setIsNotLong(false);
+    } else {
+      setIsNotLong(true);
     }
   };
 
@@ -40,7 +48,7 @@ const JoinChat = () => {
   };
 
   const verifyUsername = () => {
-    if (validLength) {
+    if (isNotEmpty && isNotLong) {
       setEditingBegun(false);
       dispatch(newPlayer(username, avatar.value));
     }
@@ -78,12 +86,22 @@ const JoinChat = () => {
             <div
               className="invalid-feedback"
               style={
-                editingBegun && validLength === false
+                editingBegun && isNotEmpty === false
                   ? { display: "block" }
                   : { display: "none" }
               }
             >
               Username cannot be empty!
+            </div>
+            <div
+              className="invalid-feedback"
+              style={
+                editingBegun && isNotLong === false
+                  ? { display: "block" }
+                  : { display: "none" }
+              }
+            >
+              Username cannot be longer than {MAXIMUM_LENGTH} characters!
             </div>
           </div>
           <div className="col-6">
@@ -101,7 +119,8 @@ const JoinChat = () => {
               onClick={verifyUsername}
               disabled={
                 (!editingBegun && login === LOGIN.INVALID) ||
-                !validLength ||
+                !isNotEmpty ||
+                !isNotLong ||
                 !avatar
               }
             >

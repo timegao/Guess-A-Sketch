@@ -58,6 +58,7 @@ body {
 /* Display username and score */
 .user-data {
   color: rgb(2, 82, 134);
+  font-size: larger;
 }
 
 #playerListColumn {

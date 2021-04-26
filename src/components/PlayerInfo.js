@@ -17,7 +17,11 @@ const PlayerInfo = ({ user }) => {
         </div>
         {user.scoring.order > 0 ? (
           <div>
-            <FontAwesomeIcon icon={faCheckSquare} size="2x" />
+            <FontAwesomeIcon
+              icon={faCheckSquare}
+              size="2x"
+              className="mx-2 mt-3"
+            />
           </div>
         ) : null}
       </div>
