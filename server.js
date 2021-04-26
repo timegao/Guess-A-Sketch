@@ -67,7 +67,6 @@ const clearLines = () => {
 };
 
 const processMessage = (clientId, message) => {
-  // messages.push(message);
   const { type } = message;
   if (type === MESSAGE_TYPE.CLOSE_GUESS) {
     // push message to particular user
