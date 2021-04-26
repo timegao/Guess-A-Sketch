@@ -59,7 +59,8 @@ const TutorialModal = () => {
               <div className="card-body">
                 <div className="col-auto text-justify">
                   Don't spoil the fun. <strong>DO NOT TELL OTHERS</strong> the
-                  answer in the chat or on the board!
+                  answer in the <strong>CHAT</strong> or on the{" "}
+                  <strong>BOARD</strong>!
                 </div>
                 <div className="col-auto text-center">
                   <span className="fs-1">
