@@ -358,18 +358,17 @@ const findMessageType = (clientId, msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
     // Record player's order for guessed correctly and the timer
-    clients[drawer].scoring.order = guessedCorrectOrder; // so drawer can earn points
-    clients[drawer].scoring.timer = Math.max(
-      // set timer for drawer.scoring
-      clients[drawer].scoring.timer,
-      game.timer
-    );
+    if (clients[drawer].scoring.order === 0) {
+      clients[drawer].scoring.order = guessedCorrectOrder; // so drawer can earn points
+      clients[drawer].scoring.timer = game.timer;
+      io.sockets.emit("one user", clients[drawer]); // update scoring for drawer
+    }
     // checks that player hasn't guessed correctly already
     if (clients[clientId].scoring.order === 0) {
       clients[clientId].scoring.order = guessedCorrectOrder++;
       clients[clientId].scoring.timer = game.timer;
+      io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
     }
-    io.sockets.emit("all users", clients); // updates scoring for all players
     return MESSAGE_TYPE.CORRECT;
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
