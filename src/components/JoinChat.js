@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { newPlayer } from "../redux/actions";
 import { getLogin } from "../redux/player";
 import { LOGIN, AVATAR_MAP } from "../redux/stateConstants";
 import Select from "react-select";
+import TutorialModal from "./TutorialModal";
 
 const createAvatarOptions = (avatarMap) => {
   const options = Object.entries(avatarMap).map(([key, value]) => {
@@ -25,6 +26,7 @@ const JoinChat = () => {
   const [isNotLong, setIsNotLong] = useState(false);
   const login = useSelector(getLogin);
   const [editingBegun, setEditingBegun] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -47,10 +49,11 @@ const JoinChat = () => {
     setUsername(e.target.value);
   };
 
-  const verifyUsername = () => {
-    if (isNotEmpty && isNotLong) {
+  const verifyUsername = (e) => {
+    if (isNotEmpty && isNotLong && checked) {
       setEditingBegun(false);
       dispatch(newPlayer(username, avatar.value));
+      e.preventDefault();
     }
   };
 
@@ -61,7 +64,7 @@ const JoinChat = () => {
           <h1>Place Logo Here</h1>
         </span>
       </div>
-      <form className="row my-4 add-form" onSubmit={(e) => e.preventDefault()}>
+      <form className="row my-4 add-form" onSubmit={verifyUsername}>
         <div className="row">
           <div className="col-6">
             <input
@@ -114,8 +117,8 @@ const JoinChat = () => {
           </div>
           <div className="col-auto">
             <button
-              type="button"
-              className="btn btn-primary float-right btn-lg mt-2"
+              type="submit"
+              className="btn btn-primary float-right mt-2"
               onClick={verifyUsername}
               disabled={
                 (!editingBegun && login === LOGIN.INVALID) ||
@@ -124,14 +127,43 @@ const JoinChat = () => {
                 !avatar
               }
             >
-              <span className="mx-2">
+              <span className="me-2">
                 <FontAwesomeIcon icon={faPlayCircle} size="1x" />
               </span>
               Play!
             </button>
           </div>
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-warning float-right mt-2"
+              data-bs-toggle="modal"
+              data-bs-target="#tutorialGameModal"
+            >
+              <span className="me-2">
+                <FontAwesomeIcon icon={faInfoCircle} size="1x" />
+              </span>
+              Tutorial
+            </button>
+          </div>
+          <div className="col-12">
+            <div className="form-check mt-2">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value={checked}
+                id="invalidCheck2"
+                required
+                onChange={() => setChecked(!checked)}
+              />
+              <label className="form-check-label" htmlFor="invalidCheck2">
+                I have viewed the tutorial.
+              </label>
+            </div>
+          </div>
         </div>
       </form>
+      <TutorialModal />
     </>
   );
 };
