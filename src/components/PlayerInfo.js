@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
 import { AVATAR_MAP } from "../redux/stateConstants";
 
 const PlayerInfo = ({ user }) => {
@@ -14,6 +15,11 @@ const PlayerInfo = ({ user }) => {
           </p>
           <p>{"points: " + user.scoring.score} </p>
         </div>
+        {user.scoring.order > 0 ? (
+          <div>
+            <FontAwesomeIcon icon={faCheckSquare} size="2x" />
+          </div>
+        ) : null}
       </div>
     </li>
   );
