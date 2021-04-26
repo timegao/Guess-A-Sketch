@@ -12,7 +12,7 @@ const PlayerInfo = ({ user }) => {
           <p>
             <strong>{user.username}</strong>
           </p>
-          <p>{"points: " + user.score} </p>
+          <p>{"points: " + user.scoring.score} </p>
         </div>
       </div>
     </li>

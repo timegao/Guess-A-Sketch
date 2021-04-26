@@ -25,7 +25,7 @@ import {
   UPDATE_WORD_PICKED,
   LOGOUT,
 } from "./actionConstants";
-import { ROLE, LOGIN } from "./stateConstants";
+import { ROLE, LOGIN, INITIAL_SCORING } from "./stateConstants";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -70,12 +70,11 @@ export const newPlayer = (username, avatar) => {
       id: "", // set later by server
       username,
       avatar,
-      score: 0,
+      scoring: INITIAL_SCORING,
       role: ROLE.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
       drawn: false,
-      wonTurn: false,
       login: LOGIN.VALID,
     };
     dispatch(updateUser(user));

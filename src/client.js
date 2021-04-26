@@ -14,6 +14,7 @@ import {
   setWordToGuess,
   invalidUsername,
   setHint,
+  updateUser,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -44,6 +45,10 @@ socket.on("all lines", (lines) => {
 
 socket.on("all users", (users) => {
   store.dispatch(updateUsers(users));
+});
+
+socket.on("one user", (user) => {
+  store.dispatch(updateUser(user));
 });
 
 socket.on("add player", (user) => {

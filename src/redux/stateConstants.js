@@ -73,6 +73,13 @@ const INITIAL_GAME = {
   hint: "",
 };
 
+const INITIAL_SCORING = {
+  score: 0, // the total accumulated score
+  earned: 0, // the amount of points user earned for the turn
+  order: 0, // the order that user guessed correctly
+  timer: 0, // tracks the game.timer when player guessed correctly
+};
+
 // Represents choices given to drawer
 // And the word that they picked to draw
 const INITIAL_WORD = {
@@ -103,6 +110,7 @@ module.exports = {
   INITIAL_USERS,
   INITIAL_PLAYER,
   INITIAL_GAME,
+  INITIAL_SCORING,
   INITIAL_STROKE,
   INITIAL_WORD,
   ERASER_STROKE,
