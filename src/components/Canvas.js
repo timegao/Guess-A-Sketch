@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 
 import { addLine } from "../client";
 import { getLine } from "../redux/lines";
+import { getPlayer } from "../redux/player";
+import { ROLE } from "../redux/stateConstants";
+import { getUsers } from "../redux/users";
 
 const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
   context.beginPath();
@@ -15,6 +18,8 @@ const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
 };
 
 const Canvas = ({ setPoint, point, stroke }) => {
+  const users = useSelector(getUsers);
+  const player = useSelector(getPlayer);
   const [drawing, setDrawing] = useState(false);
   const lines = useSelector(getLine);
 
@@ -29,7 +34,7 @@ const Canvas = ({ setPoint, point, stroke }) => {
    */
   const onMouseDown = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
-    setDrawing(true);
+    if (users[player.username].role === ROLE.DRAWER) setDrawing(true);
     setPoint({
       ...point,
       x:
