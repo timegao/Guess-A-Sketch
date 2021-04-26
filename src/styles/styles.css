@@ -109,7 +109,8 @@ canvas {
 .header {
   align-items: center;
   justify-content: center;
-  background-color: rgb(246, 247, 199);
+  /* background-color: rgb(246, 247, 199); */
+  background: #f3f3f3;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -158,14 +159,14 @@ canvas {
 }
 
 .countdown-item {
-  color: #111;
-  font-size: 40px;
+  color: black;
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  line-height: 30px;
-  margin: 10px;
+  line-height: 1.25rem;
+  /* margin: 10px; */
   padding-top: 10px;
   position: relative;
   width: 100px;
@@ -173,10 +174,7 @@ canvas {
 }
 
 .countdown-item span {
-  color: #333;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 1rem;
 }
 
 .countdown-svg {
@@ -207,4 +205,17 @@ canvas {
 /* 3rd Answer - https://stackoverflow.com/questions/19528173/bootstrap-open-another-modal-in-modal */
 #leaveGameModal {
   z-index: 1062 !important;
+}
+
+.gameWord-hint {
+  letter-spacing: 1rem;
+  background-color: rgb(246, 247, 199);
+  padding: 0.5rem;
+  border: #000000;
+}
+
+.gameWord-answer {
+  background-color: rgb(246, 247, 199);
+  padding: 0.5rem;
+  border: #000000;
 }
