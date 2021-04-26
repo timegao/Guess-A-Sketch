@@ -40,7 +40,7 @@ const GAME_STATE = {
 const DURATION = {
   GAME_WAITING: Infinity,
   TURN_START: 15000,
-  TURN_DURING: 90000, // Changed for testing purposes
+  TURN_DURING: 90000,
   TURN_END: 8000,
   GAME_OVER: 10000,
 };
