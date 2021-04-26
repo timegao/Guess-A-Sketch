@@ -5,12 +5,10 @@ import PlayerInfo from "../components/PlayerInfo";
 const PlayerList = () => {
   const users = useSelector(getUsers);
   return (
-    <div className="row">
-      <ul className="scrollable">
-        {Object.keys(users).map((user, i) => (
-          <PlayerInfo user={users[user]} key={i} />
-        ))}
-      </ul>
+    <div class="justify-content-md-center">
+      {Object.keys(users).map((user, i) => (
+        <PlayerInfo user={users[user]} key={i} />
+      ))}
     </div>
   );
 };

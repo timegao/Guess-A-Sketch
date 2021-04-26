@@ -8,7 +8,9 @@ import { getWord } from "../redux/word";
 // TO DO: if we later keep drawer reference in store, this could be replaced with simple to check
 // that current user is not the drawer.
 const isGuesserPlayer = (player, users) => {
-  return users[player.username].role === ROLE.GUESSER;
+  return typeof users[player.username] === "undefined"
+    ? false
+    : users[player.username].role === ROLE.GUESSER;
 };
 
 const GameWord = () => {

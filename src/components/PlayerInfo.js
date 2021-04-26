@@ -1,31 +1,39 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckSquare } from "@fortawesome/free-solid-svg-icons";
-import { AVATAR_MAP } from "../redux/stateConstants";
+import { faCheckSquare, faPenSquare } from "@fortawesome/free-solid-svg-icons";
+import { AVATAR_MAP, ROLE } from "../redux/stateConstants";
+import { getPlayer } from "../redux/player";
+import { useSelector } from "react-redux";
 
 const PlayerInfo = ({ user }) => {
+  const player = useSelector(getPlayer);
+  let bgColor =
+    player.username === user.username ? "rgb(246, 247, 199)" : "inherit";
   return (
-    <li className="player">
-      <div className="d-inline-flex mx-1">
-        <div className="mx-2 mt-3">
+    <div className="row player">
+      <div className="col-2">
+        <div>
           <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
         </div>
-        <div className="user-data">
-          <p>
+      </div>
+      <div className="col-8">
+        <div className="user-data" style={{ backgroundColor: bgColor }}>
+          <p style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             <strong>{user.username}</strong>
           </p>
-          <p>{"points: " + user.scoring.score} </p>
+          <div>{"points: " + user.scoring.score} </div>
         </div>
-        {user.scoring.order > 0 ? (
+      </div>
+      <div className="col-2">
+        {user.role === ROLE.DRAWER || user.scoring.order > 0 ? (
           <div>
             <FontAwesomeIcon
-              icon={faCheckSquare}
+              icon={user.role === ROLE.DRAWER ? faPenSquare : faCheckSquare}
               size="2x"
-              className="mx-2 mt-3"
             />
           </div>
         ) : null}
       </div>
-    </li>
+    </div>
   );
 };
 
