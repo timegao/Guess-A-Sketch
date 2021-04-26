@@ -8,6 +8,9 @@ const ExitModal = () => {
   const confirmExitGame = () => {
     let leaveGameModalDiv = document.getElementById("leaveGameModal");
     let leaveGameModal = Modal.getInstance(leaveGameModalDiv);
+    let dynamicModalDiv = document.getElementById("dynamicModal");
+    let dynamicModal = Modal.getInstance(dynamicModalDiv);
+    dynamicModal.hide(); // close dynamic modal if open before leaving
     leaveGameModal.hide(); //close modal before leaving
     dispatch(exitGame());
   };
