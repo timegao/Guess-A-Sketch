@@ -49,10 +49,11 @@ const JoinChat = () => {
     setUsername(e.target.value);
   };
 
-  const verifyUsername = () => {
-    if (isNotEmpty && isNotLong) {
+  const verifyUsername = (e) => {
+    if (isNotEmpty && isNotLong && checked) {
       setEditingBegun(false);
       dispatch(newPlayer(username, avatar.value));
+      e.preventDefault();
     }
   };
 
@@ -63,7 +64,7 @@ const JoinChat = () => {
           <h1>Place Logo Here</h1>
         </span>
       </div>
-      <form className="row my-4 add-form" onSubmit={(e) => e.preventDefault()}>
+      <form className="row my-4 add-form" onSubmit={verifyUsername}>
         <div className="row">
           <div className="col-6">
             <input
@@ -116,15 +117,14 @@ const JoinChat = () => {
           </div>
           <div className="col-auto">
             <button
-              type="button"
+              type="submit"
               className="btn btn-primary float-right mt-2"
               onClick={verifyUsername}
               disabled={
                 (!editingBegun && login === LOGIN.INVALID) ||
                 !isNotEmpty ||
                 !isNotLong ||
-                !avatar ||
-                !checked
+                !avatar
               }
             >
               <span className="me-2">
@@ -137,7 +137,6 @@ const JoinChat = () => {
             <button
               type="button"
               className="btn btn-warning float-right mt-2"
-              onClick={verifyUsername}
               data-bs-toggle="modal"
               data-bs-target="#tutorialGameModal"
             >
@@ -147,18 +146,18 @@ const JoinChat = () => {
               Tutorial
             </button>
           </div>
-          <div class="col-12">
-            <div class="form-check mt-2">
+          <div className="col-12">
+            <div className="form-check mt-2">
               <input
-                class="form-check-input"
+                className="form-check-input"
                 type="checkbox"
                 value={checked}
-                id="invalidCheck"
+                id="invalidCheck2"
                 required
-                onChange={(e) => setChecked(!checked)}
+                onChange={() => setChecked(!checked)}
               />
-              <label class="form-check-label" for="invalidCheck">
-                You have viewed the tutorial.
+              <label className="form-check-label" htmlFor="invalidCheck2">
+                I have viewed the tutorial.
               </label>
             </div>
           </div>
