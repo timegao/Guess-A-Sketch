@@ -5,7 +5,7 @@ import GameWord from "./GameWord";
 const GameHeader = () => {
   return (
     <div className="container">
-      <div className="row">
+      <div className="row align-items-center">
         <div className="col-sm">
           <button
             type="button"
@@ -14,14 +14,13 @@ const GameHeader = () => {
             data-bs-toggle="modal"
             data-bs-target="#leaveGameModal"
           ></button>
-        </div>
-        <div className="col-sm">
           <GameClock />
         </div>
-        <div className="col-sm">
+        {/* <div className="col-sm"></div> */}
+        <div className="col-sm text-center">
           <GameWord />
         </div>
-        <div className="col-sm">
+        <div className="col-sm text-center">
           <GameRound />
         </div>
       </div>

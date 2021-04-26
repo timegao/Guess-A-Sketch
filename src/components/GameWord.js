@@ -18,7 +18,18 @@ const GameWord = () => {
   const hint = useSelector(getHint);
   return (
     <>
-      {isGuesserPlayer(player, users) ? <div>{hint}</div> : <div>{picked}</div>}
+      {isGuesserPlayer(player, users) ? (
+        <div className="gameWord-hint">
+          <p className="fs-3">{hint}</p>
+        </div>
+      ) : (
+        <div>
+          <p className="mt-3">Draw: </p>
+          <p className="fs-3 gameWord-answer">
+            <strong>{picked}</strong>
+          </p>
+        </div>
+      )}
     </>
   );
 };

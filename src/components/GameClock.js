@@ -1,17 +1,20 @@
 import { useSelector } from "react-redux";
-import { getGameClock } from "../redux/game";
+import { getGameClock, getGameState } from "../redux/game";
+import { DURATION, GAME_STATE } from "../redux/stateConstants";
 import { getUsers } from "../redux/users";
+import { useEffect, useState } from "react";
 
 // https://codepen.io/FlorinPop17/pen/YbpwyG
-const convertToSeconds = (milliseconds) => milliseconds / 1000;
+const convertToSeconds = (milliseconds) =>
+  milliseconds === Infinity ? 0 : milliseconds / 1000;
 
 const SVGCircle = ({ radius }) => (
   <svg className="countdown-svg">
     <path
       fill="none"
       stroke="#333"
-      stroke-width="4"
-      d={describeArc(50, 50, 48, 0, radius)}
+      strokeWidth="4"
+      d={describeArc(50, 50, 30, 0, radius)}
     />
   </svg>
 );
@@ -56,21 +59,50 @@ function mapNumber(number, in_min, in_max, out_min, out_max) {
   );
 }
 
+const determineMaxSecondsForGameState = (gameState) => {
+  switch (gameState) {
+    case GAME_STATE.TURN_START:
+      return convertToSeconds(DURATION.TURN_START);
+    case GAME_STATE.TURN_DURING:
+      return convertToSeconds(DURATION.TURN_DURING);
+    case GAME_STATE.TURN_END:
+      return convertToSeconds(DURATION.TURN_END);
+    case GAME_STATE.GAME_OVER:
+      return convertToSeconds(DURATION.GAME_OVER);
+    default:
+      // GAME_STATE.WAITING or other
+      return 0; // no arc will render
+  }
+};
+
 const GameClock = () => {
   const time = useSelector(getGameClock);
+  const gameState = useSelector(getGameState);
+  const [secondsRadius, setSecondsRadius] = useState(0);
 
-  const secondsRadius = mapNumber(convertToSeconds(time), 90, 0, 0, 360);
+  useEffect(() => {
+    if (time >= 0) {
+      setSecondsRadius(
+        mapNumber(
+          convertToSeconds(time),
+          determineMaxSecondsForGameState(gameState),
+          0,
+          0,
+          360
+        )
+      );
+    }
+  }, [gameState, time]);
 
-  return <div className="gameClock">{convertToSeconds(time)} seconds</div>;
-  // return (
-  //   <div className="countdown-wrapper">
-  //     <div className="countdown-item">
-  //       <SVGCircle radius={secondsRadius} />
-  //       {convertToSeconds(time)}
-  //       <span>seconds</span>
-  //     </div>
-  //   </div>
-  // );
+  return (
+    <div className="countdown-wrapper">
+      <div className="countdown-item">
+        <SVGCircle radius={secondsRadius} />
+        {convertToSeconds(time)}
+        <span>sec</span>
+      </div>
+    </div>
+  );
 };
 
 export default GameClock;
