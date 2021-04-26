@@ -43,6 +43,7 @@ body {
 }
 
 .player {
+  position: relative;
   background: #f3f3f3;
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   border-right: 2px solid rgba(0, 0, 0, 0.1);
@@ -50,6 +51,7 @@ body {
   cursor: pointer;
   height: 100px;
   margin: 0px;
+  max-width: 100%;
   /* min-width: 205px;
   max-width: 250px; */
 }
@@ -70,7 +72,7 @@ body {
   max-height: 70vh;
   padding: 0%;
   margin: 0%;
-  max-width: 94%;
+  /* max-width: 94%; */
 }
 
 .table {

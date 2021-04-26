@@ -7,33 +7,29 @@ import { useSelector } from "react-redux";
 const PlayerInfo = ({ user }) => {
   const player = useSelector(getPlayer);
   let bgColor =
-    player.username === user.username ? "rgb(246, 247, 199)" : "inherit";
+    player.username === user.username ? "rgb(246, 247, 199)" : "#f3f3f3";
   return (
-    <div className="row player">
-      <div className="col-2">
-        <div>
-          <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
-        </div>
-      </div>
-      <div className="col-8">
-        <div className="user-data" style={{ backgroundColor: bgColor }}>
+    <li className="player" style={{ backgroundColor: bgColor }}>
+      <span className="float-start">
+        <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
+      </span>
+      {user.role === ROLE.DRAWER || user.scoring.order > 0 ? (
+        <span className="float-end">
+          <FontAwesomeIcon
+            icon={user.role === ROLE.DRAWER ? faPenSquare : faCheckSquare}
+            size="2x"
+          />
+        </span>
+      ) : null}
+      <div className="row text-start">
+        <div className="user-data">
           <p style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             <strong>{user.username}</strong>
+            <div>{"points: " + user.scoring.score} </div>
           </p>
-          <div>{"points: " + user.scoring.score} </div>
         </div>
       </div>
-      <div className="col-2">
-        {user.role === ROLE.DRAWER || user.scoring.order > 0 ? (
-          <div>
-            <FontAwesomeIcon
-              icon={user.role === ROLE.DRAWER ? faPenSquare : faCheckSquare}
-              size="2x"
-            />
-          </div>
-        ) : null}
-      </div>
-    </div>
+    </li>
   );
 };
 
