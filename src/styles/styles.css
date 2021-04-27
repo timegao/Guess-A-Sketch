@@ -128,8 +128,8 @@ canvas {
 }
 
 #exitGameButton:hover {
-  opacity: 1;
-  border: solid 2px #000000;
+  opacity: 0.9;
+  border: solid 2px #383838;
   background-color: rgba(247, 6, 6, 1);
 }
 
