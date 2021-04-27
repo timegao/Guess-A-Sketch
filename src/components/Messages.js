@@ -47,6 +47,12 @@ const generateMessage = ({ username, text, type }) => {
           <strong>{text}</strong>
         </td>
       );
+    case MESSAGE_TYPE.TURN_START:
+      return (
+        <td className="text-primary">
+          <strong>{text}</strong>
+        </td>
+      );
     default:
       return (
         <td>
