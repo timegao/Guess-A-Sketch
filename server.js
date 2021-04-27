@@ -308,7 +308,7 @@ const incrementScoring = () => {
 const resetPlayerForRound = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
-    clients[key].scoring = JSON.parse(JSON.stringify(INITIAL_SCORING)); // deep copy object
+    clients[key].scoring = { ...INITIAL_SCORING };
   });
 };
 
@@ -485,7 +485,7 @@ const addClient = (clientId, username, avatar, date) => {
     id: clientId,
     username,
     avatar,
-    scoring: JSON.parse(JSON.stringify(INITIAL_SCORING)), // deep copy object
+    scoring: { ...INITIAL_SCORING },
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
