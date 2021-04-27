@@ -7,7 +7,7 @@ import { LOGIN } from "../redux/stateConstants";
 const App = () => {
   const loginStatus = useSelector(getLogin);
 
-  return <>{loginStatus === LOGIN.VALID ? <GameView /> : <JoinChat />}</>;
+  return <>{loginStatus === LOGIN.LOGGED_IN ? <GameView /> : <JoinChat />}</>;
 };
 
 export default App;

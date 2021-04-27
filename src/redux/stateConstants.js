@@ -49,7 +49,7 @@ const DURATION = {
 
 const LOGIN = {
   LOGGED_OUT: "logged out",
-  VALID: "valid username",
+  LOGGED_IN: "logged in",
   INVALID: "invalid username",
 };
 
