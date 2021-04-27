@@ -226,5 +226,5 @@ canvas {
 /* Chat */
 .messages {
   overflow-y: scroll;
-  max-height: 100%;
+  width: 100%;
 }
