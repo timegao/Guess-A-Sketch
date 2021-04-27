@@ -13,7 +13,6 @@ import TutorialModal from "./TutorialModal";
 const createAvatarOptions = (avatarMap) => {
   const options = Object.entries(avatarMap).map(([key, value]) => {
     return {
-      ariaLabel: `avatar option ${key}`,
       value: key,
       label: (
         <span>
@@ -119,6 +118,7 @@ const JoinChat = () => {
           </div>
           <div className="col-6">
             <Select
+              aria-label="select avatar dropdown"
               className="selectAvatar"
               placeholder="Choose Avatar"
               options={createAvatarOptions(AVATAR_MAP)}
