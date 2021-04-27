@@ -52,6 +52,10 @@ const MessageForm = () => {
         onChange={(e) => setMessage(e.target.value)}
         onKeyUp={onKeyUp}
         readOnly={users[player.username].role === ROLE.DRAWER}
+        onPointerEnter={() => toggleTooltip(true)}
+        onFocus={() => toggleTooltip(true)}
+        onPointerOut={() => toggleTooltip(false)}
+        onBlur={() => toggleTooltip(false)}
       />
       <button
         type="button"
