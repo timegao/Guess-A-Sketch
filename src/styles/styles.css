@@ -118,17 +118,19 @@ canvas {
 }
 
 #exitGameButton {
-  background-color: rgba(247, 6, 6, 1);
+  background-color: rgba(247, 6, 6, 0);
   transform: translate(5px, 15px);
   width: 25px;
   height: 25px;
   border-radius: 20%;
+  border: solid 2px rgba(247, 6, 6);
   opacity: 0.8;
 }
 
 #exitGameButton:hover {
   opacity: 1;
   border: solid 2px #000000;
+  background-color: rgba(247, 6, 6, 1);
 }
 
 /* Loading */
