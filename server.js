@@ -381,7 +381,10 @@ const correctMessageUpdate = (clientId) => {
  * Validate message received against wordToGuess and adjust scoring of order and timer.
  * @returns Message type
  */
-const findMessageType = (msgText) => {
+const findMessageType = (clientId, msgText) => {
+  if (clients[clientId].scoring.order > 0) {
+    return MESSAGE_TYPE.ALREADY_GUESSED;
+  }
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
     return MESSAGE_TYPE.CORRECT;
