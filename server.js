@@ -450,29 +450,25 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
-  let m = word.picked.length;
-  let n = msgText.length;
+  let n = word.picked.length;
+  let m = msgText.length;
 
-  let c = new Array(m + 1).fill(0);
-  c.forEach((x, index) => {
-    c[index] = new Array(n + 1);
-  });
-
-  for (let j = 0; j <= m; j++) c[j][0] = j;
-  for (let j = 0; j <= n; j++) c[0][j] = j;
-
-  for (let i = 1; i <= m; i++)
-    for (let j = 1; j <= n; j++) {
-      var delta = 0;
-      if (word.picked[i - 1] !== msgText[j - 1]) delta = 1;
-      c[i][j] = Math.min(
-        c[i - 1][j] + 1,
-        c[i][j - 1] + 1,
-        c[i - 1][j - 1] + delta
-      );
+  let count = 0;
+  let dp = Array.from(Array(n + 1), () => count++);
+  for (let i = 1; i < m + 1; i++) {
+    let last = dp[0]++;
+    for (let j = 1; j < n + 1; j++) {
+      [dp[j], last] = [
+        Math.min(
+          dp[j] + 1,
+          dp[j - 1] + 1,
+          last + (msgText[i - 1] === word.picked[j - 1] ? 0 : 1)
+        ),
+        dp[j],
+      ];
     }
-
-  return c[m][n];
+  }
+  return dp[dp.length - 1];
   // const answerSize = word.picked.length; // n
   // const guessSize = msgText.length; // m
 
