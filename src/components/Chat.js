@@ -14,10 +14,10 @@ const Chat = () => {
     // </div>
     <div className="row">
       <div className="text-center">Chat</div>
-      <div className="card-body p-0">
+      <div className="justify-content-center p0">
         <Messages />
       </div>
-      <div className="card-footer">
+      <div className="justify-content-center p0">
         <MessageForm />
       </div>
     </div>
