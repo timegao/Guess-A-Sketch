@@ -4,21 +4,52 @@ import {
   faEraser,
   faWindowClose,
 } from "@fortawesome/free-solid-svg-icons";
-import { INITIAL_STROKE, ERASER_STROKE } from "../redux/stateConstants";
+import { INITIAL_STROKE, ERASER_STROKE, ROLE } from "../redux/stateConstants";
 import { newClearedCanvas } from "../redux/actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsers } from "../redux/users";
+import { getPlayer } from "../redux/player";
 
 const CanvasInputs = ({ stroke, setStroke, point }) => {
+  const users = useSelector(getUsers);
+  const player = useSelector(getPlayer);
   const dispatch = useDispatch();
   const { color, lineWidth } = stroke;
+
+  const isDrawer = () => {
+    return users[player.username].role === ROLE.DRAWER;
+  };
+
   const onHandleErase = () => {
-    document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
-    setStroke(ERASER_STROKE);
+    if (isDrawer()) {
+      document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
+      setStroke(ERASER_STROKE);
+    }
   };
 
   const onHandleDraw = () => {
-    document.body.style.cursor = "default";
-    setStroke(INITIAL_STROKE);
+    if (isDrawer()) {
+      document.body.style.cursor = "default";
+      setStroke(INITIAL_STROKE);
+    }
+  };
+
+  const onClearCanvas = () => {
+    if (isDrawer()) {
+      dispatch(newClearedCanvas());
+    }
+  };
+
+  const onHandleSetStrokeColor = (e) => {
+    if (isDrawer()) {
+      setStroke({ ...point, color: e.target.value });
+    }
+  };
+
+  const onHandleSetStrokeLineWidth = (e) => {
+    if (isDrawer()) {
+      setStroke({ ...stroke, lineWidth: e.target.value });
+    }
   };
 
   return (
@@ -48,7 +79,7 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
           <button
             type="button"
             className="btn btn-warning"
-            onClick={() => dispatch(newClearedCanvas())}
+            onClick={() => onClearCanvas()}
           >
             Clear
             <span className="ms-2">
@@ -66,7 +97,7 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
             id="strokeColor"
             name="color"
             value={color}
-            onChange={(e) => setStroke({ ...point, color: e.target.value })}
+            onChange={(e) => onHandleSetStrokeColor(e)}
           />
         </div>
       </div>
@@ -81,9 +112,7 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
             min="1"
             max="65"
             value={lineWidth}
-            onChange={(e) =>
-              setStroke({ ...stroke, lineWidth: e.target.value })
-            }
+            onChange={(e) => onHandleSetStrokeLineWidth(e)}
           />
           <input
             type="range"
@@ -92,9 +121,7 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
             min="1"
             max="65"
             value={lineWidth}
-            onChange={(e) =>
-              setStroke({ ...stroke, lineWidth: e.target.value })
-            }
+            onChange={(e) => onHandleSetStrokeLineWidth(e)}
           />
         </div>
       </div>
