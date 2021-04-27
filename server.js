@@ -143,9 +143,9 @@ const countdownTurnEnd = () => {
       intervalGameOver = setInterval(countdownGameOver, 1000);
     } else {
       // next turn
-      game.gameState = GAME_STATE.TURN_START;
-      game.timer = DURATION.TURN_START;
-      io.sockets.emit("turn start");
+      // game.gameState = GAME_STATE.TURN_START;
+      // game.timer = DURATION.TURN_START;
+      // io.sockets.emit("turn start");
       prepareTurnStart();
     }
   }
