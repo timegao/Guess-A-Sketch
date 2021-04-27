@@ -484,7 +484,7 @@ const addClient = (clientId, username, avatar, date) => {
     onboarded: false,
     joinedTimeStamp: date,
     drawn: false,
-    login: LOGIN.VALID,
+    login: LOGIN.LOGGED_IN,
   };
 };
 

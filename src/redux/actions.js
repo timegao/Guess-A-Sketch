@@ -61,7 +61,7 @@ export const addPlayer = (user) => ({
   payload: {
     username: user.username,
     id: user.id,
-    login: LOGIN.VALID,
+    login: LOGIN.LOGGED_IN,
   },
 });
 
@@ -77,7 +77,7 @@ export const newPlayer = (username, avatar) => {
       onboarded: false,
       joinedTimeStamp: date,
       drawn: false,
-      login: LOGIN.VALID,
+      login: LOGIN.LOGGED_IN,
     };
     dispatch(updateUser(user));
     joinChat(username, avatar, date);
