@@ -13,6 +13,7 @@ const MessageForm = () => {
   const [message, setMessage] = useState("");
   const users = useSelector(getUsers);
   const player = useSelector(getPlayer);
+  const [tooltipOpen, toggleTooltip] = useState(false);
 
   const dispatch = useDispatch();
 
