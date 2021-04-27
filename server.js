@@ -469,63 +469,6 @@ const guessRelativeDifference = (msgText) => {
     }
   }
   return dp[dp.length - 1];
-  // const answerSize = word.picked.length; // n
-  // const guessSize = msgText.length; // m
-
-  // // declaring a [2 * guessSize + 1] array
-  // let dp = new Array(2).fill(0);
-  // dp.forEach((x, index) => {
-  //   dp[index] = new Array(guessSize + 1).fill(0);
-  // });
-
-  // // edge cases
-  // for (let i = 0; i < 2; i++) {
-  //   dp[i][0] = i;
-  // }
-  // for (let j = 0; j <= guessSize; j++) {
-  //   dp[0][j] = j;
-  // }
-
-  // console.log(dp);
-
-  // // bottom up approach
-  // for (let i = 1; i <= answerSize; i++) {
-  //   for (let j = 1; j <= guessSize; j++) {
-  //     console.log("word picked: " + word.picked[i - 1]);
-  //     console.log("message: " + msgText[j - 1]);
-  //     // let delta = 0;
-  //     // if (word.picked.charAt(i - 1) !== msgText.charAt(j - 1).toLowerCase()) {
-  //     //   delta = 1;
-  //     // }
-  //     // dp[i % 2][j] = Math.min(
-  //     //   dp[(i - 1) % 2][j] + 1,
-  //     //   dp[i % 2][j - 1] + 1,
-  //     //   dp[(i - 1) % 2][j - 1] + delta
-  //     // );
-  //     dp[i % 2][j] = Math.min(dp[(i - 1) % 2][j] + 1, dp[i % 2][j - 1] + 1); // delete or insert
-
-  //     if (word.picked[i - 1] === msgText[j - 1]) {
-  //       // check replace
-  //       dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1]);
-  //     } else {
-  //       dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1] + 1);
-  //     }
-  //   }
-  // }
-
-  // console.log(dp);
-  // console.log(dp[answerSize % 2][guessSize]);
-  // return dp[answerSize % 2][guessSize];
-
-  // let i = 0;
-  // let differenceCount = 0;
-  // while (i < guessSize && i < answerSize) {
-  //   if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
-  //     differenceCount++;
-  //   }
-  //   i++;
-  // }
-  // return differenceCount + (answerSize - i);
 };
 
 /** Helper to validate username already exists in clients */
