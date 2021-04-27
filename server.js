@@ -138,7 +138,7 @@ const countdownTurnEnd = () => {
     if (usersToNotDrawnUsersArray().length === 0) {
       // game over
       game.gameState = GAME_STATE.GAME_OVER;
-      io.sockets.emit("game over", clients); // send users with updated score
+      io.sockets.emit("game over", clients, generateGameOverMessage()); // send users with updated score and game over message
       game.timer = DURATION.GAME_OVER;
       intervalGameOver = setInterval(countdownGameOver, 1000);
     } else {
@@ -348,12 +348,21 @@ const prepareRoundStart = () => {
   prepareTurnStart();
 };
 
-/** Reveal answer message at end of turn */
+/** Reveal answer message at the end of turn */
 const generateTurnEndMessage = () => {
   return {
     username: "",
     text: `The word was ${word.picked}!`,
     type: MESSAGE_TYPE.ANSWER,
+  };
+};
+
+/** Game Over message at the end of round */
+const generateGameOverMessage = () => {
+  return {
+    username: "",
+    text: `Game Over!`,
+    type: MESSAGE_TYPE.GAME_OVER,
   };
 };
 
