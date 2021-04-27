@@ -8,6 +8,7 @@ const GameHeader = () => {
       <div className="row align-items-center">
         <div className="col-sm">
           <button
+            id="exitGameButton"
             type="button"
             className="btn-close"
             aria-label="Close"
