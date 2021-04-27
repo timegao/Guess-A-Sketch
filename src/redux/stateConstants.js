@@ -75,6 +75,11 @@ const INITIAL_GAME = {
   hint: "",
 };
 
+const INITIAL_DRAWER = {
+  canvasHeight: 0,
+  canvasWidth: 0,
+};
+
 // Represents choices given to drawer
 // And the word that they picked to draw
 const INITIAL_WORD = {
@@ -118,4 +123,5 @@ module.exports = {
   ERASER_STROKE,
   LOGIN,
   AVATAR_MAP,
+  INITIAL_DRAWER,
 };
