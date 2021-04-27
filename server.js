@@ -450,38 +450,76 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
-  const answerSize = word.picked.length; // n
-  const guessSize = msgText.length; // m
+  let m = word.picked.length;
+  let n = msgText.length;
 
-  // declaring a [2 * guessSize + 1] array
-  let dp = new Array(2).fill(0);
-  dp.forEach((x, index) => {
-    dp[index] = new Array(guessSize + 1);
+  let c = new Array(m + 1).fill(0);
+  c.forEach((x, index) => {
+    c[index] = new Array(n + 1);
   });
 
-  // edge cases
-  for (let i = 0; i < 2; i++) {
-    dp[i][0] = i;
-  }
-  for (let j = 0; j <= guessSize; j++) {
-    dp[0][j] = j;
-  }
+  for (let j = 0; j <= m; j++) c[j][0] = j;
+  for (let j = 0; j <= n; j++) c[0][j] = j;
 
-  // bottom up approach
-  for (let i = 1; i < answerSize; i++) {
-    for (let j = 1; j <= guessSize; j++) {
-      dp[i % 2][j] = Math.min(dp[(i - 1) % 2][j] + 1, dp[i % 2][j - 1] + 1); // delete or insert
-
-      if (word.picked[i] === msgText[j]) {
-        // check replace
-        dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1]);
-      } else {
-        dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1] + 1);
-      }
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++) {
+      var delta = 0;
+      if (word.picked[i - 1] !== msgText[j - 1]) delta = 1;
+      c[i][j] = Math.min(
+        c[i - 1][j] + 1,
+        c[i][j - 1] + 1,
+        c[i - 1][j - 1] + delta
+      );
     }
-  }
 
-  return dp[answerSize % 2][guessSize];
+  return c[m][n];
+  // const answerSize = word.picked.length; // n
+  // const guessSize = msgText.length; // m
+
+  // // declaring a [2 * guessSize + 1] array
+  // let dp = new Array(2).fill(0);
+  // dp.forEach((x, index) => {
+  //   dp[index] = new Array(guessSize + 1).fill(0);
+  // });
+
+  // // edge cases
+  // for (let i = 0; i < 2; i++) {
+  //   dp[i][0] = i;
+  // }
+  // for (let j = 0; j <= guessSize; j++) {
+  //   dp[0][j] = j;
+  // }
+
+  // console.log(dp);
+
+  // // bottom up approach
+  // for (let i = 1; i <= answerSize; i++) {
+  //   for (let j = 1; j <= guessSize; j++) {
+  //     console.log("word picked: " + word.picked[i - 1]);
+  //     console.log("message: " + msgText[j - 1]);
+  //     // let delta = 0;
+  //     // if (word.picked.charAt(i - 1) !== msgText.charAt(j - 1).toLowerCase()) {
+  //     //   delta = 1;
+  //     // }
+  //     // dp[i % 2][j] = Math.min(
+  //     //   dp[(i - 1) % 2][j] + 1,
+  //     //   dp[i % 2][j - 1] + 1,
+  //     //   dp[(i - 1) % 2][j - 1] + delta
+  //     // );
+  //     dp[i % 2][j] = Math.min(dp[(i - 1) % 2][j] + 1, dp[i % 2][j - 1] + 1); // delete or insert
+
+  //     if (word.picked[i - 1] === msgText[j - 1]) {
+  //       // check replace
+  //       dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1]);
+  //     } else {
+  //       dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1] + 1);
+  //     }
+  //   }
+  // }
+
+  // console.log(dp);
+  // console.log(dp[answerSize % 2][guessSize]);
+  // return dp[answerSize % 2][guessSize];
 
   // let i = 0;
   // let differenceCount = 0;
