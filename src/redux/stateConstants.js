@@ -7,11 +7,11 @@ const {
 } = require("@fortawesome/free-solid-svg-icons");
 
 const AVATAR_MAP = {
-  faUserNinja: faUserNinja,
-  faUserAstronaut: faUserAstronaut,
-  faUserTie: faUserTie,
-  faUser: faUser,
-  faUserSecret: faUserSecret,
+  "I'm a Spy": faUserSecret,
+  "I'm an Astronaut": faUserAstronaut,
+  "I'm a Ninja": faUserNinja,
+  "I'm all Business": faUserTie,
+  "I'm pretty Average": faUser,
 };
 
 const ROLE = {
