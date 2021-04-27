@@ -41,7 +41,7 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
         </div>
       </div>
       <div className="col-sm">
-        <div className="input-group">
+        <div className="input-group" style={{ borderBottom: "none" }}>
           <span className="input-group-text">Color:</span>
           <input
             className="form-control form-control-color"
