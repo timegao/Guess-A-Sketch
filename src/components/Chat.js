@@ -12,6 +12,17 @@ const Chat = () => {
         <MessageForm />
       </div>
     </div>
+    // <>
+    //   <div className="chat">
+    //     <div className="chat-header">
+    //       <div>
+    //         <strong>Chat</strong>
+    //       </div>
+    //     </div>
+    //     <Messages />
+    //     <MessageForm />
+    //   </div>
+    // </>
   );
 };
 

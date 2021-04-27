@@ -224,7 +224,20 @@ canvas {
 }
 
 /* Chat */
+
+.chat {
+  max-height: 70vh;
+  border-left: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-header {
+  align-items: center;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  justify-content: center;
+}
+
 .messages {
-  overflow: scroll;
-  height: 300px;
+  overflow-y: scroll;
+  height: 58vh;
+  max-height: 58vh;
 }
