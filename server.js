@@ -453,15 +453,15 @@ const guessRelativeDifference = (msgText) => {
   const guessSize = msgText.length;
   const answerSize = word.picked.length;
 
-  let i = 0;
-  let differenceCount = 0;
-  while (i < guessSize && i < answerSize) {
-    if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
-      differenceCount++;
-    }
-    i++;
-  }
-  return differenceCount + (answerSize - i);
+  // let i = 0;
+  // let differenceCount = 0;
+  // while (i < guessSize && i < answerSize) {
+  //   if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
+  //     differenceCount++;
+  //   }
+  //   i++;
+  // }
+  // return differenceCount + (answerSize - i);
 };
 
 /** Helper to validate username already exists in clients */
