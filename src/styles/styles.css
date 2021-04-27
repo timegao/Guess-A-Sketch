@@ -205,7 +205,8 @@ canvas {
 }
 
 .score-earned {
-  color: rgb(30, 245, 77);
+  color: rgb(6, 158, 39);
+  font-weight: bold;
 }
 
 /* Makes sure leave game modal is on top of all other game modals */
