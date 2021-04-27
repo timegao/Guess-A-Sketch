@@ -66,7 +66,7 @@ const clearLines = () => {
   io.sockets.emit("all lines", lines);
 };
 
-const processMessage = (clientId, message) => {
+const broadcastMessage = (clientId, message) => {
   const { type } = message;
   if (
     type === MESSAGE_TYPE.CLOSE_GUESS ||
@@ -460,7 +460,7 @@ const addClient = (clientId, username, avatar, date) => {
 
 const disconnectOrLeaveGame = (client) => {
   if (clients.hasOwnProperty(client.id)) {
-    processMessage(client.id, {
+    broadcastMessage(client.id, {
       username: clients[client.id].username,
       text: `${clients[client.id].username} has left the chat`,
       type: MESSAGE_TYPE.LEAVE,
@@ -489,11 +489,11 @@ io.on("connection", (client) => {
       // Add new user to clients in server
       addClient(client.id, username, avatar, date);
       client.emit("add player", clients[client.id]); // trigger adding of player in redux
-      processMessage(client.id, {
+      broadcastMessage(client.id, {
         username,
         text: `${username} has joined the chat!`,
         type: MESSAGE_TYPE.JOIN,
-      }); // use processMessage to send all messages
+      }); // use broadcastMessage to send all messages
       io.sockets.emit("all users", clients);
       client.emit("all lines", lines);
       client.emit("update game", game);
@@ -508,7 +508,7 @@ io.on("connection", (client) => {
 
   client.on("new message", (msgText) => {
     const message = validateAndScoreMessage(client.id, msgText);
-    processMessage(client.id, message);
+    broadcastMessage(client.id, message);
   });
 
   client.on("new line", (line) => {
