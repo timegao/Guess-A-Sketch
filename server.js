@@ -451,18 +451,34 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
-  const guessSize = msgText.length;
-  const answerSize = word.picked.length;
+  // We can get away with using one array because we only need to keep track of three variables,
+  // the value to the left, the value above, and the value above and to the left.
+  // The value to the left is already in the array, the value above is the value currently at dp[j],
+  // and then we use a variable for the value above and to the left. Other than that it's just a normal dp solution.
+  let n = word.picked.length;
+  let m = msgText.length;
 
-  let i = 0;
-  let differenceCount = 0;
-  while (i < guessSize && i < answerSize) {
-    if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
-      differenceCount++;
-    }
-    i++;
+  if (Math.abs(n - m) > MAX_DIFF_CLOSE_GUESS) {
+    // long messages are not compared
+    return MAX_DIFF_CLOSE_GUESS + 1;
   }
-  return differenceCount + (answerSize - i);
+
+  let count = 0;
+  let dp = Array.from(Array(n + 1), () => count++);
+  for (let i = 1; i < m + 1; i++) {
+    let last = dp[0]++;
+    for (let j = 1; j < n + 1; j++) {
+      [dp[j], last] = [
+        Math.min(
+          dp[j] + 1,
+          dp[j - 1] + 1,
+          last + (msgText[i - 1].toLowerCase() === word.picked[j - 1] ? 0 : 1)
+        ),
+        dp[j],
+      ];
+    }
+  }
+  return dp[dp.length - 1];
 };
 
 /** Helper to validate username already exists in clients */
