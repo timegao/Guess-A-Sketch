@@ -61,15 +61,22 @@ const clients = {}; // Object to map client ids to their usernames
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 /** Clear the lines and send back to clients */
-const clearLines = () => {
+const clearLinesAll = () => {
   lines = []; // clears canvas lines
   io.sockets.emit("all lines", lines);
 };
 
-const processMessage = (clientId, message) => {
-  // messages.push(message);
+const clearLinesExceptDrawer = (drawerSocket) => {
+  lines = []; // clear canvas lines
+  drawerSocket.broadcast.emit("all lines", lines);
+};
+
+const broadcastMessage = (clientId, message) => {
   const { type } = message;
-  if (type === MESSAGE_TYPE.CLOSE_GUESS) {
+  if (
+    type === MESSAGE_TYPE.CLOSE_GUESS ||
+    type === MESSAGE_TYPE.ALREADY_GUESSED
+  ) {
     // push message to particular user
     io.to(clientId).emit("all messages", message);
   } else {
@@ -125,7 +132,6 @@ const clearWord = () => {
 const countdownGameOver = () => {
   countdown();
   if (game.timer <= 0 && game.gameState === GAME_STATE.GAME_OVER) {
-    // TODO: Update final scores for the Round.
     prepareRoundStart();
   }
 };
@@ -137,14 +143,11 @@ const countdownTurnEnd = () => {
     if (usersToNotDrawnUsersArray().length === 0) {
       // game over
       game.gameState = GAME_STATE.GAME_OVER;
-      io.sockets.emit("game over", clients); // send users with updated score
+      io.sockets.emit("game over", clients, generateGameOverMessage()); // send users with updated score and game over message
       game.timer = DURATION.GAME_OVER;
       intervalGameOver = setInterval(countdownGameOver, 1000);
     } else {
       // next turn
-      game.gameState = GAME_STATE.TURN_START;
-      game.timer = DURATION.TURN_START;
-      io.sockets.emit("turn start");
       prepareTurnStart();
     }
   }
@@ -153,7 +156,7 @@ const countdownTurnEnd = () => {
 const moveGameStateToTurnEnd = () => {
   game.gameState = GAME_STATE.TURN_END;
   incrementScoring(); // Increment scores for all users and then send the updated scores
-  io.sockets.emit("turn end", clients, word.picked);
+  io.sockets.emit("turn end", clients, word.picked, generateTurnEndMessage());
   game.timer = DURATION.TURN_END;
   intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
 };
@@ -323,7 +326,7 @@ const resetScoringForTurn = () => {
  */
 const prepareTurnStart = () => {
   clearAllTimerIntervals();
-  clearLines(); // clear the lines
+  clearLinesAll(); // clear the lines
   clearWord(); // clear picked word and choices
   resetScoringForTurn();
   const drawerId = findDrawerClientId(); // computer an id for drawer
@@ -333,7 +336,7 @@ const prepareTurnStart = () => {
   io.sockets.emit("all users", clients); // users with updated (turn end) or cleared (RoundStart) score
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
-  io.sockets.emit("turn start");
+  io.sockets.emit("turn start", generateTurnStartMessage());
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
@@ -347,14 +350,39 @@ const prepareRoundStart = () => {
   prepareTurnStart();
 };
 
+/** Reveal answer message at the end of turn */
+const generateTurnEndMessage = () => {
+  return {
+    username: "",
+    text: `The word was ${word.picked}!`,
+    type: MESSAGE_TYPE.ANSWER,
+  };
+};
+
+/** Game Over message at the end of round */
+const generateGameOverMessage = () => {
+  return {
+    username: "",
+    text: `Game Over!`,
+    type: MESSAGE_TYPE.GAME_OVER,
+  };
+};
+
+/** Revel who is drawing at the start of a turn */
+const generateTurnStartMessage = () => {
+  return {
+    username: "",
+    text: `${clients[drawer].username} drawing now!`,
+    type: MESSAGE_TYPE.TURN_START,
+  };
+};
+
 /**
  * Validate message text against word to guess
- * Scores the guess if the MESSAGE_TYPE is CORRECT
  */
 const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
   const type = findMessageType(clientId, msgText);
-  if (type === MESSAGE_TYPE.CORRECT) correctMessageUpdate(clientId);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
 };
@@ -371,12 +399,9 @@ const correctMessageUpdate = (clientId) => {
     clients[drawer].scoring.timer = game.timer;
     io.sockets.emit("one user", clients[drawer]); // update scoring for drawer
   }
-  // checks that player hasn't guessed correctly already
-  if (clients[clientId].scoring.order === 0) {
-    clients[clientId].scoring.order = guessedCorrectOrder++;
-    clients[clientId].scoring.timer = game.timer;
-    io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
-  }
+  clients[clientId].scoring.order = guessedCorrectOrder++;
+  clients[clientId].scoring.timer = game.timer;
+  io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
 };
 
 /**
@@ -386,12 +411,24 @@ const correctMessageUpdate = (clientId) => {
 const findMessageType = (clientId, msgText) => {
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
-    return MESSAGE_TYPE.CORRECT;
+    return correctGuessMessageType(clientId);
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
     return MESSAGE_TYPE.CLOSE_GUESS;
   }
   return MESSAGE_TYPE.REGULAR; // regular message
+};
+
+/**
+ * Validate that player hasn't guessed correctly already.
+ * Scores the guess if the MESSAGE_TYPE is CORRECT
+ */
+const correctGuessMessageType = (clientId) => {
+  if (clients[clientId].scoring.order === 0) {
+    correctMessageUpdate(clientId);
+    return MESSAGE_TYPE.CORRECT;
+  }
+  return MESSAGE_TYPE.ALREADY_GUESSED;
 };
 
 /** Helper to update custom message text*/
@@ -401,6 +438,8 @@ const updateMessageText = (username, msgText, type) => {
       return `${username} guessed the word!`;
     case MESSAGE_TYPE.CLOSE_GUESS:
       return `${username} close guess!`;
+    case MESSAGE_TYPE.ALREADY_GUESSED:
+      return `${username} already guessed!`;
     default:
       // All other cases
       return msgText;
@@ -450,7 +489,7 @@ const addClient = (clientId, username, avatar, date) => {
 
 const disconnectOrLeaveGame = (client) => {
   if (clients.hasOwnProperty(client.id)) {
-    processMessage(client.id, {
+    broadcastMessage(client.id, {
       username: clients[client.id].username,
       text: `${clients[client.id].username} has left the chat`,
       type: MESSAGE_TYPE.LEAVE,
@@ -479,11 +518,11 @@ io.on("connection", (client) => {
       // Add new user to clients in server
       addClient(client.id, username, avatar, date);
       client.emit("add player", clients[client.id]); // trigger adding of player in redux
-      processMessage(client.id, {
+      broadcastMessage(client.id, {
         username,
         text: `${username} has joined the chat!`,
         type: MESSAGE_TYPE.JOIN,
-      }); // use processMessage to send all messages
+      }); // use broadcastMessage to send all messages
       io.sockets.emit("all users", clients);
       client.emit("all lines", lines);
       client.emit("update game", game);
@@ -498,7 +537,7 @@ io.on("connection", (client) => {
 
   client.on("new message", (msgText) => {
     const message = validateAndScoreMessage(client.id, msgText);
-    processMessage(client.id, message);
+    broadcastMessage(client.id, message);
   });
 
   client.on("new line", (line) => {
@@ -515,5 +554,9 @@ io.on("connection", (client) => {
     word.choices = getWordChoicesData();
     word.picked = word.choices.easy; // default is the easy word unless changed
     client.emit("choose word", word.choices);
+  });
+
+  client.on("clear canvas", () => {
+    clearLinesExceptDrawer(client);
   });
 });

@@ -5,6 +5,7 @@ import {
   getWordsToChooseFrom,
   drawerChoseWord,
   leaveChat,
+  clearCanvas,
 } from "../client";
 import {
   ADD_LINE,
@@ -24,6 +25,7 @@ import {
   UPDATE_WORD_CHOICES,
   UPDATE_WORD_PICKED,
   LOGOUT,
+  CLEAR_LINES,
 } from "./actionConstants";
 import { ROLE, LOGIN, INITIAL_SCORING } from "./stateConstants";
 
@@ -86,6 +88,13 @@ export const exitGame = () => {
   return (dispatch) => {
     dispatch(logoutOfGame());
     leaveChat();
+  };
+};
+
+export const newClearedCanvas = () => {
+  return (dispatch) => {
+    dispatch(newCanvas());
+    clearCanvas();
   };
 };
 
@@ -186,4 +195,8 @@ export const setHint = (hint) => ({
 
 export const logoutOfGame = () => ({
   type: LOGOUT,
+});
+
+export const newCanvas = () => ({
+  type: CLEAR_LINES,
 });

@@ -59,23 +59,26 @@ socket.on("game waiting", () => {
   store.dispatch(setGameWaiting());
 });
 
-socket.on("turn start", () => {
+socket.on("turn start", (message) => {
   store.dispatch(setTurnStart());
+  store.dispatch(updateMessages(message));
 });
 
 socket.on("turn during", () => {
   store.dispatch(setTurnDuring());
 });
 
-socket.on("turn end", (users, word) => {
+socket.on("turn end", (users, word, message) => {
   store.dispatch(updateUsers(users)); // includes users who wonTurn
   store.dispatch(setWordToGuess(word)); // reveal the word
   store.dispatch(setTurnEnd());
+  store.dispatch(updateMessages(message));
 });
 
-socket.on("game over", (users) => {
+socket.on("game over", (users, message) => {
   store.dispatch(updateUsers(users)); // updated score
   store.dispatch(setGameOver());
+  store.dispatch(updateMessages(message));
 });
 
 socket.on("countdown timer", () => {
@@ -124,4 +127,8 @@ export const drawerChoseWord = (word) => {
 
 export const leaveChat = (clientId) => {
   socket.emit("leave game", clientId);
+};
+
+export const clearCanvas = (clientId) => {
+  socket.emit("clear canvas", clientId);
 };

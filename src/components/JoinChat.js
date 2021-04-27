@@ -60,9 +60,11 @@ const JoinChat = () => {
   return (
     <>
       <div className="my-4 logo">
-        <span>
-          <h1>Place Logo Here</h1>
-        </span>
+        <img
+          src={process.env.PUBLIC_URL + "/logo.png"}
+          className="d-block w-75 mx-auto"
+          alt="Guess-A-Sketch Logo"
+        />
       </div>
       <form className="row my-4 add-form" onSubmit={verifyUsername}>
         <div className="row">

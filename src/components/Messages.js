@@ -12,6 +12,11 @@ const generateMessage = ({ username, text, type }) => {
         </td>
       );
     case MESSAGE_TYPE.ANSWER:
+      return (
+        <td className="text-success">
+          <strong>{text}</strong>
+        </td>
+      );
     case MESSAGE_TYPE.CORRECT:
       return (
         <td className="text-success">
@@ -19,6 +24,11 @@ const generateMessage = ({ username, text, type }) => {
         </td>
       );
     case MESSAGE_TYPE.GAME_OVER:
+      return (
+        <td className="text-danger">
+          <strong>{text}</strong>
+        </td>
+      );
     case MESSAGE_TYPE.LEAVE:
       return (
         <td className="text-danger">
@@ -28,6 +38,18 @@ const generateMessage = ({ username, text, type }) => {
     case MESSAGE_TYPE.CLOSE_GUESS:
       return (
         <td className="text-info">
+          <strong>{text}</strong>
+        </td>
+      );
+    case MESSAGE_TYPE.ALREADY_GUESSED:
+      return (
+        <td className="text-info">
+          <strong>{text}</strong>
+        </td>
+      );
+    case MESSAGE_TYPE.TURN_START:
+      return (
+        <td className="text-primary">
           <strong>{text}</strong>
         </td>
       );
@@ -44,7 +66,7 @@ const generateMessage = ({ username, text, type }) => {
 const Messages = () => {
   const messages = useSelector(getMessages);
   return (
-    <div className="messages" style={{ overflowY: "scroll", height: "300px" }}>
+    <div className="messages">
       <ReactScrollableFeed forceScroll>
         <table className="table table-striped table-bordered">
           <tbody>

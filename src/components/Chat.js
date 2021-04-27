@@ -3,7 +3,7 @@ import MessageForm from "./MessageForm";
 
 const Chat = () => {
   return (
-    <div className="card">
+    <div className="card" id="chatCard">
       <div className="card-header text-center">Chat</div>
       <div className="card-body p-0">
         <Messages />
