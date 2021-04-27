@@ -9,6 +9,7 @@ import usersReducer from "./users";
 import playerReducer from "./player";
 import gameReducer from "./game";
 import wordReducer from "./word";
+import drawerReducer from "./drawer";
 
 const rootReducer = combineReducers({
   game: gameReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   player: playerReducer,
   users: usersReducer,
   word: wordReducer,
+  drawer: drawerReducer,
 });
 
 // Adds middleware and redux-devtools
