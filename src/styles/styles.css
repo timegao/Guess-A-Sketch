@@ -238,6 +238,10 @@ canvas {
 
 .messages {
   overflow-y: scroll;
-  height: 58vh;
-  max-height: 58vh;
+  height: 51vh;
+  max-height: 51vh;
+}
+
+.card {
+  max-height: 70vh;
 }
