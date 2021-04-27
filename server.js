@@ -143,9 +143,6 @@ const countdownTurnEnd = () => {
       intervalGameOver = setInterval(countdownGameOver, 1000);
     } else {
       // next turn
-      // game.gameState = GAME_STATE.TURN_START;
-      // game.timer = DURATION.TURN_START;
-      // io.sockets.emit("turn start");
       prepareTurnStart();
     }
   }
@@ -380,7 +377,7 @@ const generateTurnStartMessage = () => {
  */
 const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
-  const type = findMessageType(msgText);
+  const type = findMessageType(clientId, msgText);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
 };
