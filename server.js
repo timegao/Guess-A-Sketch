@@ -68,7 +68,10 @@ const clearLines = () => {
 
 const processMessage = (clientId, message) => {
   const { type } = message;
-  if (type === MESSAGE_TYPE.CLOSE_GUESS) {
+  if (
+    type === MESSAGE_TYPE.CLOSE_GUESS ||
+    type === MESSAGE_TYPE.ALREADY_GUESSED
+  ) {
     // push message to particular user
     io.to(clientId).emit("all messages", message);
   } else {
@@ -352,7 +355,6 @@ const prepareRoundStart = () => {
 const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
   const type = findMessageType(msgText);
-  if (type === MESSAGE_TYPE.CORRECT) correctMessageUpdate(clientId);
   const text = updateMessageText(username, msgText, type);
   return { username: username, text: text, type: type };
 };
@@ -369,12 +371,9 @@ const correctMessageUpdate = (clientId) => {
     clients[drawer].scoring.timer = game.timer;
     io.sockets.emit("one user", clients[drawer]); // update scoring for drawer
   }
-  // checks that player hasn't guessed correctly already
-  if (clients[clientId].scoring.order === 0) {
-    clients[clientId].scoring.order = guessedCorrectOrder++;
-    clients[clientId].scoring.timer = game.timer;
-    io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
-  }
+  clients[clientId].scoring.order = guessedCorrectOrder++;
+  clients[clientId].scoring.timer = game.timer;
+  io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
 };
 
 /**
@@ -393,12 +392,11 @@ const findMessageType = (clientId, msgText) => {
 };
 
 /**
- * Validate that player hasn't guessed correctly already.
- * @param {string} clientId
- * @returns Message type correct or already guessed.
+ * Validate that player has guessed correctly already.
  */
 const correctGuessMessageType = (clientId) => {
   if (clients[clientId].scoring.order === 0) {
+    correctMessageUpdate(clientId);
     return MESSAGE_TYPE.CORRECT;
   }
   return MESSAGE_TYPE.ALREADY_GUESSED;
@@ -411,6 +409,8 @@ const updateMessageText = (username, msgText, type) => {
       return `${username} guessed the word!`;
     case MESSAGE_TYPE.CLOSE_GUESS:
       return `${username} close guess!`;
+    case MESSAGE_TYPE.ALREADY_GUESSED:
+      return `${username} already guessed!`;
     default:
       // All other cases
       return msgText;
