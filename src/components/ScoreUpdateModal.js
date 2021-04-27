@@ -18,7 +18,10 @@ const ScoreUpdateModal = () => {
 
   return (
     <div className="modal-body loading">
-      <h1>{"The word was " + pickedWord}</h1>
+      <h1>
+        The word was{" "}
+        <span className="text-decoration-underline">{pickedWord}</span>
+      </h1>
       <ul className="score-modal">
         {sortedUsers.map((user, i) => (
           <li className="player-score" key={i}>
