@@ -7,6 +7,7 @@ const {
   ROLE,
   DURATION,
   GAME_STATE,
+  INITIAL_SCORING,
   INITIAL_WORD,
   LOGIN,
 } = require("./src/redux/stateConstants");
@@ -44,13 +45,6 @@ const DRAWER_SCORING = {
   EASY: 0.8,
   MEDIUM: 0.9,
   HARD: 1,
-};
-
-const INITIAL_SCORING = {
-  score: 0, // the total accumulated score
-  earned: 0, // the amount of points user earned for the turn
-  order: 0, // the order that user guessed correctly
-  timer: 0, // tracks the game.timer when player guessed correctly
 };
 
 let lines = []; // Array of lines drawn on Canvas

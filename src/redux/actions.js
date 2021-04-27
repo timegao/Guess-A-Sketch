@@ -27,7 +27,7 @@ import {
   LOGOUT,
   CLEAR_LINES,
 } from "./actionConstants";
-import { ROLE, LOGIN } from "./stateConstants";
+import { ROLE, LOGIN, INITIAL_SCORING } from "./stateConstants";
 
 // Action creator functions - use async actions to communicate with server
 
@@ -72,7 +72,7 @@ export const newPlayer = (username, avatar) => {
       id: "", // set later by server
       username,
       avatar,
-      scoring: {}, // set later by server
+      scoring: { ...INITIAL_SCORING },
       role: ROLE.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,

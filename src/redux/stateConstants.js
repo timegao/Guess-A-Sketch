@@ -82,6 +82,13 @@ const INITIAL_WORD = {
   picked: "",
 };
 
+const INITIAL_SCORING = {
+  score: 0, // the total accumulated score
+  earned: 0, // the amount of points user earned for the turn
+  order: 0, // the order that user guessed correctly
+  timer: 0, // tracks the game.timer when player guessed correctly
+};
+
 // Used to start drawing against white background
 const INITIAL_STROKE = {
   lineWidth: 8,
@@ -105,8 +112,9 @@ module.exports = {
   INITIAL_USERS,
   INITIAL_PLAYER,
   INITIAL_GAME,
-  INITIAL_STROKE,
   INITIAL_WORD,
+  INITIAL_SCORING,
+  INITIAL_STROKE,
   ERASER_STROKE,
   LOGIN,
   AVATAR_MAP,
