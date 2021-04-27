@@ -15,6 +15,7 @@ import {
   invalidUsername,
   setHint,
   updateUser,
+  setDrawerCanvasDimensions,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -105,6 +106,10 @@ socket.on("hint", (hint) => {
   store.dispatch(setHint(hint));
 });
 
+socket.on("canvas set", (width, height) => {
+  store.dispatch(setDrawerCanvasDimensions(width, height));
+});
+
 export const joinChat = (username, avatar, date) => {
   socket.emit("join", username, avatar, date);
 };
@@ -131,4 +136,8 @@ export const leaveChat = (clientId) => {
 
 export const clearCanvas = (clientId) => {
   socket.emit("clear canvas", clientId);
+};
+
+export const drawerCanvasDimensions = (width, height) => {
+  socket.emit("set drawer canvas dimensions", width, height);
 };
