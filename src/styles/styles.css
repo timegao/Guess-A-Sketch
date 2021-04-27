@@ -204,6 +204,10 @@ canvas {
   width: 96%;
 }
 
+.score-earned {
+  color: rgb(30, 245, 77);
+}
+
 /* Makes sure leave game modal is on top of all other game modals */
 /* 3rd Answer - https://stackoverflow.com/questions/19528173/bootstrap-open-another-modal-in-modal */
 #leaveGameModal {
