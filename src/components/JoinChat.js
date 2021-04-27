@@ -12,7 +12,14 @@ import TutorialModal from "./TutorialModal";
 
 const createAvatarOptions = (avatarMap) => {
   const options = Object.entries(avatarMap).map(([key, value]) => {
-    return { value: key, label: <FontAwesomeIcon icon={value} size="2x" /> };
+    return {
+      value: key,
+      label: (
+        <span>
+          <FontAwesomeIcon icon={value} size="2x" /> {key}
+        </span>
+      ),
+    };
   });
   return options;
 };
