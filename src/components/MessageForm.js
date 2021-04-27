@@ -43,6 +43,7 @@ const MessageForm = () => {
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <input
+        ref={tooltipRef}
         aria-label="Your message"
         type="text"
         className="form-control"
@@ -51,6 +52,10 @@ const MessageForm = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyUp={onKeyUp}
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        data-bs-trigger="manual"
+        title="No language selected. Find All"
         readOnly={users[player.username].role === ROLE.DRAWER}
         onPointerEnter={() => toggleTooltip(true)}
         onFocus={() => toggleTooltip(true)}
