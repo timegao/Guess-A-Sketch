@@ -14,6 +14,7 @@ const MessageForm = () => {
   const users = useSelector(getUsers);
   const player = useSelector(getPlayer);
   const [tooltipOpen, toggleTooltip] = useState(false);
+  const tooltipRef = useRef();
 
   const dispatch = useDispatch();
 
@@ -25,6 +26,19 @@ const MessageForm = () => {
   const onKeyUp = (e) => {
     if (e.key === "Enter" && isValid(message, users, player)) handleSubmit();
   };
+
+  useEffect(() => {
+    let tooltip = tooltipRef.current;
+    let bsTooltip = Tooltip.getInstance(tooltip);
+
+    if (!bsTooltip) {
+      bsTooltip = new Tooltip(tooltip);
+    } else {
+      users[player.username].role === ROLE.DRAWER && tooltipOpen
+        ? bsTooltip.show()
+        : bsTooltip.hide();
+    }
+  }, [player.username, tooltipOpen, users]);
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
