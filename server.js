@@ -334,7 +334,7 @@ const prepareTurnStart = () => {
   io.sockets.emit("all users", clients); // users with updated (turn end) or cleared (RoundStart) score
   game.gameState = GAME_STATE.TURN_START;
   game.timer = DURATION.TURN_START;
-  io.sockets.emit("turn start");
+  io.sockets.emit("turn start", generateTurnStartMessage());
   intervalTurnStart = setInterval(countdownTurnStart, 1000);
 };
 
@@ -363,6 +363,15 @@ const generateGameOverMessage = () => {
     username: "",
     text: `Game Over!`,
     type: MESSAGE_TYPE.GAME_OVER,
+  };
+};
+
+/** Revel who is drawing at the start of a turn */
+const generateTurnStartMessage = () => {
+  return {
+    username: "",
+    text: `${clients[drawer].username} drawing now!`,
+    type: MESSAGE_TYPE.TURN_START,
   };
 };
 
