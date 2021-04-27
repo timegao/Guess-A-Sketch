@@ -3,7 +3,6 @@ const express = require("express");
 const { getWordChoicesData } = require("./src/data/words");
 const {
   INITIAL_GAME,
-  INITIAL_SCORING,
   MESSAGE_TYPE,
   ROLE,
   DURATION,
@@ -45,6 +44,13 @@ const DRAWER_SCORING = {
   EASY: 0.8,
   MEDIUM: 0.9,
   HARD: 1,
+};
+
+const INITIAL_SCORING = {
+  score: 0, // the total accumulated score
+  earned: 0, // the amount of points user earned for the turn
+  order: 0, // the order that user guessed correctly
+  timer: 0, // tracks the game.timer when player guessed correctly
 };
 
 let lines = []; // Array of lines drawn on Canvas
@@ -302,7 +308,12 @@ const incrementScoring = () => {
 const resetPlayerForRound = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
-    clients[key].scoring = INITIAL_SCORING;
+    clients[key].scoring = {
+      score: 0, // the total accumulated score
+      earned: 0, // the amount of points user earned for the turn
+      order: 0, // the order that user guessed correctly
+      timer: 0, // tracks the game.timer when player guessed correctly
+    };
   });
 };
 
@@ -479,7 +490,12 @@ const addClient = (clientId, username, avatar, date) => {
     id: clientId,
     username,
     avatar,
-    scoring: INITIAL_SCORING,
+    scoring: {
+      score: 0, // the total accumulated score
+      earned: 0, // the amount of points user earned for the turn
+      order: 0, // the order that user guessed correctly
+      timer: 0, // tracks the game.timer when player guessed correctly
+    },
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
@@ -497,7 +513,6 @@ const disconnectOrLeaveGame = (client) => {
     });
     delete clients[client.id];
     if (Object.keys(clients).length === 1) {
-      client.emit("wait for another player", clients[client.id]);
       io.sockets.emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
