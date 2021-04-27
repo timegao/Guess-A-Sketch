@@ -55,7 +55,7 @@ const MessageForm = () => {
         data-bs-toggle="tooltip"
         data-bs-placement="top"
         data-bs-trigger="manual"
-        title="No language selected. Find All"
+        title="Drawer can't send messages on the chat."
         readOnly={users[player.username].role === ROLE.DRAWER}
         onPointerEnter={() => toggleTooltip(true)}
         onFocus={() => toggleTooltip(true)}
