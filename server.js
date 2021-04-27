@@ -450,7 +450,7 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
-  const answerSize = word.picked.length; // n = 2
+  const answerSize = word.picked.length; // n
   const guessSize = msgText.length; // m
 
   // declaring a [2 * guessSize + 1] array
@@ -463,9 +463,25 @@ const guessRelativeDifference = (msgText) => {
   for (let i = 0; i < 2; i++) {
     dp[i][0] = i;
   }
-  for (let j = 0; j < guessSize + 1; j++) {
+  for (let j = 0; j <= guessSize; j++) {
     dp[0][j] = j;
   }
+
+  // bottom up approach
+  for (let i = 1; i < answerSize; i++) {
+    for (let j = 1; j <= guessSize; j++) {
+      dp[i % 2][j] = Math.min(dp[(i - 1) % 2][j] + 1, dp[i % 2][j - 1] + 1); // delete or insert
+
+      if (word.picked[i] === msgText[j]) {
+        // check replace
+        dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1]);
+      } else {
+        dp[i % 2][j] = Math.min(dp[i % 2][j], dp[(i - 1) % 2][j - 1] + 1);
+      }
+    }
+  }
+
+  return dp[answerSize % 2][guessSize];
 
   // let i = 0;
   // let differenceCount = 0;
