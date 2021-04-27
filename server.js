@@ -154,7 +154,7 @@ const countdownTurnEnd = () => {
 const moveGameStateToTurnEnd = () => {
   game.gameState = GAME_STATE.TURN_END;
   incrementScoring(); // Increment scores for all users and then send the updated scores
-  io.sockets.emit("turn end", clients, word.picked);
+  io.sockets.emit("turn end", clients, word.picked, generateTurnEndMessage());
   game.timer = DURATION.TURN_END;
   intervalTurnEnd = setInterval(countdownTurnEnd, 1000);
 };
@@ -348,9 +348,17 @@ const prepareRoundStart = () => {
   prepareTurnStart();
 };
 
+/** Reveal answer message at end of turn */
+const generateTurnEndMessage = () => {
+  return {
+    username: "",
+    text: `The word was ${word.picked}!`,
+    type: MESSAGE_TYPE.ANSWER,
+  };
+};
+
 /**
  * Validate message text against word to guess
- * Scores the guess if the MESSAGE_TYPE is CORRECT
  */
 const validateAndScoreMessage = (clientId, msgText) => {
   const username = clients[clientId].username;
@@ -392,7 +400,8 @@ const findMessageType = (clientId, msgText) => {
 };
 
 /**
- * Validate that player has guessed correctly already.
+ * Validate that player hasn't guessed correctly already.
+ * Scores the guess if the MESSAGE_TYPE is CORRECT
  */
 const correctGuessMessageType = (clientId) => {
   if (clients[clientId].scoring.order === 0) {
