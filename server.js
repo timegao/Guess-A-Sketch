@@ -3,11 +3,11 @@ const express = require("express");
 const { getWordChoicesData } = require("./src/data/words");
 const {
   INITIAL_GAME,
-  INITIAL_SCORING,
   MESSAGE_TYPE,
   ROLE,
   DURATION,
   GAME_STATE,
+  INITIAL_SCORING,
   INITIAL_WORD,
   LOGIN,
 } = require("./src/redux/stateConstants");
@@ -154,6 +154,7 @@ const countdownTurnEnd = () => {
 };
 
 const moveGameStateToTurnEnd = () => {
+  clearAllTimerIntervals();
   game.gameState = GAME_STATE.TURN_END;
   incrementScoring(); // Increment scores for all users and then send the updated scores
   io.sockets.emit("turn end", clients, word.picked, generateTurnEndMessage());
@@ -301,7 +302,7 @@ const incrementScoring = () => {
 const resetPlayerForRound = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
-    clients[key].scoring = INITIAL_SCORING;
+    clients[key].scoring = { ...INITIAL_SCORING };
   });
 };
 
@@ -478,7 +479,7 @@ const addClient = (clientId, username, avatar, date) => {
     id: clientId,
     username,
     avatar,
-    scoring: INITIAL_SCORING,
+    scoring: { ...INITIAL_SCORING },
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
@@ -496,7 +497,6 @@ const disconnectOrLeaveGame = (client) => {
     });
     delete clients[client.id];
     if (Object.keys(clients).length === 1) {
-      client.emit("wait for another player", clients[client.id]);
       io.sockets.emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;

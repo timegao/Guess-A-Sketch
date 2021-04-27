@@ -72,7 +72,7 @@ export const newPlayer = (username, avatar) => {
       id: "", // set later by server
       username,
       avatar,
-      scoring: INITIAL_SCORING,
+      scoring: { ...INITIAL_SCORING },
       role: ROLE.GUESSER,
       onboarded: false,
       joinedTimeStamp: date,
