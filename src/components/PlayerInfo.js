@@ -25,7 +25,8 @@ const PlayerInfo = ({ user }) => {
         <div className="user-data">
           <p style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             <strong>{user.username}</strong>
-            <div>{"points: " + user.scoring.score} </div>
+            <br />
+            {"points: " + user.scoring.score}
           </p>
         </div>
       </div>
