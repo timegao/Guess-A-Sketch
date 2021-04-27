@@ -22,7 +22,9 @@ const ScoreUpdateModal = () => {
           <li className="player-score" key={i}>
             <div className="row">
               <div className="col">{user.username}</div>
-              <div className="col">+{user.scoring.earned}</div>
+              <div className="col score-update-modal">
+                +{user.scoring.earned}
+              </div>
             </div>
           </li>
         ))}
