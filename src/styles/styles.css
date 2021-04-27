@@ -30,6 +30,10 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.selectAvatar {
+  color: #000000;
+}
+
 /* Logo in landing view */
 .logo {
   background-color: white;

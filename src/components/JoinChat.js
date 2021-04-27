@@ -13,6 +13,7 @@ import TutorialModal from "./TutorialModal";
 const createAvatarOptions = (avatarMap) => {
   const options = Object.entries(avatarMap).map(([key, value]) => {
     return {
+      ariaLabel: `avatar option ${key}`,
       value: key,
       label: (
         <span>
