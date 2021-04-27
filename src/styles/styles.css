@@ -202,6 +202,8 @@ canvas {
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   height: 50px;
   width: 96%;
+  align-content: center;
+  align-items: center;
 }
 
 .score-earned {

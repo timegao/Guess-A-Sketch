@@ -22,14 +22,21 @@ const ScoreUpdateModal = () => {
       <ul className="score-modal">
         {sortedUsers.map((user, i) => (
           <li className="player-score" key={i}>
-            <div className="row">
-              <div className="col">
-                <span className="float-start">
+            <div className="row mt-1">
+              <div className="col mt-2">
+                <span>
                   <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
                 </span>
               </div>
-              <div className="col">{user.username}</div>
-              <div className="col score-earned">+{user.scoring.earned}</div>
+              <div
+                className="col mt-1"
+                style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              >
+                {user.username}
+              </div>
+              <div className="col score-earned mt-1">
+                +{user.scoring.earned}
+              </div>
             </div>
           </li>
         ))}
