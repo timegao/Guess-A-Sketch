@@ -1,6 +1,8 @@
 import { useSelector } from "react-redux";
 import { getUsers } from "../redux/users";
 import { getPickedWord } from "../redux/word";
+import { AVATAR_MAP } from "../redux/stateConstants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** Helper to sort users in descending order based on earned*/
 const sortUsersWonTurn = (users) => {
@@ -20,9 +22,21 @@ const ScoreUpdateModal = () => {
       <ul className="score-modal">
         {sortedUsers.map((user, i) => (
           <li className="player-score" key={i}>
-            <div className="row">
-              <div className="col">{user.username}</div>
-              <div className="col">+{user.scoring.earned}</div>
+            <div className="row mt-1">
+              <div className="col mt-2">
+                <span>
+                  <FontAwesomeIcon icon={AVATAR_MAP[user.avatar]} size="2x" />
+                </span>
+              </div>
+              <div
+                className="col mt-1"
+                style={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              >
+                {user.username}
+              </div>
+              <div className="col score-earned mt-1">
+                +{user.scoring.earned}
+              </div>
             </div>
           </li>
         ))}
