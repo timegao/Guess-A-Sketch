@@ -14,7 +14,7 @@ const Chat = () => {
     // </div>
     <div className="row">
       <div className="text-center">Chat</div>
-      <div className="justify-content-center p0">
+      <div className="messages p0">
         <Messages />
       </div>
       <div className="justify-content-center p0">
