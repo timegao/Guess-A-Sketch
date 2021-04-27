@@ -66,7 +66,7 @@ const generateMessage = ({ username, text, type }) => {
 const Messages = () => {
   const messages = useSelector(getMessages);
   return (
-    <div className="messages" style={{ overflowY: "scroll", height: "300px" }}>
+    <div className="messages">
       <ReactScrollableFeed forceScroll>
         <table className="table table-striped table-bordered">
           <tbody>
