@@ -44,7 +44,7 @@ const generateMessage = ({ username, text, type }) => {
 const Messages = () => {
   const messages = useSelector(getMessages);
   return (
-    <div className="chat-table">
+    <div className="messages">
       <ReactScrollableFeed forceScroll>
         <table className="table table-striped table-bordered">
           <tbody>

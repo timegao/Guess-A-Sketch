@@ -225,17 +225,6 @@ canvas {
 
 /* Chat */
 .messages {
-  position: relative;
-  min-height: 300px;
-  height: 100%;
-}
-
-.chat-table {
-  position: absolute;
-  background-color: yellow;
-  overflow-y: scroll;
-}
-
-.table {
-  width: 100%;
+  overflow: scroll;
+  height: 300px;
 }
