@@ -4,6 +4,7 @@ import { newMessage } from "../redux/actions";
 import { getPlayer } from "../redux/player";
 import { ROLE } from "../redux/stateConstants";
 import { getUsers } from "../redux/users";
+import { Tooltip } from "bootstrap";
 
 const isValid = (message, users, player) =>
   message.length > 0 && users[player.username].role !== ROLE.DRAWER;
