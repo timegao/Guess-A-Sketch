@@ -450,6 +450,10 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
+  // We can get away with using one array because we only need to keep track of three variables,
+  // the value to the left, the value above, and the value above and to the left.
+  // The value to the left is already in the array, the value above is the value currently at dp[j],
+  // and then we use a variable for the value above and to the left. Other than that it's just a normal dp solution.
   let n = word.picked.length;
   let m = msgText.length;
 
