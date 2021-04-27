@@ -1,6 +1,15 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPencilAlt,
+  faEraser,
+  faWindowClose,
+} from "@fortawesome/free-solid-svg-icons";
 import { INITIAL_STROKE, ERASER_STROKE } from "../redux/stateConstants";
+import { newClearedCanvas } from "../redux/actions";
+import { useDispatch } from "react-redux";
 
 const CanvasInputs = ({ stroke, setStroke, point }) => {
+  const dispatch = useDispatch();
   const { color, lineWidth } = stroke;
   const onHandleErase = () => {
     document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
@@ -13,41 +22,82 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
   };
 
   return (
-    <div className="input-group mb-3">
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => onHandleDraw()}
-      >
-        Draw
-      </button>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => onHandleErase()}
-      >
-        Erase
-      </button>
-      <span className="input-group-text">Color:</span>
-      <input
-        className="form-control form-control-color"
-        type="color"
-        id="strokeColor"
-        name="color"
-        value={color}
-        onChange={(e) => setStroke({ ...point, color: e.target.value })}
-      />
-      <span className="input-group-text">Line width:</span>
-      <input
-        className="form-control"
-        type="number"
-        id="lineWidth"
-        name="width"
-        min="1"
-        max="10"
-        value={lineWidth}
-        onChange={(e) => setStroke({ ...stroke, lineWidth: e.target.value })}
-      />
+    <div className="row align-items-center justify-content-center">
+      <div className="col-sm">
+        <div className="btn-group" role="group">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => onHandleDraw()}
+          >
+            Draw
+            <span className="ms-2">
+              <FontAwesomeIcon icon={faPencilAlt} />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => onHandleErase()}
+          >
+            Erase
+            <span className="ms-2">
+              <FontAwesomeIcon icon={faEraser} />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-warning"
+            onClick={() => dispatch(newClearedCanvas())}
+          >
+            Clear
+            <span className="ms-2">
+              <FontAwesomeIcon icon={faWindowClose} />
+            </span>
+          </button>
+        </div>
+      </div>
+      <div className="col-sm">
+        <div className="input-group" style={{ borderBottom: "none" }}>
+          <span className="input-group-text">Color:</span>
+          <input
+            className="form-control form-control-color"
+            type="color"
+            id="strokeColor"
+            name="color"
+            value={color}
+            onChange={(e) => setStroke({ ...point, color: e.target.value })}
+          />
+        </div>
+      </div>
+      <div className="col-sm">
+        <div className="input-group">
+          <span className="input-group-text">Line width:</span>
+          <input
+            className="form-control"
+            type="number"
+            id="lineWidth1"
+            name="width"
+            min="1"
+            max="65"
+            value={lineWidth}
+            onChange={(e) =>
+              setStroke({ ...stroke, lineWidth: e.target.value })
+            }
+          />
+          <input
+            type="range"
+            className="form-range"
+            id="lineWidth2"
+            min="1"
+            max="65"
+            value={lineWidth}
+            onChange={(e) =>
+              setStroke({ ...stroke, lineWidth: e.target.value })
+            }
+          />
+        </div>
+      </div>
     </div>
   );
 };

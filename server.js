@@ -61,9 +61,14 @@ const clients = {}; // Object to map client ids to their usernames
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 /** Clear the lines and send back to clients */
-const clearLines = () => {
+const clearLinesAll = () => {
   lines = []; // clears canvas lines
   io.sockets.emit("all lines", lines);
+};
+
+const clearLinesExceptDrawer = (drawerSocket) => {
+  lines = []; // clear canvas lines
+  drawerSocket.broadcast.emit("all lines", lines);
 };
 
 const broadcastMessage = (clientId, message) => {
@@ -321,7 +326,7 @@ const resetScoringForTurn = () => {
  */
 const prepareTurnStart = () => {
   clearAllTimerIntervals();
-  clearLines(); // clear the lines
+  clearLinesAll(); // clear the lines
   clearWord(); // clear picked word and choices
   resetScoringForTurn();
   const drawerId = findDrawerClientId(); // computer an id for drawer
@@ -549,5 +554,9 @@ io.on("connection", (client) => {
     word.choices = getWordChoicesData();
     word.picked = word.choices.easy; // default is the easy word unless changed
     client.emit("choose word", word.choices);
+  });
+
+  client.on("clear canvas", () => {
+    clearLinesExceptDrawer(client);
   });
 });
