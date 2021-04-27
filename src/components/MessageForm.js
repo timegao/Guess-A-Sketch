@@ -35,6 +35,7 @@ const MessageForm = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyUp={onKeyUp}
+        readOnly={users[player.username].role === ROLE.DRAWER}
       />
       <button
         type="button"
