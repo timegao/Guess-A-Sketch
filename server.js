@@ -457,6 +457,11 @@ const guessRelativeDifference = (msgText) => {
   let n = word.picked.length;
   let m = msgText.length;
 
+  if (Math.abs(n - m) > MAX_DIFF_CLOSE_GUESS) {
+    // long messages are not compared
+    return MAX_DIFF_CLOSE_GUESS + 1;
+  }
+
   let count = 0;
   let dp = Array.from(Array(n + 1), () => count++);
   for (let i = 1; i < m + 1; i++) {
@@ -466,7 +471,7 @@ const guessRelativeDifference = (msgText) => {
         Math.min(
           dp[j] + 1,
           dp[j - 1] + 1,
-          last + (msgText[i - 1] === word.picked[j - 1] ? 0 : 1)
+          last + (msgText[i - 1].toLowerCase() === word.picked[j - 1] ? 0 : 1)
         ),
         dp[j],
       ];
