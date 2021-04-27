@@ -1,5 +1,6 @@
 export const UPDATE_MESSAGES = "messages/updateMessages";
 export const ADD_LINE = "lines/addLine";
+export const CLEAR_LINES = "lines/clearLines";
 export const ADD_PLAYER = "player/addPlayer";
 export const INVALID_USERNAME = "player/setInvalidUsername";
 export const LOGOUT = "player/logout";

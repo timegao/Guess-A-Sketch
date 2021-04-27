@@ -1,8 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPencilAlt, faEraser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPencilAlt,
+  faEraser,
+  faWindowClose,
+} from "@fortawesome/free-solid-svg-icons";
 import { INITIAL_STROKE, ERASER_STROKE } from "../redux/stateConstants";
+import { newClearedCanvas } from "../redux/actions";
+import { useDispatch } from "react-redux";
 
 const CanvasInputs = ({ stroke, setStroke, point }) => {
+  const dispatch = useDispatch();
   const { color, lineWidth } = stroke;
   const onHandleErase = () => {
     document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
@@ -36,6 +43,16 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
             Erase
             <span className="ms-2">
               <FontAwesomeIcon icon={faEraser} />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-warning"
+            onClick={() => dispatch(newClearedCanvas())}
+          >
+            Clear
+            <span className="ms-2">
+              <FontAwesomeIcon icon={faWindowClose} />
             </span>
           </button>
         </div>

@@ -125,3 +125,7 @@ export const drawerChoseWord = (word) => {
 export const leaveChat = (clientId) => {
   socket.emit("leave game", clientId);
 };
+
+export const clearCanvas = (clientId) => {
+  socket.emit("clear canvas", clientId);
+};
