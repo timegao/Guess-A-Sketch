@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { addLine } from "../client";
 import { getLine } from "../redux/lines";
@@ -7,10 +7,13 @@ import { getPlayer } from "../redux/player";
 import { ROLE } from "../redux/stateConstants";
 import { getUsers } from "../redux/users";
 
-const draw = (context, x0, y0, x1, y1, color, lineWidth) => {
+import { getCanvasHeight, getCanvasWidth } from "../redux/drawer";
+import { sendDrawerCanvasDimensions } from "../redux/actions";
+
+const draw = (context, x0, y0, x1, y1, color, lineWidth, scaleX, scaleY) => {
   context.beginPath();
-  context.moveTo(x0, y0);
-  context.lineTo(x1, y1);
+  context.moveTo(x0 * scaleX, y0 * scaleY);
+  context.lineTo(x1 * scaleX, y1 * scaleY);
   context.strokeStyle = color;
   context.lineWidth = lineWidth;
   context.stroke();
@@ -22,10 +25,18 @@ const Canvas = ({ setPoint, point, stroke }) => {
   const player = useSelector(getPlayer);
   const [drawing, setDrawing] = useState(false);
   const lines = useSelector(getLine);
+  const drawerCanvasHeight = useSelector(getCanvasHeight);
+  const drawerCanvasWidth = useSelector(getCanvasWidth);
+  const [scaleX, setScaleX] = useState(1);
+  const [scaleY, setScaleY] = useState(1);
+
+  const dispatch = useDispatch();
 
   const canvasRef = useRef(null);
   const { x, y } = point;
   const { color, lineWidth } = stroke;
+  const [currHeight, setCurrHeight] = useState(1);
+  const [currWidth, setCurrWidth] = useState(1);
 
   /**
    * User either presses a left-click on mouse or touches a touchscreen
@@ -58,6 +69,7 @@ const Canvas = ({ setPoint, point, stroke }) => {
    */
   const onMouseMove = (e) => {
     const rect = canvasRef.current.getBoundingClientRect();
+    console.log(rect.width);
     if (!drawing) return;
     addLine({
       x0: x,
@@ -124,6 +136,22 @@ const Canvas = ({ setPoint, point, stroke }) => {
    */
   useEffect(() => {
     const context = canvasRef.current.getContext("2d");
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    setCurrHeight(canvasRef.current.height);
+    setCurrWidth(canvasRef.current.width);
+    console.log(currWidth);
+    if (
+      users[player.username].role === ROLE.DRAWER &&
+      canvasRef.current.width !== drawerCanvasWidth &&
+      canvasRef.current.height !== drawerCanvasHeight
+    ) {
+      dispatch(
+        sendDrawerCanvasDimensions(
+          canvasRef.current.width,
+          canvasRef.current.height
+        )
+      );
+    }
     if (lines.length === 0) {
       context.clearRect(
         0,
@@ -133,6 +161,13 @@ const Canvas = ({ setPoint, point, stroke }) => {
       );
       context.beginPath();
     } else {
+      setScaleX(canvasRef.current.width / drawerCanvasWidth);
+      setScaleY(canvasRef.current.height / drawerCanvasHeight);
+      // let scaleX = drawerCanvasWidth ? currWidth / drawerCanvasWidth : 1;
+      // let scaleY = drawerCanvasHeight ? currHeight / drawerCanvasHeight : 1;
+      // let scaleX = currWidth / drawerCanvasWidth;
+      // let scaleY = currHeight / drawerCanvasHeight;
+      // context.scale(scaleX, scaleY);
       lines.forEach((line) =>
         draw(
           context,
@@ -141,11 +176,24 @@ const Canvas = ({ setPoint, point, stroke }) => {
           line.x1,
           line.y1,
           line.color,
-          line.lineWidth
+          line.lineWidth,
+          scaleX,
+          scaleY
         )
       );
     }
-  }, [lines]);
+  }, [
+    lines,
+    dispatch,
+    drawerCanvasHeight,
+    drawerCanvasWidth,
+    users,
+    player,
+    currWidth,
+    currHeight,
+    scaleX,
+    scaleY,
+  ]);
 
   return (
     <>
