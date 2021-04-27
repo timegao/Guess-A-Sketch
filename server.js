@@ -308,12 +308,7 @@ const incrementScoring = () => {
 const resetPlayerForRound = () => {
   Object.keys(clients).forEach((key) => {
     clients[key].drawn = false;
-    clients[key].scoring = {
-      score: 0, // the total accumulated score
-      earned: 0, // the amount of points user earned for the turn
-      order: 0, // the order that user guessed correctly
-      timer: 0, // tracks the game.timer when player guessed correctly
-    };
+    clients[key].scoring = JSON.parse(JSON.stringify(INITIAL_SCORING)); // deep copy object
   });
 };
 
@@ -490,12 +485,7 @@ const addClient = (clientId, username, avatar, date) => {
     id: clientId,
     username,
     avatar,
-    scoring: {
-      score: 0, // the total accumulated score
-      earned: 0, // the amount of points user earned for the turn
-      order: 0, // the order that user guessed correctly
-      timer: 0, // tracks the game.timer when player guessed correctly
-    },
+    scoring: JSON.parse(JSON.stringify(INITIAL_SCORING)), // deep copy object
     role: ROLE.GUESSER,
     onboarded: false,
     joinedTimeStamp: date,
