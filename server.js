@@ -382,17 +382,26 @@ const correctMessageUpdate = (clientId) => {
  * @returns Message type
  */
 const findMessageType = (clientId, msgText) => {
-  if (clients[clientId].scoring.order > 0) {
-    return MESSAGE_TYPE.ALREADY_GUESSED;
-  }
   const wordsRelativeDifference = guessRelativeDifference(msgText);
   if (wordsRelativeDifference === 0) {
-    return MESSAGE_TYPE.CORRECT;
+    return correctGuessMessageType(clientId);
   }
   if (wordsRelativeDifference <= MAX_DIFF_CLOSE_GUESS) {
     return MESSAGE_TYPE.CLOSE_GUESS;
   }
   return MESSAGE_TYPE.REGULAR; // regular message
+};
+
+/**
+ * Validate that player hasn't guessed correctly already.
+ * @param {string} clientId
+ * @returns Message type correct or already guessed.
+ */
+const correctGuessMessageType = (clientId) => {
+  if (clients[clientId].scoring.order === 0) {
+    return MESSAGE_TYPE.CORRECT;
+  }
+  return MESSAGE_TYPE.ALREADY_GUESSED;
 };
 
 /** Helper to update custom message text*/
