@@ -154,6 +154,7 @@ const countdownTurnEnd = () => {
 };
 
 const moveGameStateToTurnEnd = () => {
+  clearAllTimerIntervals();
   game.gameState = GAME_STATE.TURN_END;
   incrementScoring(); // Increment scores for all users and then send the updated scores
   io.sockets.emit("turn end", clients, word.picked, generateTurnEndMessage());
