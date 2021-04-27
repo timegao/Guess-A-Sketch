@@ -62,7 +62,7 @@ const JoinChat = () => {
       <div className="my-4 logo">
         <img
           src={process.env.PUBLIC_URL + "/logo.png"}
-          className="d-block w-100 mx-auto"
+          className="d-block w-75 mx-auto"
           alt="Guess-A-Sketch Logo"
         />
       </div>
