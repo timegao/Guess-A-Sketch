@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { getGameClock, getGameState } from "../redux/game";
 import { DURATION, GAME_STATE } from "../redux/stateConstants";
-import { getUsers } from "../redux/users";
 import { useEffect, useState } from "react";
 
 // https://codepen.io/FlorinPop17/pen/YbpwyG

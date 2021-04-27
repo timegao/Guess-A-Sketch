@@ -6,11 +6,13 @@ const PlayerList = () => {
   const users = useSelector(getUsers);
   return (
     <div className="row">
-      <ul className="scrollable">
-        {Object.keys(users).map((user, i) => (
-          <PlayerInfo user={users[user]} key={i} />
-        ))}
-      </ul>
+      <div className="justify-content-center">
+        <ul className="scrollable">
+          {Object.keys(users).map((user, i) => (
+            <PlayerInfo user={users[user]} key={i} />
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
