@@ -225,6 +225,7 @@ canvas {
 
 /* Chat */
 #chatCard {
+  /* max height for entire chat component */
   max-height: 70vh;
 }
 
