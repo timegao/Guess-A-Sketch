@@ -60,8 +60,7 @@ const DRAWER_SCORING = {
 };
 
 let lines = []; // Array of lines drawn on Canvas
-let hint = ""; // Hint for guessers to see
-let game = INITIAL_GAME; // Stores gameState, timer, and round
+let game = INITIAL_GAME; // Stores gameState, timer, round, and hint
 let word = INITIAL_WORD; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
@@ -202,8 +201,8 @@ const countdownTurnStart = () => {
 const sendHint = () => {
   switch (game.timer) {
     case BLANK_HINT_TIME:
-      hint = "_".repeat(word.picked.length);
-      io.sockets.emit("hint", hint);
+      game.hint = "_".repeat(word.picked.length);
+      io.sockets.emit("hint", game.hint);
       break;
     case FIRST_HINT_TIME_SHORT_WORD:
       if (word.picked.length <= SHORT_WORD_LENGTH) {
@@ -229,16 +228,16 @@ const sendHint = () => {
  */
 const generateHint = () => {
   let letterIdx = Math.floor(Math.random() * word.picked.length);
-  while (hint[letterIdx] !== "_") {
+  while (game.hint[letterIdx] !== "_") {
     // make sure non-repeating hints are given
     letterIdx = [Math.floor(Math.random() * word.picked.length)];
   }
-  let newHint = hint.slice(); // create a copy of the existing hint
-  hint =
+  let newHint = game.hint.slice(); // create a copy of the existing hint
+  game.hint =
     newHint.substring(0, letterIdx) +
     word.picked[letterIdx] +
     newHint.substring(letterIdx + 1, word.picked.length);
-  return hint;
+  return game.hint;
 };
 
 const wordDifficultyFactor = () => {
