@@ -43,7 +43,7 @@ const GAME_STATE = {
 const DURATION = {
   GAME_WAITING: Infinity,
   TURN_START: 15000,
-  TURN_DURING: 15000,
+  TURN_DURING: 90000,
   TURN_END: 8000,
   GAME_OVER: 10000,
 };
@@ -70,7 +70,7 @@ const INITIAL_PLAYER = {
 };
 
 const INITIAL_GAME = {
-  gameState: GAME_STATE.LOBBY_WAITING,
+  gameState: GAME_STATE.GAME_WAITING,
   timer: Infinity,
   round: 1,
   hint: "",
