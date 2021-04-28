@@ -61,7 +61,7 @@ const DRAWER_SCORING = {
 
 let lines = []; // Array of lines drawn on Canvas
 let hint = ""; // Hint for guessers to see
-let game = INITIAL_GAME; // Stores gameState, timer, and round
+let game = { ...INITIAL_GAME, gameState: GAME_STATE.GAME_WAITING }; // Stores gameState, timer, and round
 let word = INITIAL_WORD; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
@@ -525,7 +525,8 @@ const disconnectOrLeaveGame = (client) => {
     });
     delete clients[client.id];
     if (Object.keys(clients).length === 1) {
-      io.sockets.emit("game waiting");
+      let remaininigClientId = Object.keys(clients)[0];
+      io.to(remaininigClientId).emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
       clearAllTimerIntervals();

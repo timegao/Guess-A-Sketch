@@ -68,7 +68,10 @@ const DynamicModal = () => {
   useEffect(() => {
     const myModalEl = document.getElementById("dynamicModal");
     const modal = returnModal(myModalEl);
-    if (gameState === GAME_STATE.TURN_DURING) {
+    if (
+      gameState === GAME_STATE.TURN_DURING ||
+      gameState === GAME_STATE.LOBBY
+    ) {
       // close modal
       modal.hide();
     } else {
