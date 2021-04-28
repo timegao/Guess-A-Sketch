@@ -21,7 +21,7 @@ const ExitModal = () => {
 
   return (
     <div
-      className="modal fade"
+      className="modal"
       id="leaveGameModal"
       data-bs-backdrop="static"
       data-bs-keyboard="false"
