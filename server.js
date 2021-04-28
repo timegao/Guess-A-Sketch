@@ -400,6 +400,14 @@ const validateAndScoreMessage = (clientId, msgText) => {
   return { username: username, text: text, type: type };
 };
 
+// Helper function determine all players have guessed correctly
+const allGuessedCorrectly = () => {
+  for (const key in clients) {
+    if (clients[key].scoring.order === 0) return false;
+  }
+  return true;
+};
+
 /**
  * If the message was the correct guess:
  * Update the user's scoring details like order and timer
@@ -415,6 +423,7 @@ const correctMessageUpdate = (clientId) => {
   clients[clientId].scoring.order = guessedCorrectOrder++;
   clients[clientId].scoring.timer = game.timer;
   io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
+  if (allGuessedCorrectly()) moveGameStateToTurnEnd();
 };
 
 /**
