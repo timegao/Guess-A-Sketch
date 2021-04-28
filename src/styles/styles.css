@@ -125,6 +125,7 @@ canvas {
   border-radius: 20%;
   border: solid 2px rgba(247, 6, 6);
   opacity: 0.8;
+  transition: 0.2s ease;
 }
 
 #exitGameButton:hover {
