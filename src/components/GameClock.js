@@ -7,16 +7,21 @@ import { useEffect, useState } from "react";
 const convertToSeconds = (milliseconds) =>
   milliseconds === Infinity ? 0 : milliseconds / 1000;
 
-const SVGCircle = ({ radius }) => (
-  <svg className="countdown-svg">
-    <path
-      fill="none"
-      stroke="#333"
-      strokeWidth="4"
-      d={describeArc(50, 50, 30, 0, radius)}
-    />
-  </svg>
-);
+const SVGCircle = (radius) => {
+  if (!isNaN(radius)) {
+    return (
+      <svg className="countdown-svg">
+        <path
+          fill="none"
+          stroke="#333"
+          strokeWidth="4"
+          d={describeArc(50, 50, 30, 0, radius)}
+        />
+      </svg>
+    );
+  }
+  return null;
+};
 
 // From stackoverflow: https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
