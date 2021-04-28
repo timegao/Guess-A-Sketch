@@ -105,6 +105,12 @@ socket.on("hint", (hint) => {
   store.dispatch(setHint(hint));
 });
 
+// When connection fails, disconnect the client to prevent continually trying to connect
+socket.on("connect_error", (error) => {
+  console.log(error);
+  socket.disconnect();
+});
+
 export const joinChat = (username, avatar, date) => {
   socket.emit("join", username, avatar, date);
 };
