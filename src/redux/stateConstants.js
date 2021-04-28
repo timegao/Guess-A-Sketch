@@ -32,7 +32,6 @@ const MESSAGE_TYPE = {
 };
 
 const GAME_STATE = {
-  LOBBY_WAITING: "not joined",
   GAME_WAITING: "game waiting", // Players are in loading screen
   TURN_START: "turn start", // Drawer sees word to choose from, guesser sees waiting for drawer to choose word
   TURN_DURING: "turn during", // Drawer draws word, guesser tries to guess word
