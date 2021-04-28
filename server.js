@@ -277,7 +277,7 @@ const guesserOrderFactor = (order) => Math.exp(order / GUESSER_ORDER_FACTOR);
 // Value when timer = 45 is .736
 // Value when timer = 5 is .137
 // Minimum when timer = 0 is 0
-const timeFactor = (timer) => 1 - 1 / Math.pow(TIMER_FACTOR, timer);
+const timeFactor = (timer) => 1 - 1 / Math.pow(TIMER_FACTOR, timer / 1000);
 
 const calculateGuesserFactor = (user) =>
   guesserOrderFactor(user.scoring.order) * timeFactor(user.scoring.timer);
