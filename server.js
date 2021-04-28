@@ -24,12 +24,24 @@ const io = require("socket.io")(server, {
     methods: ["GET", "POST"],
   },
 });
-console.log("Websocket server created");
+const path = require("path");
 
 // Choose a port, default is 4002 (could be almost anything)
 const PORT = process.env.PORT || 4002;
 
-app.use(express.static(__dirname + "/"));
+// When on Heroku, serve the UI from the build folder
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "build")));
+  app.get("*", (res) => {
+    res.sendfile(path.join((__dirname = "build/index.html")));
+  });
+}
+
+// When on local host, server from the public folder.
+// Rule will not be written if production conditional has executed
+app.get("*", () => {
+  app.sendFile(path.join(__dirname + "public/index.html"));
+});
 
 const BLANK_HINT_TIME = DURATION.TURN_DURING; // @ 90sec left in turn
 const FIRST_HINT_TIME_SHORT_WORD = 45000;
