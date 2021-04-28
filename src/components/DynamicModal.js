@@ -85,7 +85,7 @@ const DynamicModal = () => {
       data-bs-keyboard="false"
       tabIndex="-1"
       aria-labelledby="dynamicModal"
-      aria-hidden="true"
+      // aria-hidden="true"
     >
       <div className="modal-dialog">
         <div className="modal-content">

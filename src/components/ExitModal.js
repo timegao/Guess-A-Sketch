@@ -27,7 +27,7 @@ const ExitModal = () => {
       data-bs-keyboard="false"
       tabIndex="-1"
       aria-labelledby="leaveGameModalLabel"
-      aria-hidden="true"
+      // aria-hidden="true"
     >
       <div className="modal-dialog">
         <div className="modal-content">
