@@ -33,6 +33,7 @@ const PORT = process.env.PORT || 4002;
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "build")));
   app.get("*", (res) => {
+    // eslint-disable-next-line no-native-reassign
     res.sendfile(path.join((__dirname = "build/index.html")));
   });
 }
