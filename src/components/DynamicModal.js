@@ -6,7 +6,7 @@ import GuesserWaitingModal from "../components/GuesserWaitingModal";
 import GameStandingModal from "../components/GameStandingModal";
 import ScoreUpdateModal from "../components/ScoreUpdateModal";
 import { getGameState } from "../redux/game";
-import { GAME_STATE, ROLE } from "../redux/stateConstants";
+import { GAME_STATE, ROLE, LOGIN } from "../redux/stateConstants";
 import { getUsers } from "../redux/users";
 import { getPlayer } from "../redux/player";
 import { Modal } from "bootstrap";
@@ -70,7 +70,7 @@ const DynamicModal = () => {
     const modal = returnModal(myModalEl);
     if (
       gameState === GAME_STATE.TURN_DURING ||
-      gameState === GAME_STATE.LOBBY_WAITING
+      player.login === LOGIN.LOGGED_OUT
     ) {
       // close modal
       modal.hide();
@@ -78,7 +78,7 @@ const DynamicModal = () => {
       // open modal
       modal.show();
     }
-  }, [gameState]);
+  }, [gameState, player]);
 
   return (
     <div
