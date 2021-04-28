@@ -14,6 +14,10 @@ import { Modal } from "bootstrap";
 // singleton modal instance
 let modalInstance = null;
 
+export const getDynamicModalInstance = () => {
+  return modalInstance;
+};
+
 const conditionalRender = (gameState, duty) => {
   switch (gameState) {
     case GAME_STATE.GAME_WAITING:

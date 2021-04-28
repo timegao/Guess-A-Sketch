@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Modal } from "bootstrap";
 import { exitGame } from "../redux/actions";
+import { getDynamicModalInstance } from "./DynamicModal";
 
 const ExitModal = () => {
   const dispatch = useDispatch();
@@ -8,8 +9,9 @@ const ExitModal = () => {
   const confirmExitGame = () => {
     let leaveGameModalDiv = document.getElementById("leaveGameModal");
     let leaveGameModal = Modal.getInstance(leaveGameModalDiv);
-    let dynamicModalDiv = document.getElementById("dynamicModal");
-    let dynamicModal = Modal.getInstance(dynamicModalDiv);
+    // let dynamicModalDiv = document.getElementById("dynamicModal");
+    // let dynamicModal = Modal.getInstance(dynamicModalDiv);
+    let dynamicModal = getDynamicModalInstance();
     if (dynamicModal !== null) {
       dynamicModal.hide(); // close dynamic modal if open before leaving
     }
