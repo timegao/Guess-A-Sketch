@@ -15,8 +15,9 @@ const ExitModal = () => {
     if (dynamicModal !== null) {
       dynamicModal.hide(); // close dynamic modal if open before leaving
     }
-    leaveGameModal.hide(); //close modal before leaving
     dispatch(exitGame());
+    leaveGameModal.hide(); //close modal before leaving
+    // dispatch(exitGame());
   };
 
   return (
