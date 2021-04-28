@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 const convertToSeconds = (milliseconds) =>
   milliseconds === Infinity ? 0 : milliseconds / 1000;
 
-const SVGCircle = (props) => {
-  if (!isNaN(props.radius)) {
+const SVGCircle = (radius) => {
+  if (!isNaN(radius)) {
     return (
       <svg className="countdown-svg">
         <path
