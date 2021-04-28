@@ -70,7 +70,7 @@ const DynamicModal = () => {
     const modal = returnModal(myModalEl);
     if (
       gameState === GAME_STATE.TURN_DURING ||
-      gameState === GAME_STATE.LOBBY
+      gameState === GAME_STATE.LOBBY_WAITING
     ) {
       // close modal
       modal.hide();
