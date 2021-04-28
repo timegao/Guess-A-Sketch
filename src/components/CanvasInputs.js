@@ -23,14 +23,14 @@ const CanvasInputs = ({ stroke, setStroke, point }) => {
   const onHandleErase = () => {
     if (isDrawer()) {
       document.body.style.cursor = "cell"; // TODO (Tim): maybe something expressive?
-      setStroke(ERASER_STROKE);
+      setStroke({ ...ERASER_STROKE });
     }
   };
 
   const onHandleDraw = () => {
     if (isDrawer()) {
       document.body.style.cursor = "default";
-      setStroke(INITIAL_STROKE);
+      setStroke({ ...INITIAL_STROKE });
     }
   };
 
