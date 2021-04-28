@@ -134,6 +134,12 @@ canvas {
   background-color: rgba(247, 6, 6, 1);
 }
 
+#exitGameButton:focus {
+  opacity: 0.9;
+  border: solid 2px #383838;
+  background-color: rgba(247, 6, 6, 1);
+}
+
 /* Loading */
 .loading {
   display: flex;
