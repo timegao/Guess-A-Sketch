@@ -25,7 +25,7 @@ const socketIOClient = require("socket.io-client");
 // Localhost port must match server
 let host =
   process.env.NODE_ENV === "production"
-    ? "sketch-a-guess.herokuapp.com"
+    ? "guess-a-sketch.herokuapp.com"
     : "localhost:4002";
 let socket = socketIOClient.connect(host, { secure: true });
 // Checks which host we're connected to (for troubleshooting);
