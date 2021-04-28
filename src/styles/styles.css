@@ -30,6 +30,26 @@ body {
   transform: translate(-50%, -50%);
 }
 
+div .css-1wa3eu0-placeholder {
+  color: rgb(52, 103, 243);
+}
+
+::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(97, 136, 245) !important;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: rgb(97, 136, 245) !important;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: rgb(97, 136, 245) !important;
+}
+
 /* Logo in landing view */
 .logo {
   background-color: white;
