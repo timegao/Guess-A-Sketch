@@ -525,12 +525,12 @@ const addClient = (clientId, username, avatar, date) => {
   };
 };
 
-const resetGame = () => {
-  clearAllTimerIntervals();
-  lines = [];
-  word = { ...INITIAL_WORD };
-  game = { ...INITIAL_GAME };
-};
+// const resetGame = () => {
+//   clearAllTimerIntervals();
+//   lines = [];
+//   word = { ...INITIAL_WORD };
+//   game = { ...INITIAL_GAME };
+// };
 
 const clearGame = () => {
   game = { ...INITIAL_GAME };
@@ -564,9 +564,10 @@ const disconnectOrLeaveGame = (client) => {
     } else if (client.id === drawer && clientKeys.length > 1) {
       // if drawer leaves and there are more than one player left, start a new turn
       moveGameStateToTurnEnd();
-    } else if (clientKeys.length === 0) {
-      resetGame();
     }
+    // } else if (clientKeys.length === 0) {
+    //   resetGame();
+    // }
     io.sockets.emit("all users", clients);
   }
 };
