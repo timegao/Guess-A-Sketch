@@ -61,8 +61,8 @@ const DRAWER_SCORING = {
 };
 
 let lines = []; // Array of lines drawn on Canvas
-let game = INITIAL_GAME; // Stores gameState, timer, round, and hint
-let word = INITIAL_WORD; // Word choices and picked
+let game = { ...INITIAL_GAME }; // Stores gameState, timer, round, and hint
+let word = { ...INITIAL_WORD }; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
@@ -136,7 +136,7 @@ const clearAllTimerIntervals = () => {
 };
 
 const clearWord = () => {
-  word = INITIAL_WORD;
+  word = { ...INITIAL_WORD };
   io.sockets.emit("choose word", word.choices);
   io.sockets.emit("auto choose word", word.picked);
 };
@@ -231,7 +231,7 @@ const generateHint = () => {
   let letterIdx = Math.floor(Math.random() * word.picked.length);
   while (game.hint[letterIdx] !== "_") {
     // make sure non-repeating hints are given
-    letterIdx = [Math.floor(Math.random() * word.picked.length)];
+    letterIdx = Math.floor(Math.random() * word.picked.length);
   }
   let newHint = game.hint.slice(); // create a copy of the existing hint
   game.hint =
@@ -525,7 +525,15 @@ const addClient = (clientId, username, avatar, date) => {
   };
 };
 
+const resetGame = () => {
+  clearAllTimerIntervals();
+  lines = [];
+  word = { ...INITIAL_WORD };
+  game = { ...INITIAL_GAME };
+};
+
 const disconnectOrLeaveGame = (client) => {
+  let clientKeys = Object.keys(clients);
   if (clients.hasOwnProperty(client.id)) {
     broadcastMessage(client.id, {
       username: clients[client.id].username,
@@ -533,16 +541,18 @@ const disconnectOrLeaveGame = (client) => {
       type: MESSAGE_TYPE.LEAVE,
     });
     delete clients[client.id];
-    if (Object.keys(clients).length === 1) {
-      let remaininigClientId = Object.keys(clients)[0];
+    if (clientKeys.length === 1) {
+      let remaininigClientId = clientKeys[0];
       io.to(remaininigClientId).emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
       clearLinesAll();
       clearAllTimerIntervals();
-    } else if (client.id === drawer && Object.keys(clients).length > 1) {
+    } else if (client.id === drawer && clientKeys.length > 1) {
       // if drawer leaves and there are more than one player left, start a new turn
       moveGameStateToTurnEnd();
+    } else if (clientKeys.length === 0) {
+      resetGame();
     }
     io.sockets.emit("all users", clients);
   }
