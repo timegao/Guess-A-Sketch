@@ -6,13 +6,17 @@ import GuesserWaitingModal from "../components/GuesserWaitingModal";
 import GameStandingModal from "../components/GameStandingModal";
 import ScoreUpdateModal from "../components/ScoreUpdateModal";
 import { getGameState } from "../redux/game";
-import { GAME_STATE, ROLE } from "../redux/stateConstants";
+import { GAME_STATE, ROLE, LOGIN } from "../redux/stateConstants";
 import { getUsers } from "../redux/users";
 import { getPlayer } from "../redux/player";
 import { Modal } from "bootstrap";
 
 // singleton modal instance
 let modalInstance = null;
+
+export const getDynamicModalInstance = () => {
+  return modalInstance;
+};
 
 const conditionalRender = (gameState, duty) => {
   switch (gameState) {
@@ -64,14 +68,17 @@ const DynamicModal = () => {
   useEffect(() => {
     const myModalEl = document.getElementById("dynamicModal");
     const modal = returnModal(myModalEl);
-    if (gameState === GAME_STATE.TURN_DURING) {
+    if (
+      gameState === GAME_STATE.TURN_DURING ||
+      player.login !== LOGIN.LOGGED_IN
+    ) {
       // close modal
       modal.hide();
     } else {
       // open modal
       modal.show();
     }
-  }, [gameState]);
+  }, [gameState, player]);
 
   return (
     <div

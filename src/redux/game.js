@@ -7,13 +7,14 @@ import {
   SET_TURN_START,
   UPDATE_GAME,
   SET_HINT,
+  LOGOUT,
 } from "./actionConstants";
 import { DURATION, GAME_STATE, INITIAL_GAME } from "./stateConstants";
 
 const gameReducer = (state = INITIAL_GAME, action) => {
   switch (action.type) {
     case SET_GAME_WAITING:
-      return INITIAL_GAME;
+      return { ...INITIAL_GAME, gameState: GAME_STATE.GAME_WAITING };
     case SET_TURN_START:
       return {
         ...state,
@@ -50,6 +51,8 @@ const gameReducer = (state = INITIAL_GAME, action) => {
       };
     case UPDATE_GAME:
       return action.payload.game;
+    case LOGOUT:
+      return INITIAL_GAME;
     default:
       return state;
   }

@@ -33,6 +33,7 @@ const PORT = process.env.PORT || 4002;
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "build")));
   app.get("*", (res) => {
+    // eslint-disable-next-line no-native-reassign
     res.sendfile(path.join((__dirname = "build/index.html")));
   });
 }
@@ -533,7 +534,8 @@ const disconnectOrLeaveGame = (client) => {
     });
     delete clients[client.id];
     if (Object.keys(clients).length === 1) {
-      io.sockets.emit("game waiting");
+      let remaininigClientId = Object.keys(clients)[0];
+      io.to(remaininigClientId).emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
       clearAllTimerIntervals();
