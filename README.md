@@ -1,10 +1,12 @@
-# Project Description – Guess-A-Sketch
+# Guess-A-Sketch
 
-## Overview
+## Project Description
+
+### Overview
 
 Guess-A-Sketch is a multiplayer game that is a remote online synchronous groupware application, whose inspiration stems from to the well-known board game, Pictionary.
 
-## Limitations
+### Limitations
 
 The following is a listing of application limitations effective the first application release:
 
@@ -15,7 +17,7 @@ The following is a listing of application limitations effective the first applic
 - Erase functionality currently simulates erasing by simply overlaying a white stroke color on the existing white background of the canvas element, instead of removing drawn paths from the existing canvas. On the other hand, please note that the clear button, does in fact clear the canvas content.
 - Upon clicking the eraser button, our currently deployed application causes the line width for all existing drawn paths on the canvas to change width. This is not an intended effect and is an open issue.
 
-## Key Characteristics
+### Key Characteristics
 
 The following are key characteristics of the game:
 
@@ -55,9 +57,11 @@ The following are key characteristics of the game:
 
       - Modal component announcing each change in the game state.
 
-## Gameplay
+### Gameplay
 
 Gameplay requires at least 2 players. If a player joins the game, but there are not sufficient players (i.e., only 1 player), then the application provides feedback to the player by notifying them to wait for additional players to join.
+
+Players are required to provide a username to identify themselves during gameplay. There cannot be duplicate usernames. Validation is performed at the time when a player attempts to join, to prevent for duplicates. Feedback is provided to the player so it can provide a different username currently not in use.
 
 Once at least 2 players have joined the game, the game begins with the player who joined the game first as the first designated drawer. The drawer is given a choice of three of words, and all other player(s) take on the role of a guesser and attempt to guess the drawn word by typing it in the chat to win points.
 
