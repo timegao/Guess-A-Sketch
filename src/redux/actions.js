@@ -86,8 +86,8 @@ export const newPlayer = (username, avatar) => {
 
 export const exitGame = () => {
   return (dispatch) => {
-    dispatch(logoutOfGame());
     leaveChat();
+    dispatch(logoutOfGame());
   };
 };
 
