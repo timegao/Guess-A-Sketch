@@ -532,6 +532,18 @@ const resetGame = () => {
   game = { ...INITIAL_GAME };
 };
 
+const clearGame = () => {
+  game = { ...INITIAL_GAME };
+  io.sockets.emit("update game", game);
+};
+
+const resetGameOnePlayer = () => {
+  clearGame();
+  clearLinesAll();
+  clearWord();
+  clearAllTimerIntervals();
+};
+
 const disconnectOrLeaveGame = (client) => {
   if (clients.hasOwnProperty(client.id)) {
     broadcastMessage(client.id, {
@@ -542,12 +554,13 @@ const disconnectOrLeaveGame = (client) => {
     delete clients[client.id];
     let clientKeys = Object.keys(clients); // keep updated clients collection
     if (clientKeys.length === 1) {
-      let remaininigClientId = clientKeys[0];
-      io.to(remaininigClientId).emit("game waiting");
-      game.gameState = GAME_STATE.GAME_WAITING;
-      game.timer = DURATION.GAME_WAITING;
-      clearLinesAll();
-      clearAllTimerIntervals();
+      // let remaininigClientId = clientKeys[0];
+      // io.to(remaininigClientId).emit("game waiting");
+      // game.gameState = GAME_STATE.GAME_WAITING;
+      // game.timer = DURATION.GAME_WAITING;
+      // clearLinesAll();
+      // clearAllTimerIntervals();
+      resetGameOnePlayer();
     } else if (client.id === drawer && clientKeys.length > 1) {
       // if drawer leaves and there are more than one player left, start a new turn
       moveGameStateToTurnEnd();
