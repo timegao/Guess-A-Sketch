@@ -11,11 +11,6 @@ Guess-A-Sketch is a multiplayer game that is a remote online synchronous groupwa
 The following is a listing of application limitations effective the first application release:
 
 - Guess-A-Sketch is intended for desktop, laptop, and tablet players in a one-device to one-user setting.
-- Guess-A-Sketch supports mouse inputs and touch with finger or stylus. We do not recommend the user experience on mobile devices such as phones currently.
-- The game only consists of one single round. A single round is defined as every player currently in the game having had the opportunity to draw exactly once. The game will end after every round. This provides for future extensibility to define a game to consist of multiple rounds.
-- Please note that the canvas does not resize based on window/screen size. For the best user experience, we recommend NOT resizing the window after the game has loaded.
-- Erase functionality currently simulates erasing by simply overlaying a white stroke color on the existing white background of the canvas element, instead of removing drawn paths from the existing canvas. On the other hand, the clear button, does in fact clear the canvas content.
-- Upon clicking the eraser button, our currently deployed application causes the line width for all existing drawn paths on the canvas to change width. This is not an intended effect and is an open issue we are unable to replicate locally.
 - Guess-A-Sketch supports mouse inputs and touch with finger or stylus. We do not recommend the user experience on mobile devices such as phones currently because of the limited screen size.
 - At the time of release, the game only consists of one single round. A single round is defined as every player currently in the game having had the opportunity to draw exactly once. The game will end after each round.
 - The canvas does not support window/screen resizing. For the best user experience, we recommend NOT resizing the window after the game has loaded.
@@ -27,27 +22,13 @@ The following is a listing of application limitations effective the first applic
 
 The following are key characteristics of the game:
 
-- It supports interaction between multiple users via a real-time chat and canvas drawing element.
-- The application manipulates and displays data from multiple sources, including data directly supplied by the user in the chat or canvas, as well as mock data consisting of words that are to be guessed during gameplay.
-- Redux principles are applied throughout the application to manage state.
-- The application responds to user input via mouse and keyboard and touch interfaces such as stylus and finger.
-- The application supports different users in multiple contexts:
-  - Firstly, a tutorial is provided for both novice and experienced users alike, prior to starting and joining gameplay.
-  - Secondly, inherent to regular gameplay, there are two user roles, those who draw, and those who guess. As such, two respective and differing views are provided, dependent on whether the user is drawing or guessing.
 - It supports interaction between multiple users via real-time chat and canvas drawing element.
-
-- The application manipulates and displays data from multiple sources including data directly supplied by the user in the chat or canvas using socket.io, as well as mock data consisting of words that are to be guessed during gameplay.
-
+- The application manipulates and displays data from multiple sources, including data directly supplied by the user in the chat or canvas using socket.io, as well as mock data consisting of words that are to be guessed during gameplay.
 - Redux principles are applied throughout the application to manage state.
-
 - The application responds to user input via mouse and keyboard and touch interfaces such as finger and stylus.
-
 - The application supports different users in multiple contexts:
-
   - Firstly, a tutorial is required for both novice and experienced users alike prior to starting and joining gameplay.
-
   - Secondly, inherent to regular gameplay, there are two user roles, those who draw and those who guess. As such, two respective and differing views are provided, dependent on whether the user draws or guesses.
-
 - The UI communicates application state to players to keep coordination during gameplay and provide feedback.
 - The UI supports group awareness by:
   - Chat messages distributed to all users:
