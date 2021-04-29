@@ -540,7 +540,7 @@ const disconnectOrLeaveGame = (client) => {
       type: MESSAGE_TYPE.LEAVE,
     });
     delete clients[client.id];
-    let clientKeys = Object.keys(clients);
+    let clientKeys = Object.keys(clients); // keep updated clients collection
     if (clientKeys.length === 1) {
       let remaininigClientId = clientKeys[0];
       io.to(remaininigClientId).emit("game waiting");
