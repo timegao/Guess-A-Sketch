@@ -61,8 +61,8 @@ const DRAWER_SCORING = {
 };
 
 let lines = []; // Array of lines drawn on Canvas
-let game = INITIAL_GAME; // Stores gameState, timer, round, and hint
-let word = INITIAL_WORD; // Word choices and picked
+let game = { ...INITIAL_GAME }; // Stores gameState, timer, round, and hint
+let word = { ...{ ...INITIAL_WORD } }; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
@@ -136,7 +136,7 @@ const clearAllTimerIntervals = () => {
 };
 
 const clearWord = () => {
-  word = INITIAL_WORD;
+  word = { ...INITIAL_WORD };
   io.sockets.emit("choose word", word.choices);
   io.sockets.emit("auto choose word", word.picked);
 };
