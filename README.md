@@ -59,6 +59,8 @@ The following are key characteristics of the game:
 
 Gameplay requires at least 2 players. If a player joins the game, but there are not sufficient players (i.e., only 1 player), then the application provides feedback to the player by notifying them to wait for additional players to join.
 
+![Waiting](https://media.github.ccs.neu.edu/user/5522/files/d5bec500-a888-11eb-845a-5fb91bc62c27)
+
 Once at least 2 players have joined the game, the game begins with the player who joined the game first as the first designated drawer. The drawer is given a choice of three of words, and all other player(s) take on the role of a guesser and attempt to guess the drawn word by typing it in the chat to win points.
 
 The player who has the current role of drawer, initially has 15 seconds to choose the word they would like to draw. Three choices are provided, one easy, one medium, and one hard. Should the player fail to choose a word in the 15 seconds provided, the player is automatically provided with the easy word to draw. During the same time, guessers all receive feedback that the drawer is currently picking a word.
