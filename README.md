@@ -10,51 +10,38 @@ Guess-A-Sketch is a multiplayer game that is a remote online synchronous groupwa
 
 The following is a listing of application limitations effective the first application release:
 
-- Guess-A-Sketch is intended for desktop, laptop, and tablet players in a one-device to one-user setting
-- Guess-A-Sketch supports mouse inputs and touch with finger or pen. We do not recommend the user experience on mobile devices such as phones currently.
-- Please note that at the time of release, the game only consists of one single round. A single round is defined as every player currently in the game having had the opportunity to draw exactly once. The game will end after every round.
-- Please also note that the canvas does not resize based on window/screen size. For the best user experience, we recommend NOT resizing the window after the game has loaded.
-- Erase functionality currently simulates erasing by simply overlaying a white stroke color on the existing white background of the canvas element, instead of removing drawn paths from the existing canvas. On the other hand, please note that the clear button, does in fact clear the canvas content.
-- Upon clicking the eraser button, our currently deployed application causes the line width for all existing drawn paths on the canvas to change width. This is not an intended effect and is an open issue.
+- Guess-A-Sketch is intended for desktop, laptop, and tablet players in a one-device to one-user setting.
+- Guess-A-Sketch supports mouse inputs and touch with finger or stylus. We do not recommend the user experience on mobile devices such as phones currently.
+- The game only consists of one single round. A single round is defined as every player currently in the game having had the opportunity to draw exactly once. The game will end after every round. This provides for future extensibility to define a game to consist of multiple rounds.
+- Please note that the canvas does not resize based on window/screen size. For the best user experience, we recommend NOT resizing the window after the game has loaded.
+- Erase functionality currently simulates erasing by simply overlaying a white stroke color on the existing white background of the canvas element, instead of removing drawn paths from the existing canvas. On the other hand, the clear button, does in fact clear the canvas content.
+- Upon clicking the eraser button, our currently deployed application causes the line width for all existing drawn paths on the canvas to change width. This is not an intended effect and is an open issue we are unable to replicate locally.
 
 ## Key Characteristics
 
 The following are key characteristics of the game:
 
-- It supports interaction between multiple users via real-time chat and canvas drawing element.
-
-- The application manipulates and displays data from multiple sources including data directly supplied by the user in the chat or canvas, as well as mock data consisting of words that are to be guessed during gameplay.
-
+- It supports interaction between multiple users via a real-time chat and canvas drawing element.
+- The application manipulates and displays data from multiple sources, including data directly supplied by the user in the chat or canvas, as well as mock data consisting of words that are to be guessed during gameplay.
 - Redux principles are applied throughout the application to manage state.
-
 - The application responds to user input via mouse and keyboard and touch interfaces such as stylus and finger.
-
 - The application supports different users in multiple contexts:
-
-  - Firstly, a tutorial is provided for both novice and experienced users, alike prior to starting and joining gameplay.
-
+  - Firstly, a tutorial is provided for both novice and experienced users alike, prior to starting and joining gameplay.
   - Secondly, inherent to regular gameplay, there are two user roles, those who draw, and those who guess. As such, two respective and differing views are provided, dependent on whether the user is drawing or guessing.
-
 - The UI communicates application state to players to keep coordination during gameplay and provide feedback.
-
 - The UI supports group awareness by:
 
   - Chat messages distributed to all users:
 
     - When a new player joins and leaves the game.
-
     - Announcing the next drawer at the beginning of the turn.
-
-    - Announcing the word to guess at the end of the turn.
-
+    - Announcing and revealing the answer at the end of the turn.
     - Announcing when the round is over.
+    - Announcing when the game is over.
 
   - Graphical content:
-
     - Displaying a pencil on the drawer’s card in the player list.
-
     - Displaying a check mark on the guessers’ cards in the player list after they guessed correctly during a turn.
-
     - Modal component announcing each change in the game state.
 
 ## Gameplay
@@ -81,6 +68,6 @@ Following the 90 seconds, points earned by each player during the turn are revea
 
 <p align="center"> <img src="https://media.github.ccs.neu.edu/user/5522/files/bd55a700-a896-11eb-9145-e50e46a1df00"/></p>
 
-Gameplay then continues, as a new drawer is chosen, and a new turn begins. Once all players have had the opportunity to draw, a single round of gameplay has finished, and the game is over. Overall point standings and winners are revealed during a 10 second intermission, before a brand-new game start.
+Gameplay then continues, as a new drawer is chosen, and a new turn begins. Once all players have had the opportunity to draw, a single round of gameplay has finished, and the game is over. Overall point standings and winners are revealed during a 10 second intermission, before a brand-new game starts.
 
 Players may leave the game at any time by simply closing their internet browser window, or by clicking the close button icon in the top left corner of the game view and then confirming that they would like to exit.
