@@ -70,7 +70,7 @@ const DynamicModal = () => {
     const modal = returnModal(myModalEl);
     if (
       gameState === GAME_STATE.TURN_DURING ||
-      player.login === LOGIN.LOGGED_OUT
+      player.login !== LOGIN.LOGGED_IN
     ) {
       // close modal
       modal.hide();
