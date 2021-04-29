@@ -78,6 +78,9 @@ When users guess the word, they receive feedback if the word that they guess is 
 
 Following the 90 seconds, points earned by each player during the turn are revealed during an 8 second end of turn intermission. Scoring for drawer is based on an exponential formula that considers the amount of time that it took for the first guesser to guess the word correctly and the difficulty of the word selected. Likewise, the scoring for the guesser is also based on the same formula based on the time, but it also considers the order in which the guesser guessed the word correctly in comparison to other drawers, which is another exponential formula. We chose exponential formulas because we wanted to be able to scale to a larger number of potential users while also ensuring that players would never receive 0 or fewer points every round should they guess the word correctly.
 
+<p align="center"> <img src="https://media.github.ccs.neu.edu/user/5522/files/bd55a700-a896-11eb-9145-e50e46a1df00"/></p>
+
+
 Gameplay then continues, as a new drawer is chosen, and a new turn begins. Once all players have had the opportunity to draw, a single round of gameplay has finished, and the game is over. Overall point standings and winners are revealed during a 10 second intermission, before a brand-new game start.
 
 Players may leave the game at any time by simply closing their internet browser window, or by clicking the close button icon in the top left corner of the game view and then confirming that they would like to exit.
