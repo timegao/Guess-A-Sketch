@@ -17,6 +17,7 @@ The following is a listing of application limitations effective the first applic
 - The canvas does not translate or transform canvas drawing across different aspect ratios. A drawing may look different from one screen to another depending on the window's aspect ratio.
 - Erase functionality currently simulates erasing by simply overlaying a white stroke color on the existing white background of the canvas element, instead of removing drawn paths from the existing canvas. On the other hand, please note that the clear button, does in fact clear the canvas content.
 - Upon clicking the eraser button, our currently deployed application may cause the line width for all existing drawn paths on canvas to change width. This is not an intended effect and is an open issue.
+- Due to the limitations of the free-tier Dyno Type, which has less than 1GB of RAM, Heroku may crash and may not restart itself. The connection to Heroku dynos may not always be the most stable. Players' socket sometimes disconnect, and players may not always receive the most up-to-date information.
 
 ## Key Characteristics
 
