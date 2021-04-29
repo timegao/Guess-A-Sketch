@@ -231,7 +231,7 @@ const generateHint = () => {
   let letterIdx = Math.floor(Math.random() * word.picked.length);
   while (game.hint[letterIdx] !== "_") {
     // make sure non-repeating hints are given
-    letterIdx = [Math.floor(Math.random() * word.picked.length)];
+    letterIdx = Math.floor(Math.random() * word.picked.length);
   }
   let newHint = game.hint.slice(); // create a copy of the existing hint
   game.hint =
