@@ -538,9 +538,10 @@ const disconnectOrLeaveGame = (client) => {
       io.to(remaininigClientId).emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
+      clearLinesAll();
       clearAllTimerIntervals();
-    } else if (client.id === drawer) {
-      // if drawer leaves, start a new turn
+    } else if (client.id === drawer && Object.keys(clients).length > 1) {
+      // if drawer leaves and there are more than one player left, start a new turn
       moveGameStateToTurnEnd();
     }
     io.sockets.emit("all users", clients);
