@@ -65,7 +65,10 @@ Once at least 2 players have joined the game, the game begins with the player wh
 
 The player who has the current role of drawer, initially has 15 seconds to choose the word they would like to draw. Three choices are provided, one easy, one medium, and one hard. Should the player fail to choose a word in the 15 seconds provided, the player is automatically provided with the easy word to draw. During the same time, guessers all receive feedback that the drawer is currently picking a word.
 
-Once the player has either chosen a word to draw or one has automatically been chosen for them, the player then has 90 seconds to draw the provided word to the best of their ability.
+Once the player has either chosen a word to draw or one has automatically been chosen for them, the player then has 90 seconds to draw the provided word to the best of their ability
+
+<p align="center"> <img src="https://media.github.ccs.neu.edu/user/5522/files/68179680-a892-11eb-87a8-b7103704e13f"/></p>
+
 
 While the currently designated drawer draws the word, all other players attempt to correctly guess the word as quickly as possible. The quicker they guess, the more points they get!
 
