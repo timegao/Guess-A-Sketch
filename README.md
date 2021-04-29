@@ -47,13 +47,13 @@ The following are key characteristics of the game:
 
     - Announcing when the round is over.
 
-    - Graphical content:
+  - Graphical content:
 
-      - Displaying a pencil on the drawer’s card in the player list.
+    - Displaying a pencil on the drawer’s card in the player list.
 
-      - Displaying a check mark on the guessers’ cards in the player list after they guessed correctly during a turn.
+    - Displaying a check mark on the guessers’ cards in the player list after they guessed correctly during a turn.
 
-      - Modal component announcing each change in the game state.
+    - Modal component announcing each change in the game state.
 
 ## Gameplay
 
