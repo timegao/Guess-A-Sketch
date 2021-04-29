@@ -533,7 +533,6 @@ const resetGame = () => {
 };
 
 const disconnectOrLeaveGame = (client) => {
-  let clientKeys = Object.keys(clients);
   if (clients.hasOwnProperty(client.id)) {
     broadcastMessage(client.id, {
       username: clients[client.id].username,
@@ -541,6 +540,7 @@ const disconnectOrLeaveGame = (client) => {
       type: MESSAGE_TYPE.LEAVE,
     });
     delete clients[client.id];
+    let clientKeys = Object.keys(clients);
     if (clientKeys.length === 1) {
       let remaininigClientId = clientKeys[0];
       io.to(remaininigClientId).emit("game waiting");
