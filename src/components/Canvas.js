@@ -40,12 +40,12 @@ const Canvas = ({ setPoint, point, stroke }) => {
       x:
         ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
         (e.touches &&
-          e.touches[0].clientX -
-            (rect.left * canvasRef.current.width) / rect.width),
+          ((e.touches[0].clientX - rect.left) * canvasRef.current.width) /
+            rect.width),
       y:
         ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
         (e.touches &&
-          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+          ((e.touches[0].clientY - rect.top) * canvasRef.current.height) /
             rect.height),
     });
   };
@@ -65,12 +65,12 @@ const Canvas = ({ setPoint, point, stroke }) => {
       x1:
         ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
         (e.touches &&
-          e.touches[0].clientX -
-            (rect.left * canvasRef.current.width) / rect.width),
+          ((e.touches[0].clientX - rect.left) * canvasRef.current.width) /
+            rect.width),
       y1:
         ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
         (e.touches &&
-          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+          ((e.touches[0].clientY - rect.top) * canvasRef.current.height) /
             rect.height),
       color,
       lineWidth,
@@ -80,12 +80,12 @@ const Canvas = ({ setPoint, point, stroke }) => {
       x:
         ((e.clientX - rect.left) * canvasRef.current.width) / rect.width ||
         (e.touches &&
-          e.touches[0].clientX -
-            (rect.left * canvasRef.current.width) / rect.width),
+          ((e.touches[0].clientX - rect.left) * canvasRef.current.width) /
+            rect.width),
       y:
         ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
         (e.touches &&
-          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+          ((e.touches[0].clientY - rect.top) * canvasRef.current.height) /
             rect.height),
     });
   };
@@ -112,7 +112,7 @@ const Canvas = ({ setPoint, point, stroke }) => {
       y1:
         ((e.clientY - rect.top) * canvasRef.current.height) / rect.height ||
         (e.touches &&
-          ((e.touches[0].e.clientY - rect.top) * canvasRef.current.height) /
+          ((e.touches[0].clientY - rect.top) * canvasRef.current.height) /
             rect.height),
       color,
       lineWidth,
@@ -156,7 +156,7 @@ const Canvas = ({ setPoint, point, stroke }) => {
         onMouseOut={onMouseUp}
         onMouseMove={onMouseMove}
         onTouchStart={onMouseDown}
-        onTouchEnd={onMouseUp}
+        // onTouchEnd={onMouseUp}
         onTouchCancel={onMouseUp}
         onTouchMove={onMouseMove}
         width={window.innerWidth}
