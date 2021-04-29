@@ -16,28 +16,30 @@ const DrawerChoosingModal = () => {
 
   return (
     <div className="modal-body">
-      <h1>Choose your word!</h1>
-      <button
-        type="button"
-        className="btn btn-success me-3"
-        onClick={submitChosenWord}
-      >
-        {choices.easy}
-      </button>
-      <button
-        type="button"
-        className="btn btn-warning me-3"
-        onClick={submitChosenWord}
-      >
-        {choices.medium}
-      </button>
-      <button
-        type="button"
-        className="btn btn-danger"
-        onClick={submitChosenWord}
-      >
-        {choices.hard}
-      </button>
+      <div className="text-center">
+        <h1>Choose your word!</h1>
+        <button
+          type="button"
+          className="btn btn-success me-3"
+          onClick={submitChosenWord}
+        >
+          {choices.easy}
+        </button>
+        <button
+          type="button"
+          className="btn btn-warning me-3"
+          onClick={submitChosenWord}
+        >
+          {choices.medium}
+        </button>
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={submitChosenWord}
+        >
+          {choices.hard}
+        </button>
+      </div>
     </div>
   );
 };
