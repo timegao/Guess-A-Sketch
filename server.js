@@ -531,10 +531,10 @@ const clearGame = () => {
 };
 
 const resetGameOnePlayer = () => {
+  clearAllTimerIntervals();
   clearGame();
   clearLinesAll();
   clearWord();
-  clearAllTimerIntervals();
 };
 
 const disconnectOrLeaveGame = (client) => {
