@@ -11,7 +11,7 @@ const CanvasBoard = () => {
   });
 
   // Stroke state. Stroke represents lineWidth and color
-  const [stroke, setStroke] = useState(INITIAL_STROKE);
+  const [stroke, setStroke] = useState({ ...INITIAL_STROKE });
 
   return (
     <>

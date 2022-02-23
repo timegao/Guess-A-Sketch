@@ -25,12 +25,25 @@ const io = require("socket.io")(server, {
     methods: ["GET", "POST"],
   },
 });
-console.log("Websocket server created");
+const path = require("path");
 
 // Choose a port, default is 4002 (could be almost anything)
 const PORT = process.env.PORT || 4002;
 
-app.use(express.static(__dirname + "/"));
+// When on Heroku, serve the UI from the build folder
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "build")));
+  app.get("*", (res) => {
+    // eslint-disable-next-line no-native-reassign
+    res.sendfile(path.join((__dirname = "build/index.html")));
+  });
+}
+
+// When on local host, server from the public folder.
+// Rule will not be written if production conditional has executed
+app.get("*", () => {
+  app.sendFile(path.join(__dirname + "public/index.html"));
+});
 
 const BLANK_HINT_TIME = DURATION.TURN_DURING; // @ 90sec left in turn
 const FIRST_HINT_TIME_SHORT_WORD = 45000;
@@ -49,9 +62,8 @@ const DRAWER_SCORING = {
 };
 
 let lines = []; // Array of lines drawn on Canvas
-let hint = ""; // Hint for guessers to see
-let game = INITIAL_GAME; // Stores gameState, timer, and round
-let word = INITIAL_WORD; // Word choices and picked
+let game = { ...INITIAL_GAME }; // Stores gameState, timer, round, and hint
+let word = { ...INITIAL_WORD }; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
@@ -126,7 +138,7 @@ const clearAllTimerIntervals = () => {
 };
 
 const clearWord = () => {
-  word = INITIAL_WORD;
+  word = { ...INITIAL_WORD };
   io.sockets.emit("choose word", word.choices);
   io.sockets.emit("auto choose word", word.picked);
 };
@@ -192,8 +204,8 @@ const countdownTurnStart = () => {
 const sendHint = () => {
   switch (game.timer) {
     case BLANK_HINT_TIME:
-      hint = "_".repeat(word.picked.length);
-      io.sockets.emit("hint", hint);
+      game.hint = "_".repeat(word.picked.length);
+      io.sockets.emit("hint", game.hint);
       break;
     case FIRST_HINT_TIME_SHORT_WORD:
       if (word.picked.length <= SHORT_WORD_LENGTH) {
@@ -219,16 +231,16 @@ const sendHint = () => {
  */
 const generateHint = () => {
   let letterIdx = Math.floor(Math.random() * word.picked.length);
-  while (hint[letterIdx] !== "_") {
+  while (game.hint[letterIdx] !== "_") {
     // make sure non-repeating hints are given
-    letterIdx = [Math.floor(Math.random() * word.picked.length)];
+    letterIdx = Math.floor(Math.random() * word.picked.length);
   }
-  let newHint = hint.slice(); // create a copy of the existing hint
-  hint =
+  let newHint = game.hint.slice(); // create a copy of the existing hint
+  game.hint =
     newHint.substring(0, letterIdx) +
     word.picked[letterIdx] +
     newHint.substring(letterIdx + 1, word.picked.length);
-  return hint;
+  return game.hint;
 };
 
 const wordDifficultyFactor = () => {
@@ -267,7 +279,7 @@ const guesserOrderFactor = (order) => Math.exp(order / GUESSER_ORDER_FACTOR);
 // Value when timer = 45 is .736
 // Value when timer = 5 is .137
 // Minimum when timer = 0 is 0
-const timeFactor = (timer) => 1 - 1 / Math.pow(TIMER_FACTOR, timer);
+const timeFactor = (timer) => 1 - 1 / Math.pow(TIMER_FACTOR, timer / 1000);
 
 const calculateGuesserFactor = (user) =>
   guesserOrderFactor(user.scoring.order) * timeFactor(user.scoring.timer);
@@ -390,6 +402,14 @@ const validateAndScoreMessage = (clientId, msgText) => {
   return { username: username, text: text, type: type };
 };
 
+// Helper function determine all players have guessed correctly
+const allGuessedCorrectly = () => {
+  for (const key in clients) {
+    if (clients[key].scoring.order === 0) return false;
+  }
+  return true;
+};
+
 /**
  * If the message was the correct guess:
  * Update the user's scoring details like order and timer
@@ -405,6 +425,7 @@ const correctMessageUpdate = (clientId) => {
   clients[clientId].scoring.order = guessedCorrectOrder++;
   clients[clientId].scoring.timer = game.timer;
   io.sockets.emit("one user", clients[clientId]); // update scoring for guesser
+  if (allGuessedCorrectly()) moveGameStateToTurnEnd();
 };
 
 /**
@@ -453,18 +474,34 @@ const updateMessageText = (username, msgText, type) => {
  * Helper to compare characters difference against word to guess.
  */
 const guessRelativeDifference = (msgText) => {
-  const guessSize = msgText.length;
-  const answerSize = word.picked.length;
+  // We can get away with using one array because we only need to keep track of three variables,
+  // the value to the left, the value above, and the value above and to the left.
+  // The value to the left is already in the array, the value above is the value currently at dp[j],
+  // and then we use a variable for the value above and to the left. Other than that it's just a normal dp solution.
+  let n = word.picked.length;
+  let m = msgText.length;
 
-  let i = 0;
-  let differenceCount = 0;
-  while (i < guessSize && i < answerSize) {
-    if (msgText.charAt(i).toLowerCase() !== word.picked.charAt(i)) {
-      differenceCount++;
-    }
-    i++;
+  if (Math.abs(n - m) > MAX_DIFF_CLOSE_GUESS) {
+    // long messages are not compared
+    return MAX_DIFF_CLOSE_GUESS + 1;
   }
-  return differenceCount + (answerSize - i);
+
+  let count = 0;
+  let dp = Array.from(Array(n + 1), () => count++);
+  for (let i = 1; i < m + 1; i++) {
+    let last = dp[0]++;
+    for (let j = 1; j < n + 1; j++) {
+      [dp[j], last] = [
+        Math.min(
+          dp[j] + 1,
+          dp[j - 1] + 1,
+          last + (msgText[i - 1].toLowerCase() === word.picked[j - 1] ? 0 : 1)
+        ),
+        dp[j],
+      ];
+    }
+  }
+  return dp[dp.length - 1];
 };
 
 /** Helper to validate username already exists in clients */
@@ -490,7 +527,15 @@ const addClient = (clientId, username, avatar, date) => {
   };
 };
 
+const resetGame = () => {
+  clearAllTimerIntervals();
+  lines = [];
+  word = { ...INITIAL_WORD };
+  game = { ...INITIAL_GAME };
+};
+
 const disconnectOrLeaveGame = (client) => {
+  let clientKeys = Object.keys(clients);
   if (clients.hasOwnProperty(client.id)) {
     broadcastMessage(client.id, {
       username: clients[client.id].username,
@@ -498,14 +543,18 @@ const disconnectOrLeaveGame = (client) => {
       type: MESSAGE_TYPE.LEAVE,
     });
     delete clients[client.id];
-    if (Object.keys(clients).length === 1) {
-      io.sockets.emit("game waiting");
+    if (clientKeys.length === 1) {
+      let remaininigClientId = clientKeys[0];
+      io.to(remaininigClientId).emit("game waiting");
       game.gameState = GAME_STATE.GAME_WAITING;
       game.timer = DURATION.GAME_WAITING;
+      clearLinesAll();
       clearAllTimerIntervals();
-    } else if (client.id === drawer) {
-      // if drawer leaves, start a new turn
+    } else if (client.id === drawer && clientKeys.length > 1) {
+      // if drawer leaves and there are more than one player left, start a new turn
       moveGameStateToTurnEnd();
+    } else if (clientKeys.length === 0) {
+      resetGame();
     }
     io.sockets.emit("all users", clients);
   }

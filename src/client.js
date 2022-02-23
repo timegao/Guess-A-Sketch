@@ -26,7 +26,7 @@ const socketIOClient = require("socket.io-client");
 // Localhost port must match server
 let host =
   process.env.NODE_ENV === "production"
-    ? "appname.herokuapp.com"
+    ? "guess-a-sketch.herokuapp.com"
     : "localhost:4002";
 let socket = socketIOClient.connect(host, { secure: true });
 // Checks which host we're connected to (for troubleshooting);
@@ -106,8 +106,10 @@ socket.on("hint", (hint) => {
   store.dispatch(setHint(hint));
 });
 
-socket.on("canvas set", (width, height) => {
-  store.dispatch(setDrawerCanvasDimensions(width, height));
+// When connection fails, disconnect the client to prevent continually trying to connect
+socket.on("connect_error", (error) => {
+  console.log(error);
+  socket.disconnect();
 });
 
 export const joinChat = (username, avatar, date) => {
