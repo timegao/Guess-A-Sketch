@@ -10,6 +10,7 @@ const {
   INITIAL_SCORING,
   INITIAL_WORD,
   LOGIN,
+  INITIAL_DRAWER,
 } = require("./src/redux/stateConstants");
 const app = express();
 const server = require("http").Server(app);
@@ -66,6 +67,7 @@ let word = { ...INITIAL_WORD }; // Word choices and picked
 let drawer = null; // store client id of current drawer
 let guessedCorrectOrder = 1; // tracks the order the guesser guessed correctly, starts from 1 and goes up to number of users - 1
 let MAX_DIFF_CLOSE_GUESS = 2; // characters difference to consider a close guess
+// let drawerCanvas = INITIAL_DRAWER;
 
 const clients = {}; // Object to map client ids to their usernames
 
@@ -605,5 +607,11 @@ io.on("connection", (client) => {
 
   client.on("clear canvas", () => {
     clearLinesExceptDrawer(client);
+  });
+
+  client.on("set drawer canvas dimensions", (width, height) => {
+    // drawerCanvas.canvasHeight = height;
+    // drawerCanvas.canvasWidth = width;
+    client.broadcast.emit("canvas set", width, height);
   });
 });

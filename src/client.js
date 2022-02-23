@@ -15,6 +15,7 @@ import {
   invalidUsername,
   setHint,
   updateUser,
+  setDrawerCanvasDimensions,
 } from "./redux/actions";
 import store from "./redux/store";
 
@@ -137,4 +138,8 @@ export const leaveChat = (clientId) => {
 
 export const clearCanvas = (clientId) => {
   socket.emit("clear canvas", clientId);
+};
+
+export const drawerCanvasDimensions = (width, height) => {
+  socket.emit("set drawer canvas dimensions", width, height);
 };

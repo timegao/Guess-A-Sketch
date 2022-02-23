@@ -1,4 +1,4 @@
-# Project Description – Guess-A-Sketch
+# Guess-A-Sketch
 
 http://guess-a-sketch.herokuapp.com/
 
@@ -6,7 +6,7 @@ http://guess-a-sketch.herokuapp.com/
 
 Guess-A-Sketch is a multiplayer game that is a remote online synchronous groupware application, whose inspiration stems from to the well-known board game, Pictionary.
 
-## Limitations
+### Limitations
 
 The following is a listing of application limitations effective the first application release:
 
@@ -19,7 +19,7 @@ The following is a listing of application limitations effective the first applic
 - Upon clicking the eraser button, our currently deployed application may cause the line width for all existing drawn paths on canvas to change width. This is not an intended effect and is an open issue.
 - Due to the limitations of the free-tier Dyno Type, which has less than 1GB of RAM, Heroku may crash and may not restart itself. The connection to Heroku dynos may not always be the most stable. Players' socket sometimes disconnect, and players may not always receive the most up-to-date information.
 
-## Key Characteristics
+### Key Characteristics
 
 The following are key characteristics of the game:
 
@@ -56,6 +56,8 @@ Once at least 2 players have joined the game, the game begins and the player who
 The player who has the role of drawer has 15 seconds to choose the word they would like to draw. Three choices are provided, one easy (green), one medium (yellow), and one hard (red). Should the player fail to choose a word in the 15 seconds provided, the player is automatically provided with the easy word to draw. During the same time, guessers all receive feedback that the drawer is currently picking a word.
 
 Once the player has either chosen a word to draw or one has automatically been chosen for them, the player then has 90 seconds to draw the chosen word to the best of their ability.
+
+Players are required to provide a username to identify themselves during gameplay. There cannot be duplicate usernames. Validation is performed at the time when a player attempts to join, to prevent for duplicates. Feedback is provided to the player so it can provide a different username currently not in use.
 
 <p align="center"> <img src="https://media.github.ccs.neu.edu/user/5522/files/68179680-a892-11eb-87a8-b7103704e13f"/></p>
 

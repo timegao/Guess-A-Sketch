@@ -18,3 +18,4 @@ export const SET_WORD_TO_GUESS = "game/setWordToGuess";
 export const SET_HINT = "game/setHint";
 export const UPDATE_WORD_CHOICES = "word/updateWordChoies";
 export const UPDATE_WORD_PICKED = "word/updateWordPicked";
+export const SET_CANVAS_DIMENSIONS = "drawre/setCanvasDimensionsOfDrawer";

@@ -6,6 +6,7 @@ import {
   drawerChoseWord,
   leaveChat,
   clearCanvas,
+  drawerCanvasDimensions,
 } from "../client";
 import {
   ADD_LINE,
@@ -26,6 +27,7 @@ import {
   UPDATE_WORD_PICKED,
   LOGOUT,
   CLEAR_LINES,
+  SET_CANVAS_DIMENSIONS,
 } from "./actionConstants";
 import { ROLE, LOGIN, INITIAL_SCORING } from "./stateConstants";
 
@@ -129,6 +131,13 @@ export const sendChosenWord = (word) => {
   };
 };
 
+export const sendDrawerCanvasDimensions = (width, height) => {
+  return (dispatch) => {
+    drawerCanvasDimensions(width, height);
+    dispatch(setDrawerCanvasDimensions(width, height));
+  };
+};
+
 export const invalidUsername = () => ({
   type: INVALID_USERNAME,
 });
@@ -199,4 +208,12 @@ export const logoutOfGame = () => ({
 
 export const newCanvas = () => ({
   type: CLEAR_LINES,
+});
+
+export const setDrawerCanvasDimensions = (width, height) => ({
+  type: SET_CANVAS_DIMENSIONS,
+  payload: {
+    canvasHeight: height,
+    canvasWidth: width,
+  },
 });
